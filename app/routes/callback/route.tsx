@@ -1,16 +1,16 @@
 import { LoaderFunction, redirect } from "@remix-run/node";
 import axios from "axios";
-import { getUserSession } from "~/utils/auth.server";
-import { sessionStorage } from "~/utils/session.server";
-import { supabaseClient } from "~/utils/supabase.server";
+import { getUserSession } from "~/services";
+import { sessionStorage } from "~/utils/server/session.server";
+import { supabaseClient } from "~/utils/server/supabase.server";
+import { ROUTES } from "~/constants/routes";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const { userInfo } = await getUserSession(request);
-  console.log(userInfo);
 
   if (userInfo && userInfo.userId) {
     // ログイン済みの場合はホームに飛ばす
-    return redirect("/");
+    return redirect(ROUTES.ROOT);
   }
 
   // 未ログインの場合はログイン画面へ遷移
@@ -30,7 +30,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     client_id: channelId,
     client_secret: channelSecret,
   };
-  // console.log(requestParam);
 
   const tokenResponse = await axios.post(tokenBaseUrl, requestParam, {
     headers: {
@@ -39,8 +38,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 
   const accessToken = tokenResponse.data.access_token;
-
-  // console.log("アクセストークン", accessToken);
 
   const userInfoResponse = await axios.get(profileBaseUrl, {
     headers: {
@@ -53,8 +50,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     name: userInfoResponse.data?.displayName,
     pictureUrl: userInfoResponse.data?.pictureUrl,
   };
-
-  // console.log("ユーザ情報", userInfo);
 
   // 既存ユーザからデータ取得
   const { data: existingUser, error: fetchError } = await supabaseClient
@@ -91,7 +86,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   session.set("accessToken", accessToken);
 
   // 成功時の処理
-  return redirect("/", {
+  return redirect(ROUTES.ROOT, {
     headers: { "Set-Cookie": await sessionStorage.commitSession(session) },
   });
 };

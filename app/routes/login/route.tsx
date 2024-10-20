@@ -1,13 +1,13 @@
 import { redirect, LoaderFunction } from "@remix-run/node";
-import { getUserSession } from "~/utils/auth.server";
+import { ROUTES } from "~/constants/routes";
+import { getUserSession } from "~/services";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const { userInfo } = await getUserSession(request);
-  console.log(userInfo);
 
   if (userInfo && userInfo.userId) {
     // ログイン済みの場合はホームに飛ばす
-    return redirect("/");
+    return redirect(ROUTES.ROOT);
   }
 
   // 未ログインの場合はLineのログイン画面に飛ばす

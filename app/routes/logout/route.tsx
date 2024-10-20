@@ -1,5 +1,5 @@
 import { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { logoutUser } from "~/utils/auth.server";
+import { logoutUser } from "~/services";
 
 export const action: ActionFunction = async ({ request }) => {
   return await logoutUser(request);
