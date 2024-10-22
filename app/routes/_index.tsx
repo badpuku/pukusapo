@@ -6,7 +6,7 @@ import {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import LogoutButton from "~/components/ui/button/LogoutButton";
-import { getUserSession } from "~/services";
+import { getUserSession } from "~/services/auth.server";
 import { ROUTES } from "~/constants/routes";
 
 export const meta: MetaFunction = () => {
