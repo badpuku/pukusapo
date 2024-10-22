@@ -1,4 +1,4 @@
-import { sessionStorage } from "~/utils/server/session.server";
+import { sessionStorage } from "~/services/session.server";
 
 /**
  * userInfo取得用関数

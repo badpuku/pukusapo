@@ -1,4 +1,4 @@
-import { sessionStorage } from "~/utils/server/session.server";
+import { sessionStorage } from "~/services/session.server";
 import { redirect } from "@remix-run/node";
 import { ROUTES } from "~/constants/routes";
 

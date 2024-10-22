@@ -1,10 +1,8 @@
 import { createCookieSessionStorage } from "@remix-run/node";
 import { ROUTES } from "~/constants/routes";
 
-// セッションの秘密鍵をenvファイルから取得する
 const sessionSecret = process.env.SESSION_SECRET;
 
-// セッション用の秘密鍵が設定されていない場合はエラーを表示して終了する
 if (!sessionSecret) {
   throw new Error("SESSION_SECRET環境変数が設定されていません。");
 }
