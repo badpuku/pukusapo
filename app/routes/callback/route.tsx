@@ -1,8 +1,7 @@
 import { LoaderFunction, redirect } from "@remix-run/node";
-import axios from "axios";
 import { getUserSession } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
-import { supabaseClient} from "~/services/supabase.server";
+import { supabaseClient } from "~/services/supabase.server";
 import { ROUTES } from "~/constants/routes";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -22,6 +21,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   const tokenBaseUrl = process.env.VITE_LINE_TOKEN_BASE_URL!;
   const profileBaseUrl = process.env.VITE_LINE_PROFILE_BASE_URL!;
 
+  // codeがLINEから返却されなかった場合はエラーとして処理する
+  if (!code) {
+    throw new Error("必要な情報が返却されませんでした。");
+  }
+
   // アクセストークンを取得
   const requestParam = {
     grant_type: "authorization_code",
@@ -31,24 +35,38 @@ export const loader: LoaderFunction = async ({ request }) => {
     client_secret: channelSecret,
   };
 
-  const tokenResponse = await axios.post(tokenBaseUrl, requestParam, {
+  const tokenResponse = await fetch(tokenBaseUrl, {
+    method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
+    body: new URLSearchParams(requestParam).toString(),
   });
 
-  const accessToken = tokenResponse.data.access_token;
+  if (!tokenResponse.ok) {
+    throw new Error("正常なレスポンスが返却されませんでした。");
+  }
 
-  const userInfoResponse = await axios.get(profileBaseUrl, {
+  const tokenResponseData = await tokenResponse.json();
+  const accessToken = tokenResponseData.access_token;
+
+  // ユーザ情報の取得処理
+  const userInfoResponse = await fetch(profileBaseUrl, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
+      Accept: "application/json",
     },
   });
 
+  if (!userInfoResponse.ok) {
+    throw new Error("正常なレスポンスが返却されませんでした。");
+  }
+
+  const userInfoResponseData = await userInfoResponse.json();
   const createUserInfo = {
-    userId: userInfoResponse.data?.userId,
-    name: userInfoResponse.data?.displayName,
-    pictureUrl: userInfoResponse.data?.pictureUrl,
+    userId: userInfoResponseData.userId,
+    name: userInfoResponseData.displayName,
+    pictureUrl: userInfoResponseData.pictureUrl,
   };
 
   // 既存ユーザからデータ取得
@@ -58,9 +76,9 @@ export const loader: LoaderFunction = async ({ request }) => {
     .eq("id", createUserInfo.userId)
     .single();
 
-  // 既存データ取得処理での例外
   if (fetchError) {
-    console.error(fetchError);
+    console.error("Error get user info:", fetchError);
+    throw new Error("データ取得に失敗しました。");
   }
 
   // 新規ユーザ登録
@@ -76,6 +94,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     if (signUpError) {
       console.error("Error signing up user:", signUpError);
+      throw new Error("ユーザ登録に失敗しました。");
     }
   }
 
