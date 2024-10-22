@@ -1,7 +1,7 @@
 import { LoaderFunction, redirect } from "@remix-run/node";
 import axios from "axios";
 import { getUserSession } from "~/services";
-import { sessionStorage } from "~/utils/server/session.server";
+import { sessionStorage } from "~/services/session.server";
 import { supabaseClient} from "~/services/supabase.server";
 import { ROUTES } from "~/constants/routes";
 
