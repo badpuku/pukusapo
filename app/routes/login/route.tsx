@@ -1,6 +1,6 @@
 import { redirect, LoaderFunction } from "@remix-run/node";
 import { ROUTES } from "~/constants/routes";
-import { getUserSession } from "~/services";
+import { getUserSession } from "~/services/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const { userInfo } = await getUserSession(request);

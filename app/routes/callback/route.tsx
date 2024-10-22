@@ -1,8 +1,8 @@
 import { LoaderFunction, redirect } from "@remix-run/node";
 import axios from "axios";
-import { getUserSession } from "~/services";
-import { sessionStorage } from "~/utils/server/session.server";
-import { supabaseClient } from "~/utils/server/supabase.server";
+import { getUserSession } from "~/services/auth.server";
+import { sessionStorage } from "~/services/session.server";
+import { supabaseClient} from "~/services/supabase.server";
 import { ROUTES } from "~/constants/routes";
 
 export const loader: LoaderFunction = async ({ request }) => {

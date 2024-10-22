@@ -1,4 +1,4 @@
-import { sessionStorage } from "~/utils/server/session.server";
+import { sessionStorage } from "~/services/session.server";
 import { redirect } from "@remix-run/node";
 import { ROUTES } from "~/constants/routes";
 
@@ -17,4 +17,16 @@ export const logoutUser = async (request: Request) => {
       "Set-Cookie": await sessionStorage.commitSession(session),
     },
   });
+};
+
+/**
+ * userInfo取得用関数
+ */
+export const getUserSession = async (request: Request) => {
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+  const userInfo = session.get("userInfo");
+
+  return { session, userInfo };
 };
