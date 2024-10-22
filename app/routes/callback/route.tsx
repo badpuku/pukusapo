@@ -15,11 +15,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   // 未ログインの場合はログイン画面へ遷移
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const redirectUri = process.env.VITE_LINE_CALLBACK_URL!;
-  const channelId = process.env.VITE_LINE_CLIENT_ID!;
-  const channelSecret = process.env.VITE_LINE_CLIENT_SECRET!;
-  const tokenBaseUrl = process.env.VITE_LINE_TOKEN_BASE_URL!;
-  const profileBaseUrl = process.env.VITE_LINE_PROFILE_BASE_URL!;
 
   // codeがLINEから返却されなかった場合はエラーとして処理する
   if (!code) {
@@ -30,12 +25,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   const requestParam = {
     grant_type: "authorization_code",
     code,
-    redirect_uri: redirectUri,
-    client_id: channelId,
-    client_secret: channelSecret,
+    redirect_uri: process.env.VITE_LINE_CALLBACK_URL!,
+    client_id: process.env.VITE_LINE_CLIENT_ID!,
+    client_secret: process.env.VITE_LINE_CLIENT_SECRET!,
   };
 
-  const tokenResponse = await fetch(tokenBaseUrl, {
+  const tokenResponse = await fetch(process.env.VITE_LINE_TOKEN_BASE_URL!, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -51,29 +46,27 @@ export const loader: LoaderFunction = async ({ request }) => {
   const accessToken = tokenResponseData.access_token;
 
   // ユーザ情報の取得処理
-  const userInfoResponse = await fetch(profileBaseUrl, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: "application/json",
-    },
-  });
+  const userInfoResponse = await fetch(
+    process.env.VITE_LINE_PROFILE_BASE_URL!,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    }
+  );
 
   if (!userInfoResponse.ok) {
     throw new Error("正常なレスポンスが返却されませんでした。");
   }
 
   const userInfoResponseData = await userInfoResponse.json();
-  const createUserInfo = {
-    userId: userInfoResponseData.userId,
-    name: userInfoResponseData.displayName,
-    pictureUrl: userInfoResponseData.pictureUrl,
-  };
 
   // 既存ユーザからデータ取得
   const { data: existingUser, error: fetchError } = await supabaseClient
     .from("users")
     .select("*")
-    .eq("id", createUserInfo.userId)
+    .eq("id", userInfoResponseData.userId)
     .single();
 
   if (fetchError) {
@@ -85,10 +78,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (!existingUser) {
     const { error: signUpError } = await supabaseClient.from("users").insert([
       {
-        id: createUserInfo.userId,
+        id: userInfoResponseData.userId,
         email: "",
-        name: createUserInfo.name,
-        profile: createUserInfo.pictureUrl,
+        name: userInfoResponseData.displayName,
+        profile: userInfoResponseData.pictureUrl,
       },
     ]);
 
@@ -101,7 +94,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   const session = await sessionStorage.getSession(
     request.headers.get("Cookie")
   );
-  session.set("userInfo", createUserInfo);
+
+  // TODO::セッションに保存するユーザ情報の型定義について検討する必要あり
+  session.set("userInfo", {
+    userId: userInfoResponseData.userId,
+    name: userInfoResponseData.displayName,
+    pictureUrl: userInfoResponseData.pictureUrl,
+  });
   session.set("accessToken", accessToken);
 
   // 成功時の処理
