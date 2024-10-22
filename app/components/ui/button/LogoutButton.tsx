@@ -1,6 +1,10 @@
 import { useNavigate } from "@remix-run/react";
 import { ROUTES } from "~/constants/routes";
 
+// TODO:: 本コンポーネントをshadcn/uiを使用して再度作成する
+/**
+ * ログアウトボタンコンポーネント
+ */
 const LogoutButton = () => {
   const navigate = useNavigate();
 
