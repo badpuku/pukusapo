@@ -1,16 +1,15 @@
 import { redirect, LoaderFunction } from "@remix-run/node";
-import { getUserSession } from "~/utils/auth.server";
+import { ROUTES } from "~/constants/routes";
+import { getUserSession } from "~/services/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const { userInfo } = await getUserSession(request);
-  console.log(userInfo);
 
+  // ログイン済みの場合はホームへ遷移させる
   if (userInfo && userInfo.userId) {
-    // ログイン済みの場合はホームに飛ばす
-    return redirect("/");
+    return redirect(ROUTES.ROOT);
   }
 
-  // 未ログインの場合はLineのログイン画面に飛ばす
   const clientId = process.env.VITE_LINE_CLIENT_ID!;
   const redirectUri = process.env.VITE_LINE_CALLBACK_URL!;
 
