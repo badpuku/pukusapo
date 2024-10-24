@@ -8,7 +8,6 @@ import { ROUTES } from "~/constants/routes";
 const LogoutButton = () => {
   const navigate = useNavigate();
   const handleLogout = async () => {
-    // ログアウト画面に対してPOSTする
     const logoutResult = await fetch(`http://localhost:3000${ROUTES.LOGOUT}`, {
       method: "POST",
     });

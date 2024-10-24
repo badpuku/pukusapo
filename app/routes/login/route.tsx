@@ -5,12 +5,11 @@ import { getUserSession } from "~/services/auth.server";
 export const loader: LoaderFunction = async ({ request }) => {
   const { userInfo } = await getUserSession(request);
 
+  // ログイン済みの場合はホームへ遷移させる
   if (userInfo && userInfo.userId) {
-    // ログイン済みの場合はホームに飛ばす
     return redirect(ROUTES.ROOT);
   }
 
-  // 未ログインの場合はLineのログイン画面に飛ばす
   const clientId = process.env.VITE_LINE_CLIENT_ID!;
   const redirectUri = process.env.VITE_LINE_CALLBACK_URL!;
 
