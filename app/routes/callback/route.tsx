@@ -39,7 +39,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 
   if (!tokenResponse.ok) {
-    throw new Error("正常なレスポンスが返却されませんでした。");
+    throw new Error(`サーバーからの応答が異常です： ${tokenResponse.status}`);
   }
 
   const tokenResponseData = await tokenResponse.json();
@@ -57,7 +57,9 @@ export const loader: LoaderFunction = async ({ request }) => {
   );
 
   if (!userInfoResponse.ok) {
-    throw new Error("正常なレスポンスが返却されませんでした。");
+    throw new Error(
+      `サーバーからの応答が異常です： ${userInfoResponse.status}`
+    );
   }
 
   const userInfoResponseData = await userInfoResponse.json();
