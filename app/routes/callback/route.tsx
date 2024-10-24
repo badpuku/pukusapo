@@ -13,29 +13,26 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   // 未ログインの場合はログイン画面へ遷移
-  const url = new URL(request.url);
-  const code = url.searchParams.get("code");
+  const code = new URL(request.url).searchParams.get("code");
 
   // codeがLINEから返却されなかった場合はエラーとして処理する
   if (!code) {
     throw new Error("必要な情報が返却されませんでした。");
   }
 
-  // アクセストークンを取得
-  const requestParam = {
-    grant_type: "authorization_code",
-    code,
-    redirect_uri: process.env.VITE_LINE_CALLBACK_URL!,
-    client_id: process.env.VITE_LINE_CLIENT_ID!,
-    client_secret: process.env.VITE_LINE_CLIENT_SECRET!,
-  };
-
+  // アクセストークンの取得
   const tokenResponse = await fetch(process.env.VITE_LINE_TOKEN_BASE_URL!, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: new URLSearchParams(requestParam).toString(),
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: process.env.VITE_LINE_CALLBACK_URL!,
+      client_id: process.env.VITE_LINE_CLIENT_ID!,
+      client_secret: process.env.VITE_LINE_CLIENT_SECRET!,
+    }).toString(),
   });
 
   if (!tokenResponse.ok) {

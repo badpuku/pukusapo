@@ -9,8 +9,6 @@ export const action: ActionFunction = async ({ request }) => {
   session.unset("userInfo");
   session.unset("accessToken");
 
-  const cookie = await sessionStorage.commitSession(session);
-
   const isLoggedOut = !session.has("userInfo") && !session.has("accessToken");
   const responseMessage = isLoggedOut
     ? "ログアウトが成功しました"
@@ -23,7 +21,7 @@ export const action: ActionFunction = async ({ request }) => {
     }),
     {
       headers: {
-        "Set-Cookie": cookie,
+        "Set-Cookie": await sessionStorage.commitSession(session),
         "Content-Type": "application/json",
       },
     }
