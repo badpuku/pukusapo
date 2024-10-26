@@ -15,7 +15,7 @@
 
 ### クイックスタート
 
-1. `supabase start`
+1. `npx supabase start`
 2. http://127.0.0.1:54323/project/default
 
 ※ 初回起動はイメージのビルドから始まるので、時間がかかります
