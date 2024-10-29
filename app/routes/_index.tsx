@@ -11,11 +11,11 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = async ({
-  request,
-}: LoaderFunctionArgs) => {
-  // TODO:: ルートページにアクセスした際の処理を実装
-};
+// export const loader: LoaderFunction = async ({
+//   request,
+// }: LoaderFunctionArgs) => {
+//   // TODO:: ルートページにアクセスした際の処理を実装
+// };
 
 export default function Index() {
   return (
