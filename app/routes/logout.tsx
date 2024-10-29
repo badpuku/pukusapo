@@ -1,10 +1,7 @@
-import { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { logoutUser } from "~/utils/auth.server";
+import { ActionFunction, ActionFunctionArgs } from "@remix-run/node";
 
-export const action: ActionFunction = async ({ request }) => {
-  return await logoutUser(request);
-};
-
-export const loader: LoaderFunction = async ({ request }) => {
-  return await logoutUser(request);
+export const action: ActionFunction = async ({
+  request,
+}: ActionFunctionArgs) => {
+  // TODO:: ログアウト機能を実装
 };
