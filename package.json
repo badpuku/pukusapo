@@ -17,6 +17,7 @@
     "@supabase/supabase-js": "^2.45.4",
     "axios": "^1.7.7",
     "isbot": "^4.1.0",
+    "neverthrow": "^8.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remix-auth": "^3.7.0",
