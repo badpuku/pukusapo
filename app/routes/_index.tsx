@@ -2,7 +2,6 @@ import { type MetaFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, Form, json, useLoaderData } from "@remix-run/react";
 import { supabaseClient } from "~/services/supabase.server";
 
-
 export const meta: MetaFunction = () => {
   return [
     { title: "New Remix App" },
@@ -10,12 +9,14 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { supabase } = supabaseClient(request);
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return json({ user });
-}
+};
 
 export default function Index() {
   const { user } = useLoaderData<typeof loader>();
