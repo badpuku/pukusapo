@@ -13,10 +13,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   });
 
   if (error) {
-    console.error(error);
-    return redirect("/error", {
-      headers,
-    });
+    return { error: error.message };
   }
 
   // TODO:: data変数からセッションを取り出してサインイン状態を保持する処理を記述する
