@@ -22,7 +22,8 @@ module.exports = {
   ignorePatterns: ["!**/.server", "!**/.client"],
 
   // Base config
-  extends: ["eslint:recommended"],
+  // NOTE: prettier は他の設定の上書きを行うために、必ず最後に配置する。
+  extends: ["eslint:recommended", "prettier"],
 
   overrides: [
     // React
