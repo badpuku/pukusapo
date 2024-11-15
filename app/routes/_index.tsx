@@ -1,5 +1,6 @@
-import { type MetaFunction, type LoaderFunctionArgs } from "@remix-run/node";
-import { Link, Form, json, useLoaderData } from "@remix-run/react";
+import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
+import { Form, json, Link, useLoaderData } from "@remix-run/react";
+
 import { supabaseClient } from "~/services/supabase.server";
 
 export const meta: MetaFunction = () => {
