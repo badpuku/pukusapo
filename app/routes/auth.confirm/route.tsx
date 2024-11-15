@@ -13,21 +13,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   // リダイレクト先のURLがスラッシュで始まる場合はそのまま使用し、そうでなければルートページを設定
   const redirectTo = next.startsWith("/") ? next : "/";
 
-  if (token_hash && type) {
-    const { supabase } = supabaseClient(request);
-
-    // Supabaseでトークンハッシュを使用したサインインを実行
-    const { error } = await supabase.auth.verifyOtp({
-      type,
-      token_hash,
-    });
-
-    if (!error) {
-      // TODO:: ログイン処理(セッションへのユーザ情報の保存など)を施してからホームに遷移させる
-      return redirect(redirectTo);
-    }
+  if (!token_hash || !type) {
+    return redirect("/error");
   }
 
-  // エラー画面にリダイレクト
-  return redirect("/error");
+  const { supabase } = supabaseClient(request);
+
+  // Supabaseでトークンハッシュを使用したサインインを実行
+  const { error } = await supabase.auth.verifyOtp({
+    type,
+    token_hash,
+  });
+
+  if (error) {
+    return redirect("/error");
+  }
+
+  // TODO:: ログイン処理(セッションへのユーザ情報の保存など)を施してからホームに遷移させる
+  return redirect(redirectTo);
 };
