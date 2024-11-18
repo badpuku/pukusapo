@@ -6,8 +6,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const formData = await request.formData();
 
-  // Supabase でメール&パスワードログインを実行
-  const { data, error } = await supabase.auth.signInWithPassword({
+  // Supabase でサインアップを実行
+  const { data, error } = await supabase.auth.signUp({
     email: formData.get("email")?.toString() ?? "",
     password: formData.get("password")?.toString() ?? "",
   });
@@ -16,7 +16,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return { error: error.message };
   }
 
-  return redirect("/", {
+  // TODO:: data変数からセッションを取り出してサインイン状態を保持する処理を記述する
+  return redirect("/welcome", {
     headers,
   });
 };
