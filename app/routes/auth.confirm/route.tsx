@@ -1,7 +1,8 @@
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { EmailOtpType } from "@supabase/supabase-js";
 import { supabaseClient } from "~/services/supabase.server";
-import { SignInQueryParams } from "~/models/auth";
+import { SignInQueryParams, SingUpConfirmQueryParamsSchema } from "~/models/auth";
+import { err, ok, ResultAsync } from "neverthrow";
 
 /**
  * ログイン時のクエリパラメータを取得する関数。
@@ -25,28 +26,48 @@ const getQueryParams = (url: URL): SignInQueryParams => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   // クエリパラメータから必要な情報を取得
   const signInQueryParams = getQueryParams(new URL(request.url));
+  const url = new URL(request.url);
+  const tokenHash = url.searchParams.get("token_hash");
+  const type = url.searchParams.get("type");
+  const next = url.searchParams.get("next") ?? "/";
 
-  // リダイレクト先のURLがスラッシュで始まる場合はそのまま使用し、そうでなければルートページを設定
-  const redirectTo = signInQueryParams.nextUrl.startsWith("/")
-    ? signInQueryParams.nextUrl
-    : "/";
+  return await ok (
+    SingUpConfirmQueryParamsSchema.safeParse({
+      token_hash: tokenHash,
+      type: type,
+      next: next,
+    })
+  )
+  .andThen((result) => {
+    if (!result.success) return err(result.error);
+    return ok(result.data);
+  })
+  .asyncAndThen((result) => {
+    const redirectTo = result.next ?? "/";
+    const { supabase } = supabaseClient(request);
 
-  if (!signInQueryParams.tokenHash || !signInQueryParams.type) {
-    return redirect("/error");
-  }
-
-  const { supabase } = supabaseClient(request);
-
-  // Supabaseでトークンハッシュを使用したサインインを実行
-  const { error } = await supabase.auth.verifyOtp({
-    type: signInQueryParams.type,
-    token_hash: signInQueryParams.tokenHash,
-  });
-
-  if (error) {
-    return redirect("/error");
-  }
-
-  // TODO:: ログイン処理(セッションへのユーザ情報の保存など)を施してからホームに遷移させる
-  return redirect(redirectTo);
+    return ResultAsync.fromPromise(
+      supabase.auth.verifyOtp({
+        type: result.type,
+        token_hash: result.token_hash,
+      }),
+      (error) => error
+    ).map((response) => {
+      if (response.error) {
+        console.error("OTP verification error:", response.error);
+        throw new Error(response.error.message);
+      }
+      return redirectTo;
+    })
+  })
+  .match(
+    (result) => {
+      return redirect(result);
+    },
+    (error) => {
+      // TODO: エラーハンドリングを追加すること
+      console.log(error);
+      return redirect("/error");
+    }
+  )
 };
