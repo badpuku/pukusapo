@@ -1,17 +1,28 @@
 import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import { supabaseClient } from "~/services/supabase.server";
+import { err, ok, ResultAsync } from "neverthrow";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { supabase, headers } = supabaseClient(request);
 
-  // Supabase でログアウトを実行
-  const { error } = await supabase.auth.signOut();
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  return redirect("/", {
-    headers,
-  });
+  return ResultAsync.fromPromise(
+    supabase.auth.signOut(),
+    (error) => error
+  ).map((response) => {
+    if (response.error) {
+      console.error("Sign out error:", response.error);
+      throw new Error(response.error.message);
+    }
+  })
+  .match(
+    () => {
+      return redirect("/", {
+        headers,
+      });
+    },
+    (error) => {
+      console.log(error);
+      return redirect("/error");
+    }
+  )
 };
