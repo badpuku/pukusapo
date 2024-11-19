@@ -4,6 +4,7 @@ import { SingUpConfirmQueryParamsSchema } from "~/models/auth";
 import { err, ok, ResultAsync } from "neverthrow";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const { supabase } = supabaseClient(request);
   const url = new URL(request.url);
   const tokenHash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type");
@@ -22,7 +23,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   })
   .asyncAndThen((result) => {
     const redirectTo = result.next ?? "/";
-    const { supabase } = supabaseClient(request);
 
     return ResultAsync.fromPromise(
       supabase.auth.verifyOtp({
