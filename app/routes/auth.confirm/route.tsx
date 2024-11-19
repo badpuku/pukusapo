@@ -7,7 +7,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const tokenHash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type");
-  const next = url.searchParams.get("next") ?? "/";
+  const next = url.searchParams.get("next");
 
   return await ok (
     SingUpConfirmQueryParamsSchema.safeParse({
