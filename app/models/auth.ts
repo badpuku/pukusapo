@@ -10,6 +10,9 @@ export const EmailOtpTypeSchema = z.enum(["signup", "invite", "magiclink", "reco
 
 export const PathSchema = z.string().regex(/^\/[a-zA-Z0-9-_/]*$/);
 
+/**
+ * TODO: nextパラメータの命名を再考すること
+ */
 export const SingUpConfirmQueryParamsSchema = z.object({
   token_hash: z.string(),
   type: EmailOtpTypeSchema,
