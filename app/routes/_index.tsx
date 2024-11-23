@@ -1,6 +1,7 @@
 import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { Form, json, Link, useLoaderData } from "@remix-run/react";
 
+import { Button } from "~/components/ui/button"
 import { supabaseClient } from "~/services/supabase.server";
 
 export const meta: MetaFunction = () => {
@@ -30,6 +31,9 @@ export default function Index() {
       <Form action="/auth/signout" method="post">
         <button type="submit">ログアウト</button>
       </Form>
+      <div>
+        <Button>Click me</Button>
+      </div>
     </>
   );
 }
