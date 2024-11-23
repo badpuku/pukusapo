@@ -23,7 +23,7 @@ module.exports = {
 
   // Base config
   // NOTE: prettier は他の設定の上書きを行うために、必ず最後に配置する。
-  extends: ["eslint:recommended", "prettier"],
+  extends: ["eslint:recommended", "plugin:storybook/recommended", "prettier"],
 
   overrides: [
     // React
