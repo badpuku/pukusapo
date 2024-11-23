@@ -6,13 +6,14 @@ const isStorybook = process.argv[1]?.includes("storybook");
 
 export default defineConfig({
   plugins: [
-    !isStorybook && remix({
-      future: {
-        v3_fetcherPersist: true,
-        v3_relativeSplatPath: true,
-        v3_throwAbortReason: true,
-      },
-    }),
+    !isStorybook &&
+      remix({
+        future: {
+          v3_fetcherPersist: true,
+          v3_relativeSplatPath: true,
+          v3_throwAbortReason: true,
+        },
+      }),
     tsconfigPaths(),
   ],
   server: {
