@@ -5,7 +5,7 @@ import { SingUpConfirmQueryParamsSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { supabase } = supabaseClient(request);
+  const { supabase, headers } = supabaseClient(request);
   const url = new URL(request.url);
   const tokenHash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type");
@@ -41,12 +41,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     })
     .match(
       (result) => {
-        return redirect(result);
+        return redirect(result, {
+          headers: headers,
+        });
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error");
+        return redirect("/error", {
+          headers: headers,
+        });
       },
     );
 };
