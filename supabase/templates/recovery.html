@@ -1,0 +1,9 @@
+<h2>パスワードリセット用リンク</h2>
+
+<p>下記のリンクをクリックして、パスワードを再設定してください</p>
+<p>
+  <a
+    href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/new-password"
+    >パスワードリセット画面へ</a
+  >
+</p>
