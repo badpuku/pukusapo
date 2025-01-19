@@ -1,4 +1,4 @@
-export default function ResetRequestedRoute() {
+export default function PasswordResetRequestedRoute() {
   return (
     <>
       <h1>パスワードリセット用のメールを送信しました。</h1>
