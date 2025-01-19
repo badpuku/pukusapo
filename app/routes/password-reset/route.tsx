@@ -1,6 +1,6 @@
 import { Form } from "@remix-run/react";
 
-export default function ResetPasswordRoute() {
+export default function PasswordResetRoute() {
   return (
     <main className="p-6">
       <h1 className="mb-1">パスワードリセットページ</h1>

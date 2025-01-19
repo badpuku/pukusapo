@@ -17,7 +17,7 @@ export default function LoginRoute() {
       </Form>
       <Link to={"/signup"}>新規登録</Link>
       <br />
-      <Link to={"/reset-password"}>パスワードリセット</Link>
+      <Link to={"/password-reset"}>パスワードリセット</Link>
     </main>
   );
 }
