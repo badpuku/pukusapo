@@ -5,7 +5,7 @@ import { EmailAuthSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { supabase, headers } = supabaseClient(request);
+  const { supabase } = supabaseClient(request);
   const formData = await request.formData();
 
   return ok(
@@ -33,16 +33,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       () => {
         // NOTE:: パスワードリセット後にサインアウトする必要がある場合は、リダイレクト先を変更すること
         // NOTE:: しかし、ここから/auth/signoutにPOSTさせることができないので、要検討
-        return redirect("/", {
-          headers: headers,
-        });
+        return redirect("/");
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error", {
-          headers: headers,
-        });
+        return redirect("/error");
       },
     );
 };

@@ -5,7 +5,7 @@ import { EmailAuthSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { supabase, headers } = supabaseClient(request);
+  const { supabase } = supabaseClient(request);
   const formData = await request.formData();
 
   return ok(
@@ -31,9 +31,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     })
     .match(
       () => {
-        return redirect("/reset-requested", {
-          headers,
-        });
+        return redirect("/reset-requested");
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
