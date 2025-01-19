@@ -18,7 +18,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       return ok(result.data);
     })
     .asyncAndThen((result) => {
-      // パスワードをリセット
       return ResultAsync.fromPromise(
         supabase.auth.updateUser({ password: result.password }),
         (error) => error,
@@ -31,8 +30,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     })
     .match(
       () => {
-        // NOTE:: パスワードリセット後にサインアウトする必要がある場合は、リダイレクト先を変更すること
-        // NOTE:: しかし、ここから/auth/signoutにPOSTさせることができないので、要検討
         return redirect("/");
       },
       (error) => {

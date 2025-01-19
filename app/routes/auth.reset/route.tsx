@@ -9,7 +9,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
 
   return ok(
-    // 型定義を再利用
     EmailAuthSchema.pick({ email: true }).safeParse({
       email: formData.get("email"),
     }),
