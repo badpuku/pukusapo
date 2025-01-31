@@ -2,11 +2,13 @@ import { cloudflareDevProxyVitePlugin as remixCloudflareDevProxy, vitePlugin as 
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+import { getLoadContext } from "./load-context";
+
 const isStorybook = process.argv[1]?.includes("storybook");
 
 export default defineConfig({
   plugins: [
-    remixCloudflareDevProxy(),
+    remixCloudflareDevProxy({ getLoadContext }),
     !isStorybook &&
       remix({
         future: {
