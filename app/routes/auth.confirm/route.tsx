@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { LoaderFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { err, ok, ResultAsync } from "neverthrow";
 
 import { SingUpConfirmQueryParamsSchema } from "~/models/auth";

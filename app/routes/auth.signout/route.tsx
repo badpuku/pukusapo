@@ -1,4 +1,4 @@
-import { type ActionFunctionArgs, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { ResultAsync } from "neverthrow";
 
 import { supabaseClient } from "~/services/supabase.server";

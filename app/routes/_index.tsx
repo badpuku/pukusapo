@@ -1,4 +1,4 @@
-import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
+import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/cloudflare";
 import { Form, json, Link, useLoaderData } from "@remix-run/react";
 
 import { Button } from "~/components/ui/button"
