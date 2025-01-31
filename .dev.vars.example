@@ -1,0 +1,14 @@
+# remix-auth settings
+SESSION_SECRET=""
+
+# LINE API settings
+VITE_LINE_CLIENT_ID=""
+VITE_LINE_CLIENT_SECRET=""
+VITE_LINE_CALLBACK_URL=http://localhost:3000/callback
+VITE_LINE_LOGIN_BASE_URL=https://access.line.me/oauth2/v2.1/authorize
+VITE_LINE_TOKEN_BASE_URL=https://api.line.me/oauth2/v2.1/token
+VITE_LINE_PROFILE_BASE_URL=https://api.line.me/v2/profile
+
+# supabase settings
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
