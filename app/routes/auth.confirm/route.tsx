@@ -4,8 +4,8 @@ import { err, ok, ResultAsync } from "neverthrow";
 import { SingUpConfirmQueryParamsSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { supabase, headers } = supabaseClient(request);
+export const loader = async ({ context, request }: LoaderFunctionArgs) => {
+  const { supabase, headers } = supabaseClient(request, context);
   const url = new URL(request.url);
   const tokenHash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type");

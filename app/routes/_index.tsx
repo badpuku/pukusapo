@@ -11,8 +11,8 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { supabase } = supabaseClient(request);
+export const loader = async ({ context, request }: LoaderFunctionArgs) => {
+  const { supabase } = supabaseClient(request, context);
   const {
     data: { user },
   } = await supabase.auth.getUser();
