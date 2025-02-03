@@ -77,5 +77,10 @@
   },
   "volta": {
     "node": "20.18.0"
+  },
+  "overrides": {
+    "vite": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
   }
 }
