@@ -2,24 +2,28 @@
 
 ## クイックスタート
 
-1. `npm ci`
-2. `npm run dev`
-3. http://localhost:3000/
-
-## supabase ローカル開発環境
-
 ### 前提条件
+Docker が使用可能であること
 
-- `npm ci`が実行済みであること
-- Docker が使用可能であること
+### 前準備
+1. `npm ci`
+2. `npx supabase start`
+3. http://127.0.0.1:54323/project/default で Supabase のダッシュボードが確認できます。
 
-### クイックスタート
+※ Supabase の初回起動はイメージのビルドから始まるので、時間がかかります
 
-1. `npx supabase start`
-2. http://127.0.0.1:54323/project/default
+### vite
 
-※ 初回起動はイメージのビルドから始まるので、時間がかかります
+1. `npm run dev`
+2. http://localhost:3000/
+
+### wrangler
+
+1. `npm run build`
+2. `npm run start`
+3. http://localhost:8788/
 
 ## 参考リンク
 
-- 📖 [Remix docs](https://remix.run/docs)
+- [Remix docs](https://remix.run/docs)
+- [Supabase Docs](https://supabase.com/docs)

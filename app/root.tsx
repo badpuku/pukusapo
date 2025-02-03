@@ -1,6 +1,6 @@
 import "./tailwind.css";
 
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction } from "@remix-run/cloudflare";
 import {
   Links,
   Meta,

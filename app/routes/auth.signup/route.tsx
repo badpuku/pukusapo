@@ -1,11 +1,11 @@
-import { type ActionFunctionArgs, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { err, ok, ResultAsync } from "neverthrow";
 
 import { EmailAuthSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const { supabase, headers } = supabaseClient(request);
+export const action = async ({ context, request }: ActionFunctionArgs) => {
+  const { supabase, headers } = supabaseClient(request, context);
   const formData = await request.formData();
 
   return ok(

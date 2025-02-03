@@ -1,4 +1,4 @@
-import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
+import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/cloudflare";
 import { Form, json, Link, useLoaderData } from "@remix-run/react";
 
 import { Button } from "~/components/ui/button"
@@ -11,8 +11,8 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { supabase } = supabaseClient(request);
+export const loader = async ({ context, request }: LoaderFunctionArgs) => {
+  const { supabase } = supabaseClient(request, context);
   const {
     data: { user },
   } = await supabase.auth.getUser();

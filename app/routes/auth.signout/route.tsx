@@ -1,10 +1,10 @@
-import { type ActionFunctionArgs, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { ResultAsync } from "neverthrow";
 
 import { supabaseClient } from "~/services/supabase.server";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const { supabase, headers } = supabaseClient(request);
+export const action = async ({ context, request }: ActionFunctionArgs) => {
+  const { supabase, headers } = supabaseClient(request, context);
 
   return ResultAsync.fromPromise(supabase.auth.signOut(), (error) => error)
     .map((response) => {

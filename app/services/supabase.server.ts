@@ -1,3 +1,4 @@
+import { AppLoadContext } from "@remix-run/cloudflare";
 import {
   createServerClient,
   parseCookieHeader,
@@ -8,19 +9,20 @@ import {
  * Supabaseクライアントを作成する関数。
  *
  * @param {Request} request - クライアントからのリクエストオブジェクト。
+ * @param {AppLoadContext} context - RemixのAppLoadContextオブジェクト（環境変数を提供するコンテキスト）。
  * @returns {{ supabase: any, headers: Headers }} Supabaseクライアントとヘッダーオブジェクトを含むオブジェクト。
  *
  * @example
  * ```typescript
- * const { supabase, headers } = supabaseClient(request);
+ * const { supabase, headers } = supabaseClient(request, context);
  * ```
  */
-export const supabaseClient = (request: Request) => {
+export const supabaseClient = (request: Request, context: AppLoadContext) => {
   const headers = new Headers();
 
   const supabase = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
+    context.cloudflare.env.SUPABASE_URL!,
+    context.cloudflare.env.SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
