@@ -9,14 +9,14 @@ import { type PlatformProxy } from "wrangler";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Env {
   SESSION_SECRET: string;
-	VITE_LINE_CLIENT_ID: string;
-	VITE_LINE_CLIENT_SECRET: string;
-	VITE_LINE_CALLBACK_URL: string;
-	VITE_LINE_LOGIN_BASE_URL: string;
-	VITE_LINE_TOKEN_BASE_URL: string;
-	VITE_LINE_PROFILE_BASE_URL: string;
-	SUPABASE_URL: string;
-	SUPABASE_ANON_KEY: string;
+  VITE_LINE_CLIENT_ID: string;
+  VITE_LINE_CLIENT_SECRET: string;
+  VITE_LINE_CALLBACK_URL: string;
+  VITE_LINE_LOGIN_BASE_URL: string;
+  VITE_LINE_TOKEN_BASE_URL: string;
+  VITE_LINE_PROFILE_BASE_URL: string;
+  SUPABASE_URL: string;
+  SUPABASE_ANON_KEY: string;
 }
 
 type Cloudflare = Omit<PlatformProxy<Env>, "dispose">;
@@ -33,9 +33,7 @@ type GetLoadContext = (args: {
 }) => AppLoadContext;
 
 // Shared implementation compatible with Vite, Wrangler, and Cloudflare Pages
-export const getLoadContext: GetLoadContext = ({
-  context,
-}) => {
+export const getLoadContext: GetLoadContext = ({ context }) => {
   return {
     ...context,
     extra: "stuff",

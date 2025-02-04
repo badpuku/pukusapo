@@ -1,5 +1,5 @@
-import { type ActionFunctionArgs, redirect } from "react-router";
 import { err, ok, ResultAsync } from "neverthrow";
+import { type ActionFunctionArgs, redirect } from "react-router";
 
 import { EmailAuthSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";

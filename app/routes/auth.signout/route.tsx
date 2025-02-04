@@ -1,5 +1,5 @@
-import { type ActionFunctionArgs, redirect } from "react-router";
 import { ResultAsync } from "neverthrow";
+import { type ActionFunctionArgs, redirect } from "react-router";
 
 import { supabaseClient } from "~/services/supabase.server";
 

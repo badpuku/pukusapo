@@ -1,7 +1,7 @@
 import { type LoaderFunctionArgs, type MetaFunction } from "react-router";
 import { Form, json, Link, useLoaderData } from "react-router";
 
-import { Button } from "~/components/ui/button"
+import { Button } from "~/components/ui/button";
 import { supabaseClient } from "~/services/supabase.server";
 
 export const meta: MetaFunction = () => {
