@@ -1,4 +1,4 @@
-import { type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
+import { type ActionFunctionArgs, redirect } from "react-router";
 import { err, ok, ResultAsync } from "neverthrow";
 
 import { EmailAuthSchema } from "~/models/auth";

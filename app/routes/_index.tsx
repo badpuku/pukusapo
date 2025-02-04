@@ -1,5 +1,5 @@
-import { type LoaderFunctionArgs, type MetaFunction } from "@remix-run/cloudflare";
-import { Form, json, Link, useLoaderData } from "@remix-run/react";
+import { type LoaderFunctionArgs, type MetaFunction } from "react-router";
+import { Form, json, Link, useLoaderData } from "react-router";
 
 import { Button } from "~/components/ui/button"
 import { supabaseClient } from "~/services/supabase.server";

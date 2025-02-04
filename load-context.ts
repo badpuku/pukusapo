@@ -1,4 +1,4 @@
-import { type AppLoadContext } from "@remix-run/cloudflare";
+import { type AppLoadContext } from "react-router";
 import { type PlatformProxy } from "wrangler";
 
 // When using `wrangler.toml` to configure bindings,
@@ -21,7 +21,7 @@ interface Env {
 
 type Cloudflare = Omit<PlatformProxy<Env>, "dispose">;
 
-declare module "@remix-run/cloudflare" {
+declare module "react-router" {
   interface AppLoadContext {
     cloudflare: Cloudflare;
   }
