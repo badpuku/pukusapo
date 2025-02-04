@@ -1,5 +1,5 @@
 import { type LoaderFunctionArgs, type MetaFunction } from "react-router";
-import { Form, json, Link, useLoaderData } from "react-router";
+import { Form, Link, useLoaderData } from "react-router";
 
 import { Button } from "~/components/ui/button";
 import { supabaseClient } from "~/services/supabase.server";
@@ -17,7 +17,7 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return json({ user });
+  return { user };
 };
 
 export default function Index() {
