@@ -30,12 +30,12 @@ export const action = async ({ context, request }: ActionFunctionArgs) => {
     })
     .match(
       () => {
-        return redirect("/password-reset/requested");
+        throw redirect("/password-reset/requested");
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error");
+        throw redirect("/error");
       },
     );
 };

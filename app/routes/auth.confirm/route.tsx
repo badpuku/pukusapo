@@ -41,14 +41,14 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
     })
     .match(
       (result) => {
-        return redirect(result, {
+        throw redirect(result, {
           headers: headers,
         });
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error", {
+        throw redirect("/error", {
           headers: headers,
         });
       },

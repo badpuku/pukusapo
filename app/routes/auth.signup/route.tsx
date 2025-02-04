@@ -30,19 +30,19 @@ export const action = async ({ context, request }: ActionFunctionArgs) => {
           console.error("Sign in error:", response.error);
           throw new Error(response.error.message);
         }
-        return redirect("/");
+        throw redirect("/");
       });
     })
     .match(
       () => {
-        return redirect("/welcome", {
+        throw redirect("/welcome", {
           headers,
         });
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error");
+        throw redirect("/error");
       },
     );
 };

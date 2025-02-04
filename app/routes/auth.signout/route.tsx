@@ -15,14 +15,14 @@ export const action = async ({ context, request }: ActionFunctionArgs) => {
     })
     .match(
       () => {
-        return redirect("/", {
+        throw redirect("/", {
           headers,
         });
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error");
+        throw redirect("/error");
       },
     );
 };
