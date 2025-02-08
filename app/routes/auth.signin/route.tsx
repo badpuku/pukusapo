@@ -30,7 +30,10 @@ export const action = async ({ context, request }: ActionFunctionArgs) => {
           console.error("Sign in error:", response.error);
           throw new Error(response.error.message);
         }
-        throw redirect("/");
+
+        throw redirect("/", {
+          headers,
+        });
       });
     })
     .match(
