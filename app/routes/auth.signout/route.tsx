@@ -1,5 +1,5 @@
-import { type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { ResultAsync } from "neverthrow";
+import { type ActionFunctionArgs, redirect } from "react-router";
 
 import { supabaseClient } from "~/services/supabase.server";
 
@@ -15,14 +15,14 @@ export const action = async ({ context, request }: ActionFunctionArgs) => {
     })
     .match(
       () => {
-        return redirect("/", {
+        throw redirect("/", {
           headers,
         });
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error");
+        throw redirect("/error");
       },
     );
 };

@@ -1,5 +1,5 @@
-import { type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { err, ok, ResultAsync } from "neverthrow";
+import { type ActionFunctionArgs, redirect } from "react-router";
 
 import { EmailAuthSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";
@@ -30,12 +30,12 @@ export const action = async ({ context, request }: ActionFunctionArgs) => {
     })
     .match(
       () => {
-        return redirect("/password-reset/requested");
+        throw redirect("/password-reset/requested");
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error");
+        throw redirect("/error");
       },
     );
 };

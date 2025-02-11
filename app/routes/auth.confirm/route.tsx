@@ -1,5 +1,5 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { err, ok, ResultAsync } from "neverthrow";
+import { LoaderFunctionArgs, redirect } from "react-router";
 
 import { SingUpConfirmQueryParamsSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";
@@ -41,14 +41,14 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
     })
     .match(
       (result) => {
-        return redirect(result, {
+        throw redirect(result, {
           headers: headers,
         });
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error", {
+        throw redirect("/error", {
           headers: headers,
         });
       },

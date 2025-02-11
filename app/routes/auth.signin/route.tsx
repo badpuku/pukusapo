@@ -1,5 +1,5 @@
-import { type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { err, ok, ResultAsync } from "neverthrow";
+import { type ActionFunctionArgs, redirect } from "react-router";
 
 import { EmailAuthSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";
@@ -30,19 +30,22 @@ export const action = async ({ context, request }: ActionFunctionArgs) => {
           console.error("Sign in error:", response.error);
           throw new Error(response.error.message);
         }
-        return redirect("/");
+
+        throw redirect("/", {
+          headers,
+        });
       });
     })
     .match(
       () => {
-        return redirect("/", {
+        throw redirect("/", {
           headers,
         });
       },
       (error) => {
         // TODO: エラーハンドリングを追加すること
         console.log(error);
-        return redirect("/error");
+        throw redirect("/error");
       },
     );
 };
