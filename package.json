@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
+    "deploy": "npm run build && wrangler deploy",
     "dev": "react-router dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "wrangler pages dev ./build/client",
@@ -13,6 +14,13 @@
     "format:code": "prettier --write .",
     "typecheck": "react-router typegen && tsc",
     "typegen": "wrangler types",
+    "db:generate": "drizzle-kit generate",
+    "db:generate:custom": "drizzle-kit generate --custom",
+    "db:migrate": "supabase migration up",
+    "db:seed": "dotenv -e .dev.vars -- tsx ./app/db/seeds",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
