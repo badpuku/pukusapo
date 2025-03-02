@@ -3,7 +3,7 @@ import {
   parseCookieHeader,
   serializeCookieHeader,
 } from "@supabase/ssr";
-import { AppLoadContext } from "react-router";
+import type { AppLoadContext } from "react-router";
 
 /**
  * Supabaseクライアントを作成する関数。
