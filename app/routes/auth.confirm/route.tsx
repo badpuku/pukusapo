@@ -1,5 +1,5 @@
 import { err, ok, ResultAsync } from "neverthrow";
-import { LoaderFunctionArgs, redirect } from "react-router";
+import { type LoaderFunctionArgs, redirect } from "react-router";
 
 import { SingUpConfirmQueryParamsSchema } from "~/models/auth";
 import { supabaseClient } from "~/services/supabase.server";
