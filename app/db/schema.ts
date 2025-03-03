@@ -2,7 +2,7 @@ import { integer, pgTable, serial, text, timestamp, uuid, varchar } from "drizzl
 
 // 役割（ロール）の定義
 export const roles = pgTable('roles', {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: serial("id").primaryKey(),
   roleCode: integer("role_code").unique().notNull(),
   name: varchar("name", { length: 50 }).unique().notNull(),  // 例: "Admin", "Event Manager", "User"
   description: text("description"),
@@ -13,6 +13,7 @@ export const roles = pgTable('roles', {
 // 権限の定義
 export const permissions = pgTable('permissions', {
   id: serial("id").primaryKey(),
+  permissionCode: integer("permission_code").unique().notNull(),
   name: varchar("name", { length: 100 }).unique().notNull(), // 例: "create_event", "delete_event"
   description: text("description"),
   createdAt: timestamp("created_at").defaultNow(),
