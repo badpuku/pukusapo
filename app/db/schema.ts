@@ -23,7 +23,7 @@ export const permissions = pgTable('permissions', {
 // ロールごとの権限設定
 export const rolePermissions = pgTable('role_permissions', {
   id: serial("id").primaryKey(),
-  roleId: uuid("role_id").references(() => roles.id, { onDelete: "cascade" }).notNull(),
+  roleId: integer("role_id").references(() => roles.id, { onDelete: "cascade" }).notNull(),
   permissionId: integer("permission_id").references(() => permissions.id, { onDelete: "cascade" }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -34,7 +34,7 @@ export const profiles = pgTable('profiles', {
   userId: uuid("user_id").unique().notNull(),
   name: varchar("name", { length: 100 }),
   email: text("email"),
-  roleId: uuid("role_id").references(() => roles.id, { onDelete: "set null" }),  // 修正
+  roleId: integer("role_id").references(() => roles.id, { onDelete: "set null" }),  // 修正
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }).enableRLS();
@@ -42,7 +42,7 @@ export const profiles = pgTable('profiles', {
 // ユーザーごとの特例的な権限設定（ACL）
 export const userPermissions = pgTable('user_permissions', {
   id: serial("id").primaryKey(),
-  userId: uuid("user_id").references(() => profiles.userId, { onDelete: "cascade" }).notNull(),
+  userId: integer("user_id").references(() => profiles.userId, { onDelete: "cascade" }).notNull(),
   permissionId: integer("permission_id").references(() => permissions.id, { onDelete: "cascade" }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
