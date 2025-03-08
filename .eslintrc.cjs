@@ -64,6 +64,7 @@ module.exports = {
           },
           typescript: {
             alwaysTryTypes: true,
+            project: "./tsconfig.cloudflare.json"
           },
         },
       },
