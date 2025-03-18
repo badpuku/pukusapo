@@ -7,7 +7,7 @@ Docker が使用可能であること
 
 ### 前準備
 1. `npm ci`
-2. `npx supabase start`
+2. `npm run db:start`
 3. http://127.0.0.1:54323/project/default で Supabase のダッシュボードが確認できます。
 
 ※ Supabase の初回起動はイメージのビルドから始まるので、時間がかかります
