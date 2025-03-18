@@ -8,7 +8,7 @@ CREATE TABLE "profiles" (
   "email" TEXT,
   "created_at" TIMESTAMP DEFAULT NOW(),
   "updated_at" TIMESTAMP DEFAULT NOW(),
-  FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE,
+  FOREIGN KEY ("user_id") REFERENCES auth.users("id") ON DELETE CASCADE
 );
 
 -- profiles テーブルの RLS の有効化
