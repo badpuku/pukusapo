@@ -23,6 +23,11 @@ Docker が使用可能であること
 2. `npm run start`
 3. http://localhost:8788/
 
+## Drizzle で素の SQL ファイルを生成
+
+- `db:generate:custom` コマンドでランダムな名前の SQL ファイルを生成
+- `drizzle-kit generate --custom --name=hoge` コマンドで指定した名前の SQL ファイルを生成
+
 ## 参考リンク
 
 - [Remix docs](https://remix.run/docs)
