@@ -1,3 +1,6 @@
+-- Custom SQL migration file, put your code below! --
+-- データ投入
+-- 1. users データの投入
 WITH credentials(id, mail, pass) AS (
   -- ユーザーのUUID、メールアドレス、パスワードをここに記載
   SELECT * FROM (VALUES 
