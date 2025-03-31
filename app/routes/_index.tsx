@@ -1,7 +1,6 @@
 import { type LoaderFunctionArgs, type MetaFunction } from "react-router";
 import { Form, Link, useLoaderData } from "react-router";
 
-import { Button } from "~/components/ui/button";
 import { supabaseClient } from "~/services/supabase.server";
 
 export const meta: MetaFunction = () => {
@@ -31,9 +30,9 @@ export default function Index() {
       <Form action="/auth/signout" method="post">
         <button type="submit">ログアウト</button>
       </Form>
-      <div>
+      {/* <div>
         <Button>Click me</Button>
-      </div>
+      </div> */}
     </>
   );
 }
