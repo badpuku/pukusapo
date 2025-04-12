@@ -122,7 +122,7 @@ const AdminNavbar = () => {
   console.log(matches);
 
   return (
-    <div className="sticky top-0 w-full h-16 px-4 py-[10px] flex items-center gap-4 border-b border-zinc-200">
+    <div className="sticky top-0 w-full h-16 px-4 py-[10px] flex items-center gap-4 border-b border-zinc-200 bg-white">
       <SidebarTrigger className="cursor-pointer hover:bg-zinc-100 duration-200" />
       <Breadcrumb className="px-4 py-1 border-l border-zinc-200">
         <BreadcrumbList>
@@ -161,14 +161,22 @@ const AdminNavbar = () => {
   );
 };
 
+const AdminMain = ({ children }: PropsWithChildren) => {
+  return (
+    <main className="h-svh flex-1 bg-zinc-100">
+      <AdminNavbar />
+      <div className="p-4 overflow-y-auto">
+        {children}
+      </div>
+    </main>
+  );
+};
+
 export const AdminLayout = ({ children }: PropsWithChildren) => {
   return (
     <SidebarProvider>
       <AdminSidebar />
-      <main className="h-svh flex-1">
-        <AdminNavbar />
-        {children}
-      </main>
+      <AdminMain>{children}</AdminMain>
     </SidebarProvider>
   );
 };
