@@ -22,6 +22,9 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontSize: {
+        xs: ["0.75rem", { lineHeight: "1rem" }],
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -34,9 +37,18 @@ export default {
           foreground: "hsl(var(--popover-foreground))",
         },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "var(--color-primary-500)",
           foreground: "hsl(var(--primary-foreground))",
+          50: "var(--color-primary-50)",
+          100: "var(--color-primary-100)",
+          200: "var(--color-primary-200)",
+          300: "var(--color-primary-300)",
           400: "var(--color-primary-400)",
+          500: "var(--color-primary-500)",
+          600: "var(--color-primary-600)",
+          700: "var(--color-primary-700)",
+          800: "var(--color-primary-800)",
+          900: "var(--color-primary-900)",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

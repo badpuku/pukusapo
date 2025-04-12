@@ -18,7 +18,19 @@ body {
 }
 
 :root {
-  --sidebar: hsl(0 0% 98%);
+  --color-primary-50: hsl(180 60% 95%);
+  --color-primary-100: hsl(192 67% 94%);
+  --color-primary-200: hsl(195 67% 85%);
+  --color-primary-300: hsl(194 68% 74%);
+  --color-primary-400: hsl(198 63% 57%);
+  --color-primary-500: hsl(198 50% 47%);
+  --color-primary-600: hsl(197 51% 39%);
+  --color-primary-700: hsl(198 51% 32%);
+  --color-primary-800: hsl(197, 50%, 24%);
+  --color-primary-900: hsl(196, 47%, 17%);
+  --radius: 0.5rem;
+  --border: hsl(240 5.9% 90%);
+  --sidebar: hsl(0 0% 100%);
   --sidebar-foreground: hsl(240 5.3% 26.1%);
   --sidebar-primary: hsl(240 5.9% 10%);
   --sidebar-primary-foreground: hsl(0 0% 98%);
