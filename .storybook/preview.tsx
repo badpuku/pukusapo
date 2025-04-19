@@ -1,4 +1,5 @@
 import type { Preview } from "@storybook/react";
+import "../app/app.css";
 
 const preview: Preview = {
   parameters: {
@@ -8,7 +9,10 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    layout: "fullscreen",
   },
 };
 
 export default preview;
+
+
