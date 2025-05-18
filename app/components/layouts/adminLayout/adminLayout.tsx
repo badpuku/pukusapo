@@ -9,7 +9,7 @@ import {
 import { Fragment, type PropsWithChildren } from "react";
 import { Link, useMatches } from "react-router";
 
-import { IconPuku } from "~/components/icons/";
+import { IconPuku } from "~/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Breadcrumb,
@@ -146,12 +146,19 @@ const AdminNavbar = () => {
                     ) : (
                       <BreadcrumbLink asChild>
                         {breadcrumb && (
-                          <Link to={breadcrumb.to} className="text-xs text-zinc-500">{breadcrumb.title}</Link>
+                          <Link
+                            to={breadcrumb.to}
+                            className="text-xs text-zinc-500"
+                          >
+                            {breadcrumb.title}
+                          </Link>
                         )}
                       </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>
-                  {!isCurrent && <BreadcrumbSeparator className="text-zinc-500" />}
+                  {!isCurrent && (
+                    <BreadcrumbSeparator className="text-zinc-500" />
+                  )}
                 </Fragment>
               );
             })}
@@ -165,9 +172,7 @@ const AdminMain = ({ children }: PropsWithChildren) => {
   return (
     <main className="h-svh flex-1 bg-zinc-100">
       <AdminNavbar />
-      <div className="p-4 overflow-y-auto">
-        {children}
-      </div>
+      <div className="p-4 overflow-y-auto">{children}</div>
     </main>
   );
 };
