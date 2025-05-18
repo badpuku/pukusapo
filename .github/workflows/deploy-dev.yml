@@ -11,12 +11,15 @@ jobs:
     name: Build and Deploy
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.18.0"
+          cache: "npm"
       - name: Build
         run: |
           npm ci
           npm run build
-      - name: Wait for build to complete
-        run: echo "Build completed"
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
