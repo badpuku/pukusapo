@@ -4,6 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
+    "prebuild": "npm run gen:icons",
     "build": "react-router build",
     "deploy": "npm run build && wrangler deploy",
     "dev": "react-router dev",
