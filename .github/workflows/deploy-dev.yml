@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - deployment/development
-      - fix/#98_cloudflare-deploy
 
 jobs:
   deploy:
