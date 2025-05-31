@@ -17,10 +17,12 @@ jobs:
         with:
           node-version: "20.18.0"
           cache: "npm"
+      - name: Install
+        run: npm ci
       - name: Build
-        run: |
-          npm ci
-          npm run build
+        run: npm run build
+        env:
+          CLOUDFLARE_ENV: development
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
