@@ -3,11 +3,26 @@
 	"name": "pukusapo",
 	"main": "./workers/app.ts",
 	"compatibility_date": "2025-02-14",
+	"workers_dev": false,
+	"preview_urls": false,
 	"compatibility_flags": [
 		"nodejs_compat"
 	],
+	"route": {
+    "pattern": "sapo.badpuku.com",
+		"custom_domain": true
+  },
 	"observability": {
 		"enabled": true
 	},
-  "upload_source_maps": true
+  "upload_source_maps": true,
+	"env": {
+    "development": {
+      "name": "pukusapo-dev",
+      "route": {
+        "pattern": "sapo-dev.badpuku.com",
+				"custom_domain": true
+      },
+    }
+	}
 }

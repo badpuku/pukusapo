@@ -7,6 +7,7 @@
     "prebuild": "npm run gen:icons",
     "build": "react-router build",
     "deploy": "npm run build && wrangler deploy",
+    "deploy:dev": "CLOUDFLARE_ENV=development npm run build && wrangler deploy",
     "dev": "react-router dev",
     "gen:icons": "svgr -d app/components/icons public/icons",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
