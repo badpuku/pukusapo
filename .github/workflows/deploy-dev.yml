@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - deployment/development
+      - fix/#100_dev-500error
 
 jobs:
   deploy:

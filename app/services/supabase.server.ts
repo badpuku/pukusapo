@@ -19,6 +19,8 @@ import type { AppLoadContext } from "react-router";
  */
 export const supabaseClient = (request: Request, context: AppLoadContext) => {
   const headers = new Headers();
+  console.log(context.cloudflare.env.SUPABASE_URL);
+  console.log(context.cloudflare.env.SUPABASE_ANON_KEY);
 
   const supabase = createServerClient(
     context.cloudflare.env.SUPABASE_URL!,
