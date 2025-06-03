@@ -16,6 +16,9 @@
 		"enabled": true
 	},
   "upload_source_maps": true,
+	"vars": {
+		"VITE_CLERK_PUBLISHABLE_KEY": "pk_test_d2VsbC1wdXAtNzYuY2xlcmsuYWNjb3VudHMuZGV2JA"
+	},
 	"env": {
     "development": {
       "name": "pukusapo-dev",
@@ -24,5 +27,5 @@
 				"custom_domain": true
       },
     }
-	}
+	},
 }
