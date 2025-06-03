@@ -17,7 +17,7 @@
 	},
   "upload_source_maps": true,
 	"vars": {
-		"VITE_CLERK_PUBLISHABLE_KEY": "pk_test_d2VsbC1wdXAtNzYuY2xlcmsuYWNjb3VudHMuZGV2JA"
+		"VITE_CLERK_PUBLISHABLE_KEY": "pk_test_d2VsbC1wdXAtNzYuY2xlcmsuYWNjb3VudHMuZGV2JA",
 	},
 	"env": {
     "development": {
@@ -26,6 +26,9 @@
         "pattern": "sapo-dev.badpuku.com",
 				"custom_domain": true
       },
+			"vars": {
+				"VITE_CLERK_PUBLISHABLE_KEY": "pk_test_ZXRlcm5hbC1jaGlja2VuLTQxLmNsZXJrLmFjY291bnRzLmRldiQ"
+			}
     }
 	},
 }
