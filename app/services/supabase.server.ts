@@ -26,7 +26,10 @@ export const supabaseClient = (request: Request, context: AppLoadContext) => {
     {
       cookies: {
         getAll() {
-          return parseCookieHeader(request.headers.get("Cookie") ?? "");
+          return parseCookieHeader(request.headers.get("Cookie") ?? "") as {
+            name: string;
+            value: string;
+          }[];
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) =>
