@@ -1,0 +1,4 @@
+{
+  "// NOTE1": " No routes matched location /.well-known/appspecific/com.chrome.devtools.json を解消するためのファイル",
+  "// NOTE2": " https://github.com/remix-run/react-router/issues/13516#issuecomment-2849834127"
+}
