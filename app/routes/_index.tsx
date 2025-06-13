@@ -1,7 +1,14 @@
-import { type LoaderFunctionArgs, type MetaFunction } from "react-router";
-import { Form, Link, useLoaderData } from "react-router";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/react-router";
+import { type MetaFunction, useLoaderData } from "react-router";
 
 import { supabaseClient } from "~/services/supabase.server";
+
+import type { Route } from "./+types/_index";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,29 +17,46 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ context, request }: LoaderFunctionArgs) => {
-  const { supabase } = supabaseClient(request, context);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export const loader = async ({ context, request }: Route.LoaderArgs) => {
+  const supabase = supabaseClient(request, context);
+  // const { user } = await getAuthenticatedUser(request, context);
 
-  return { user };
+  return {
+    //user,
+    supabase: !!supabase, // Supabaseクライアントが存在するかどうかのみ返す
+  };
 };
 
 export default function Index() {
-  const { user } = useLoaderData<typeof loader>();
+  const { supabase } = useLoaderData<typeof loader>();
+  console.log("supabase", supabase);
 
   return (
     <>
       <h1>トップページ</h1>
-      {user && <p>Welcome, {user.id}</p>}
-      <Link to={"/login"}>ログインページへ</Link>
-      <Form action="/auth/signout" method="post">
-        <button type="submit">ログアウト</button>
-      </Form>
-      {/* <div>
-        <Button>Click me</Button>
-      </div> */}
+
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
+
+      {/* 環境表示 */}
+      <div className="mb-4 p-2 bg-gray-100 rounded">
+        <p className="text-sm">Supabase接続: {supabase ? "✅" : "❌"}</p>
+      </div>
+
+      {/* ユーザー情報表示 */}
+      {/* {user ? (
+        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded">
+          <p className="text-green-800">ログイン中: {user.id}</p>
+        </div>
+      ) : (
+        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
+          <p className="text-yellow-800">未ログイン</p>
+        </div>
+      )} */}
     </>
   );
 }
