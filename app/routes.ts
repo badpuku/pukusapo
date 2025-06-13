@@ -1,4 +1,8 @@
-import { type RouteConfig } from "@react-router/dev/routes";
-import { flatRoutes } from "@react-router/fs-routes";
+import { index, route, type RouteConfig } from "@react-router/dev/routes";
+// import { flatRoutes } from "@react-router/fs-routes";
 
-export default flatRoutes() satisfies RouteConfig;
+export default [
+  index("./routes/_index.tsx"),
+  route("api/webhooks/clerk/user", "./routes/api/webhooks/clerk/user/route.ts"),
+  // ...(await flatRoutes()),
+] satisfies RouteConfig;
