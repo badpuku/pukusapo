@@ -8,7 +8,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 const isStorybook = process.argv[1]?.includes("storybook");
 
-config({ path: path.resolve(process.cwd(), "supabase/.env") });
+// .dev.varsファイルを読み込む
+config({ path: path.resolve(process.cwd(), ".dev.vars") });
 
 export default defineConfig(({ mode }) => ({
   plugins: [
@@ -26,9 +27,9 @@ export default defineConfig(({ mode }) => ({
   },
   server: {
     port: 3000,
-    // NOTE: ローカルで開発する場合は、Clerkのドメインを許可する
+    // NOTE: ローカルで開発する場合は、ngrokのドメインを許可する
     ...(mode === "development" && {
-      allowedHosts: [process.env.CLERK_DOMAIN || ""],
+      allowedHosts: [process.env.ALLOWED_HOSTS || ""],
     }),
   },
 }));
