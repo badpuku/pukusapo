@@ -4,9 +4,10 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/react-router";
+import { getAuth } from "@clerk/react-router/ssr.server";
 import { type MetaFunction, useLoaderData } from "react-router";
 
-import { supabaseClient } from "~/services/supabase.server";
+import { createServerSupabaseClient } from "~/services/supabase.server";
 
 import type { Route } from "./+types/_index";
 
@@ -18,22 +19,41 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async ({ context, request }: Route.LoaderArgs) => {
-  const supabase = supabaseClient(request, context);
-  // const { user } = await getAuthenticatedUser(request, context);
+  const supabase = createServerSupabaseClient(request, context);
+  const auth = await getAuth({ request, context });
+
+  // Supabaseの接続状況を確認
+  let supabaseStatus = false;
+  try {
+    // 簡単なクエリでSupabaseの接続を確認
+    const { error } = await supabase
+      .from("profiles")
+      .select("count", { count: "exact", head: true });
+    supabaseStatus = !error;
+  } catch (err) {
+    console.error("Supabase connection check failed:", err);
+    supabaseStatus = false;
+  }
 
   return {
-    //user,
-    supabase: !!supabase, // Supabaseクライアントが存在するかどうかのみ返す
+    supabaseConnected: supabaseStatus, // 接続状況のみを返す
+    auth,
   };
 };
 
 export default function Index() {
-  const { supabase } = useLoaderData<typeof loader>();
-  console.log("supabase", supabase);
+  const { supabaseConnected, auth } = useLoaderData<typeof loader>();
+
+  console.log("supabaseConnected", supabaseConnected);
+  console.log("auth", auth);
 
   return (
     <>
       <h1>トップページ</h1>
+      <p>Supabase接続状況</p>
+      <p>{supabaseConnected ? "✅ 接続成功" : "❌ 接続失敗"}</p>
+      <p>auth</p>
+      <pre>{JSON.stringify(auth, null, 2)}</pre>
 
       <SignedOut>
         <SignInButton />
@@ -44,7 +64,9 @@ export default function Index() {
 
       {/* 環境表示 */}
       <div className="mb-4 p-2 bg-gray-100 rounded">
-        <p className="text-sm">Supabase接続: {supabase ? "✅" : "❌"}</p>
+        <p className="text-sm">
+          Supabase接続: {supabaseConnected ? "✅" : "❌"}
+        </p>
       </div>
 
       {/* ユーザー情報表示 */}
