@@ -19,7 +19,7 @@ module.exports = {
     commonjs: true,
     es6: true,
   },
-  ignorePatterns: ["!**/.server", "!**/.client"],
+  ignorePatterns: ["!**/.server", "!**/.client", "supabase/functions/**"],
 
   // Base config
   // NOTE: prettier は他の設定の上書きを行うために、必ず最後に配置する。
@@ -64,7 +64,7 @@ module.exports = {
           },
           typescript: {
             alwaysTryTypes: true,
-            project: "./tsconfig.cloudflare.json"
+            project: "./tsconfig.cloudflare.json",
           },
         },
       },
