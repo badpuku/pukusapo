@@ -142,12 +142,12 @@ npm run db:push
 | テスト   | Supabase の管理画面   |
 | ローカル | ./supabase/.env.local |
 
-| 変数名                                | 説明                                               | 取得方法                                                       |
-| ------------------------------------- | -------------------------------------------------- | -------------------------------------------------------------- |
-| `CLERK_DOMAIN`                        | Clerkのドメイン名（カスタムドメイン使用時）        | Clerk Dashboard → Configure → Domains                          |
-| `CLERK_WEBHOOK_SECRET`                | Clerk Webhook検証用のシークレット                  | Clerk Dashboard → Webhooks → Add Endpoint → Signing Secret     |
-| `FUNCTIONS_SUPABASE_URL`              | Edge Functions用のSupabaseプロジェクトURL          | Supabase Dashboard → Settings → API Keys → Project URL         |
-| `FUNCTIONS_SUPABASE_SERVICE_ROLE_KEY` | Edge Functions用のサービスロールキー（管理者権限） | Supabase Dashboard → Settings → API Keys → service_role secret |
+| 変数名                                | 説明                                                  | 取得方法                                                       |
+| ------------------------------------- | --------------------------------------------------- | -------------------------------------------------------------- |
+| `CLERK_DOMAIN`                        | Clerkのドメイン名（カスタムドメイン使用時）                | Clerk Dashboard → Configure → Developers > Domains                          |
+| `CLERK_WEBHOOK_SECRET`                | Clerk Webhook検証用のシークレット                       | Clerk Dashboard → Webhooks → Add Endpoint → Signing Secret     |
+| `FUNCTIONS_SUPABASE_URL`              | Supabase Edge Functions 用の Supabase URL            | Supabase Dashboard → Settings → API Keys → Project URL         |
+| `FUNCTIONS_SUPABASE_SERVICE_ROLE_KEY` | Supabase Edge Functions 用のサービスロールキー（管理者権限） | Supabase Dashboard → Settings → API Keys → service_role secret |
 
 ## 🔗 参考リンク
 
