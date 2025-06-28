@@ -20,27 +20,16 @@ pukusapo は、フォーム作成・管理システムです。
 # 依存関係のインストール
 npm ci
 
-# 環境変数ファイルの作成
-cp .env.example .env.local
+# Cloudflare用の環境変数ファイルを作成
+cp .dev.vars.example .dev.vars
+
+# Supabase用の環境変数ファイルを作成
+cp supabase/.env.local.example supabase/.env.local
 ```
 
 ### 2. 環境変数の設定
 
-`.env.local` ファイルに以下の値を設定してください：
-
-```env
-# Clerk設定
-CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-CLERK_SECRET_KEY=your_clerk_secret_key
-
-# Supabase設定
-DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
-SUPABASE_URL=http://127.0.0.1:54321
-SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# ngrok設定
-NGROK_URL=your-url.ngrok-free.app
-```
+環境変数について通り用意するか、sena-m09 からもらってください。
 
 ### 3. データベースの起動
 
@@ -83,6 +72,8 @@ npm run start
 
 ### データベース操作
 
+今は使ってない
+
 ```bash
 # マイグレーション生成（カスタム名）
 npm run db:generate:custom
@@ -107,7 +98,7 @@ npm run db:push
 
 1. [ngrok](https://ngrok.com/) でアカウント作成
 2. authtoken を設定: `ngrok config add-authtoken YOUR_TOKEN`
-3. 固定URLを取得（有料プランの場合）
+3. 固定URLを取得
 
 ## 環境変数について
 
