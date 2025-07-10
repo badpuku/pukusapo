@@ -5,45 +5,12 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 // import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import { verifyWebhook } from "npm:@clerk/backend/webhooks";
+import { UserJSON } from "npm:@clerk/backend";
 import { createClient } from "npm:@supabase/supabase-js";
 
-interface WebhookEvent {
-  data: {
-    id: string;
-    first_name?: string;
-    last_name?: string;
-    name?: string;
-    image_url?: string;
-    email_addresses?: Array<{
-      email_address: string;
-      verification: {
-        status: string;
-      };
-    }>;
-    primary_email_address_id?: string;
-    public_metadata?: Record<string, unknown>;
-    unsafe_metadata?: Record<string, unknown>;
-    created_at: number;
-    updated_at: number;
-    // Organization data
-    organization?: {
-      id: string;
-      name: string;
-      created_at: number;
-      updated_at: number;
-    };
-    // Public user data for org membership
-    public_user_data?: {
-      user_id: string;
-      first_name?: string;
-      last_name?: string;
-      image_url?: string;
-      email_address?: string;
-    };
-  };
-  object: "event";
-  type: string;
-}
+const getFullName = (data: UserJSON) => {
+  return [data.first_name, data.last_name].filter(Boolean).join(" ") || data.id;
+};
 
 Deno.serve(async (req) => {
   console.log("🚀 Webhook received:", req.method, req.url);
@@ -51,16 +18,13 @@ Deno.serve(async (req) => {
   try {
     // Verify webhook signature
     const webhookSecret = Deno.env.get("CLERK_WEBHOOK_SECRET");
-    console.log("🔐 Webhook secret exists:", !!webhookSecret);
 
     if (!webhookSecret) {
       console.error("❌ Webhook secret not configured");
       return new Response("Webhook secret not configured", { status: 500 });
     }
 
-    console.log("🔍 Verifying webhook signature...");
     const event = await verifyWebhook(req, { signingSecret: webhookSecret });
-    console.log("✅ Webhook signature verified, event type:", event.type);
 
     // Create supabase client
     const supabaseUrl =
@@ -70,10 +34,6 @@ Deno.serve(async (req) => {
       "FUNCTIONS_SUPABASE_SERVICE_ROLE_KEY",
     );
 
-    console.log("🔗 Supabase URL:", supabaseUrl);
-    console.log("🔑 Service key exists:", !!supabaseServiceKey);
-    console.log("🔑 Service key length:", supabaseServiceKey?.length || 0);
-
     if (!supabaseUrl || !supabaseServiceKey) {
       console.error("❌ Supabase credentials not configured");
       return new Response("Supabase credentials not configured", {
@@ -81,35 +41,54 @@ Deno.serve(async (req) => {
       });
     }
 
-    console.log("🏗️ Creating Supabase client...");
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    console.log("✅ Supabase client created");
 
     switch (event.type) {
       case "user.created": {
-        console.log(
-          "👤 Processing user.created event for user:",
-          event.data.id,
-        );
+        // デフォルトロール（user）のIDを取得
+        const { data: defaultRole, error: roleError } = await supabase
+          .from("roles")
+          .select("id")
+          .eq("code", "user")
+          .eq("is_active", true)
+          .single();
 
-        // Handle user creation - RLSをバイパスするためにService Role権限を明示的に使用
+        if (roleError || !defaultRole) {
+          console.error("❌ Error getting default role:", roleError);
+          return new Response(
+            JSON.stringify({ error: "Failed to get default role" }),
+            {
+              status: 500,
+            },
+          );
+        }
+
+        // フルネームを構築
+        const fullName = getFullName(event.data);
+
+        // Handle user creation - RLSをバイパスするためにService Role権限を明示cd的に使用
         const { error } = await supabase.from("profiles").insert([
           {
             user_id: event.data.id,
-            name: event.data.first_name + " " + event.data.last_name,
+            role_id: defaultRole.id,
+            full_name: fullName,
+            avatar_url: event.data.image_url || null,
             created_at: new Date(event.data.created_at).toISOString(),
             updated_at: new Date(event.data.updated_at).toISOString(),
           },
         ]);
 
         if (error) {
-          console.error("❌ Error creating user:", error);
+          console.error("❌ Error creating user profile:", error);
           return new Response(JSON.stringify({ error: error.message }), {
             status: 500,
           });
         }
 
-        console.log("✅ User created successfully");
+        console.log(
+          "✅ User profile created successfully with role:",
+          defaultRole.id,
+        );
         return new Response(JSON.stringify({ success: true }), { status: 200 });
       }
 
