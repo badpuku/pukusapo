@@ -66,13 +66,15 @@ Deno.serve(async (req) => {
         // フルネームを構築
         const fullName = getFullName(event.data);
 
-        // Handle user creation - RLSをバイパスするためにService Role権限を明示cd的に使用
+        // Handle user creation - RLSをバイパスするためにService Role権限を明示的に使用
         const { error } = await supabase.from("profiles").insert([
           {
             user_id: event.data.id,
             role_id: defaultRole.id,
+            username: event.data.username || null,
             full_name: fullName,
             avatar_url: event.data.image_url || null,
+            is_active: true,
             created_at: new Date(event.data.created_at).toISOString(),
             updated_at: new Date(event.data.updated_at).toISOString(),
           },
