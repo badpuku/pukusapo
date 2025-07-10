@@ -1,12 +1,11 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import * as schema from "./schema";
+import * as schema from "~/db/schema";
 
 export type DatabaseClient = ReturnType<typeof createDatabaseClient>;
 
 export const createDatabaseClient = (env: { SUPABASE_URL: string }) => {
-  // コネクションプールの設定
   const client = postgres(env.SUPABASE_URL, {
     prepare: false,
     max: 10, // 最大接続数
