@@ -5,10 +5,9 @@ import {
   text,
   timestamp,
   uuid,
-  varchar,
 } from "drizzle-orm/pg-core";
 
-import { roles } from "./roles";
+import { roles } from "~/db/schema/roles";
 
 /**
  * ユーザープロファイル情報
