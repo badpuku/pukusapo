@@ -7,9 +7,7 @@ import {
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { type MetaFunction, useLoaderData } from "react-router";
 
-import { createDatabaseClient } from "~/db/client.server";
-import { getProfileWithRoleByUserId } from "~/db/queries/profiles";
-import { profiles } from "~/db/schema";
+import { createServerSupabaseClient } from "~/services/supabase.server";
 
 import type { Route } from "./+types/_index";
 
@@ -21,7 +19,7 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async ({ context, request }: Route.LoaderArgs) => {
-  const db = createDatabaseClient(context.cloudflare.env);
+  const supabase = createServerSupabaseClient(request, context);
   const auth = await getAuth({ request, context });
 
   // Supabaseの接続状況を確認
@@ -30,18 +28,26 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
 
   try {
     // 接続確認
-    await db.select().from(profiles).limit(1);
-    supabaseStatus = true;
+    const { error } = await supabase.from("profiles").select("*").limit(1);
+    supabaseStatus = !error;
 
     // ログイン中の場合はプロファイル情報を取得
     if (auth.userId) {
-      const profileResult = await getProfileWithRoleByUserId(db)(auth.userId);
-      if (profileResult.length > 0) {
-        userProfile = profileResult[0];
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select(`
+          *,
+          roles (*)
+        `)
+        .eq("user_id", auth.userId)
+        .single();
+
+      if (!profileError && profileData) {
+        userProfile = profileData;
       }
     }
   } catch (err) {
-    console.error("Database operation failed:", err);
+    console.error("Supabase operation failed:", err);
     supabaseStatus = false;
   }
 
@@ -80,12 +86,12 @@ export default function Index() {
                 <p className="text-green-800 font-semibold">ログイン中</p>
                 {userProfile && (
                   <div className="mt-2 text-sm text-green-700">
-                    <p>名前: {userProfile.profile.fullName || "未設定"}</p>
+                    <p>名前: {userProfile.full_name || "未設定"}</p>
                     <p>
-                      ユーザー名: {userProfile.profile.username || "未設定"}
+                      ユーザー名: {userProfile.username || "未設定"}
                     </p>
                     <p>
-                      ロール: {userProfile.role.name} ({userProfile.role.code})
+                      ロール: {userProfile.roles?.name} ({userProfile.roles?.code})
                     </p>
                   </div>
                 )}
