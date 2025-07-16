@@ -1,4 +1,4 @@
-import { UserJSON } from "npm:@clerk/backend";
+import { UserJSON, DeletedObjectJSON } from "npm:@clerk/backend";
 import { SupabaseClient } from "npm:@supabase/supabase-js";
 import { ProfileData } from "./types.ts";
 import { getFullName } from "./utils.ts";
@@ -92,6 +92,42 @@ export const handleUserUpdated = async (
     return new Response(JSON.stringify({ user }), { status: 200 });
   } catch (error) {
     console.error("Error in handleUserUpdated:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      status: 500,
+    });
+  }
+};
+
+export const handleUserDeleted = async (
+  data: DeletedObjectJSON,
+  supabase: SupabaseClient,
+): Promise<Response> => {
+  try {
+    // ユーザーを物理削除ではなく論理削除（is_active = false）で処理
+    const { data: user, error } = await supabase
+      .from("profiles")
+      .update({
+        is_active: false,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", data.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error deactivating user profile:", error);
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+      });
+    }
+
+    console.log("User profile deactivated:", user);
+    return new Response(JSON.stringify({ success: true, user }), {
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Error in handleUserDeleted:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,

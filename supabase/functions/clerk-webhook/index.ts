@@ -13,6 +13,7 @@ import {
 import {
   handleUserCreated,
   handleUserUpdated,
+  handleUserDeleted,
   handleUnknownEvent,
 } from "./handlers.ts";
 import { handleWebhookError } from "./error-handler.ts";
@@ -36,6 +37,10 @@ Deno.serve(async (req) => {
 
       case "user.updated": {
         return await handleUserUpdated(event.data, supabase);
+      }
+
+      case "user.deleted": {
+        return await handleUserDeleted(event.data, supabase);
       }
 
       default: {
