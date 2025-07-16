@@ -50,10 +50,6 @@ export const handleUserCreated = async (
       });
     }
 
-    console.log(
-      "✅ User profile created successfully with role:",
-      defaultRole.id
-    );
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
     console.error("Error in handleUserCreated:", error);
