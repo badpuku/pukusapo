@@ -78,7 +78,7 @@ export const handleUserUpdated = async (
         avatar_url: data.image_url,
         updated_at: new Date(data.updated_at).toISOString(),
       })
-      .eq("id", data.id)
+      .eq("user_id", data.id)
       .select()
       .single();
 
