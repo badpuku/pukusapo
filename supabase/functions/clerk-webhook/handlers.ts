@@ -1,7 +1,7 @@
 import { UserJSON, DeletedObjectJSON } from "npm:@clerk/backend";
 import { SupabaseClient } from "npm:@supabase/supabase-js";
 import { ProfileData } from "./types.ts";
-import { getFullName } from "./utils.ts";
+import { getFullName, getSafeUsername } from "./utils.ts";
 
 export const handleUserCreated = async (
   data: UserJSON,
@@ -31,7 +31,7 @@ export const handleUserCreated = async (
     > = {
       user_id: data.id,
       role_id: defaultRole.id,
-      username: data.id,
+      username: getSafeUsername(data.username),
       full_name: getFullName(data),
       avatar_url: data.image_url,
     };
@@ -73,7 +73,7 @@ export const handleUserUpdated = async (
     const { data: user, error } = await supabase
       .from("profiles")
       .update({
-        username: data.username,
+        username: getSafeUsername(data.username),
         full_name: getFullName(data),
         avatar_url: data.image_url,
         updated_at: new Date(data.updated_at).toISOString(),

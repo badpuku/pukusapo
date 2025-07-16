@@ -112,7 +112,7 @@ CREATE TABLE public.profiles (
     FOREIGN KEY (role_id) REFERENCES public.roles(id) 
     ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT ck_profiles_user_id_not_empty CHECK (length(trim(user_id)) > 0),
-  CONSTRAINT ck_profiles_username_format CHECK (username IS NULL OR username ~ '^[a-zA-Z0-9_]{3,30}$'),
+  CONSTRAINT ck_profiles_username_format CHECK (username IS NULL OR username ~ '^[a-zA-Z0-9_-]{3,30}$'),
   CONSTRAINT ck_profiles_avatar_url_format CHECK (avatar_url IS NULL OR avatar_url ~ '^https?://')
 );
 
@@ -120,6 +120,7 @@ CREATE TABLE public.profiles (
 COMMENT ON TABLE public.profiles IS 'ユーザーのプロファイル情報とロール割り当てを管理するテーブル';
 COMMENT ON COLUMN public.profiles.user_id IS 'Clerk認証システムのユーザーID';
 COMMENT ON COLUMN public.profiles.role_id IS '割り当てられたロールのID';
+COMMENT ON COLUMN public.profiles.username IS 'ユーザー名（英数字、ハイフン、アンダースコアのみ、3文字以上30文字以下）';
 
 
 
