@@ -180,90 +180,116 @@ ALTER TABLE public.permissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.role_permissions ENABLE ROW LEVEL SECURITY;
 
--- RLSポリシー定義
+-- ----------------------------------------------------------------------------
+-- セキュリティ定義者関数（無限再帰を避けるため）
+-- ----------------------------------------------------------------------------
+
+-- 現在のユーザーIDを取得する関数（Clerk公式統合方式）
+CREATE OR REPLACE FUNCTION public.get_current_user_id()
+RETURNS text
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+  SELECT auth.jwt()->>'sub';
+$$;
+
+-- 現在のユーザーがadminかチェックする関数
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles p
+    JOIN public.roles r ON p.role_id = r.id
+    WHERE p.user_id = public.get_current_user_id()
+    AND r.code = 'admin'
+    AND p.is_active = true
+    AND r.is_active = true
+  );
+$$;
+
+-- 現在のユーザーの権限レベルを取得する関数
+CREATE OR REPLACE FUNCTION public.get_user_permission_level()
+RETURNS integer
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+  SELECT COALESCE(r.permission_level, 0)
+  FROM public.profiles p
+  JOIN public.roles r ON p.role_id = r.id
+  WHERE p.user_id = public.get_current_user_id()
+  AND p.is_active = true
+  AND r.is_active = true;
+$$;
+
+-- ----------------------------------------------------------------------------
+-- RLSポリシー定義（セキュリティ定義者関数を使用）
+-- ----------------------------------------------------------------------------
+
 -- ロールテーブル：全員閲覧可能、管理者のみ編集可能
 CREATE POLICY "roles_select_policy" ON public.roles
   FOR SELECT USING (is_active = true);
 
 CREATE POLICY "roles_insert_policy" ON public.roles
-  FOR INSERT WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      JOIN public.roles r ON p.role_id = r.id
-      WHERE p.user_id = auth.uid()::text 
-      AND r.code = 'admin'
-      AND p.is_active = true
-      AND r.is_active = true
-    )
-  );
+  FOR INSERT WITH CHECK (public.is_admin());
 
 CREATE POLICY "roles_update_policy" ON public.roles
-  FOR UPDATE USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      JOIN public.roles r ON p.role_id = r.id
-      WHERE p.user_id = auth.uid()::text 
-      AND r.code = 'admin'
-      AND p.is_active = true
-      AND r.is_active = true
-    )
-  );
+  FOR UPDATE USING (public.is_admin());
+
+CREATE POLICY "roles_delete_policy" ON public.roles
+  FOR DELETE USING (public.is_admin());
 
 -- 権限テーブル：全員閲覧可能、管理者のみ編集可能
 CREATE POLICY "permissions_select_policy" ON public.permissions
   FOR SELECT USING (is_active = true);
 
-CREATE POLICY "permissions_modify_policy" ON public.permissions
-  FOR ALL WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      JOIN public.roles r ON p.role_id = r.id
-      WHERE p.user_id = auth.uid()::text 
-      AND r.code = 'admin'
-      AND p.is_active = true
-      AND r.is_active = true
-    )
-  );
+CREATE POLICY "permissions_insert_policy" ON public.permissions
+  FOR INSERT WITH CHECK (public.is_admin());
 
--- プロファイルテーブル：自分のプロファイルまたは管理者権限
+CREATE POLICY "permissions_update_policy" ON public.permissions
+  FOR UPDATE USING (public.is_admin());
+
+CREATE POLICY "permissions_delete_policy" ON public.permissions
+  FOR DELETE USING (public.is_admin());
+
+-- プロファイルテーブル：自分のプロファイルまたは管理者・モデレーター権限
 CREATE POLICY "profiles_select_policy" ON public.profiles
   FOR SELECT USING (
-    user_id = auth.uid()::text OR
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      JOIN public.roles r ON p.role_id = r.id
-      WHERE p.user_id = auth.uid()::text 
-      AND r.permission_level >= 10
-      AND p.is_active = true
-      AND r.is_active = true
-    )
+    user_id = public.get_current_user_id() OR
+    public.get_user_permission_level() >= 5
+  );
+
+CREATE POLICY "profiles_insert_policy" ON public.profiles
+  FOR INSERT WITH CHECK (
+    user_id = public.get_current_user_id() OR
+    public.is_admin()
   );
 
 CREATE POLICY "profiles_update_policy" ON public.profiles
   FOR UPDATE USING (
-    user_id = auth.uid()::text OR
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      JOIN public.roles r ON p.role_id = r.id
-      WHERE p.user_id = auth.uid()::text 
-      AND r.permission_level >= 10
-      AND p.is_active = true
-      AND r.is_active = true
-    )
+    user_id = public.get_current_user_id() OR
+    public.get_user_permission_level() >= 5
   );
 
+CREATE POLICY "profiles_delete_policy" ON public.profiles
+  FOR DELETE USING (public.is_admin());
+
 -- ロール権限関連テーブル：管理者のみアクセス可能
-CREATE POLICY "role_permissions_policy" ON public.role_permissions
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      JOIN public.roles r ON p.role_id = r.id
-      WHERE p.user_id = auth.uid()::text 
-      AND r.code = 'admin'
-      AND p.is_active = true
-      AND r.is_active = true
-    )
-  );
+CREATE POLICY "role_permissions_select_policy" ON public.role_permissions
+  FOR SELECT USING (public.is_admin());
+
+CREATE POLICY "role_permissions_insert_policy" ON public.role_permissions
+  FOR INSERT WITH CHECK (public.is_admin());
+
+CREATE POLICY "role_permissions_update_policy" ON public.role_permissions
+  FOR UPDATE USING (public.is_admin());
+
+CREATE POLICY "role_permissions_delete_policy" ON public.role_permissions
+  FOR DELETE USING (public.is_admin());
 
 -- ----------------------------------------------------------------------------
 -- 8. マスタデータ初期投入
