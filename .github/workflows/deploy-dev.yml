@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - deployment/development
+      - feature/#101_add-clerk
 
 jobs:
   deploy:
