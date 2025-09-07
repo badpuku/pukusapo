@@ -24,6 +24,7 @@
     "db:start": "supabase start && supabase functions serve --env-file ./supabase/.env.local",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
+    "db:secrets:dev": "npx supabase secrets set --env-file ./supabase/.env.dev",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

@@ -133,12 +133,40 @@ npm run db:push
 | テスト   | Supabase の管理画面   |
 | ローカル | ./supabase/.env.local |
 
-| 変数名                                | 説明                                                  | 取得方法                                                       |
-| ------------------------------------- | --------------------------------------------------- | -------------------------------------------------------------- |
-| `CLERK_DOMAIN`                        | Clerkのドメイン名（カスタムドメイン使用時）                | Clerk Dashboard → Configure → Developers > Domains                          |
-| `CLERK_WEBHOOK_SECRET`                | Clerk Webhook検証用のシークレット                       | Clerk Dashboard → Webhooks → Add Endpoint → Signing Secret     |
-| `FUNCTIONS_SUPABASE_URL`              | Supabase Edge Functions 用の Supabase URL            | Supabase Dashboard → Settings → API Keys → Project URL         |
+| 変数名                                | 説明                                                         | 取得方法                                                       |
+| ------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
+| `CLERK_DOMAIN`                        | Clerkのドメイン名（カスタムドメイン使用時）                  | Clerk Dashboard → Configure → Developers > Domains             |
+| `CLERK_WEBHOOK_SECRET`                | Clerk Webhook検証用のシークレット                            | Clerk Dashboard → Webhooks → Add Endpoint → Signing Secret     |
+| `FUNCTIONS_SUPABASE_URL`              | Supabase Edge Functions 用の Supabase URL                    | Supabase Dashboard → Settings → API Keys → Project URL         |
 | `FUNCTIONS_SUPABASE_SERVICE_ROLE_KEY` | Supabase Edge Functions 用のサービスロールキー（管理者権限） | Supabase Dashboard → Settings → API Keys → service_role secret |
+
+## Package.json の scripts について
+
+| Script 名            | 環境     | 説明                                        |
+| -------------------- | -------- | ------------------------------------------- |
+| `prebuild`           | 共通     | アイコンを生成してからビルドの前処理を実行  |
+| `build`              | 共通     | React Routerアプリケーションをビルド        |
+| `deploy`             | 本番     | ビルド後にWranglerでCloudflareにデプロイ    |
+| `deploy:dev`         | 開発     | 開発環境用の設定でビルド・デプロイ          |
+| `dev`                | ローカル | React Router開発サーバーを起動              |
+| `gen:icons`          | 共通     | public/iconsからReactコンポーネントを生成   |
+| `lint`               | 共通     | ESLintでコードの静的解析を実行              |
+| `start`              | ローカル | Wrangler開発サーバーを起動                  |
+| `format`             | 共通     | コードフォーマットを実行（lint + prettier） |
+| `format:lint`        | 共通     | ESLintで自動修正を実行                      |
+| `format:code`        | 共通     | Prettierでコードフォーマットを実行          |
+| `typecheck`          | 共通     | TypeScriptの型チェックを実行                |
+| `typegen`            | 共通     | Wrangler・React Routerの型定義を生成        |
+| `db:generate`        | 共通     | Drizzleでマイグレーションファイルを生成     |
+| `db:generate:custom` | 共通     | カスタム名でマイグレーションファイルを生成  |
+| `db:migrate`         | 共通     | Supabaseでマイグレーションを実行            |
+| `db:seed`            | ローカル | データベースにシードデータを投入            |
+| `db:start`           | ローカル | Supabaseローカル環境とEdge Functionsを起動  |
+| `db:stop`            | ローカル | Supabaseローカル環境を停止                  |
+| `db:reset`           | ローカル | Supabaseデータベースをリセット              |
+| `db:secrets:dev`     | 開発     | Supabase開発環境にシークレットを設定        |
+| `storybook`          | ローカル | Storybookの開発サーバーを起動               |
+| `build-storybook`    | 共通     | Storybookをビルド                           |
 
 ## 🔗 参考リンク
 
