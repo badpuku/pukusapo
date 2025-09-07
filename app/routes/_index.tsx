@@ -59,14 +59,20 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
     auth,
     userProfile,
     supabase,
+    error,
   };
 };
 
 export default function Index() {
-  const { supabaseConnected, auth, userProfile, supabase } =
+  const { supabaseConnected, auth, userProfile, supabase, error } =
     useLoaderData<typeof loader>();
 
-  console.log(supabase);
+  console.log("supabase", supabase);
+  console.log("error", error);
+  console.log("userProfile", userProfile);
+  console.log("auth", auth);
+  console.log("supabaseConnected", supabaseConnected);
+
 
   return (
     <div className="max-w-4xl mx-auto p-6">
