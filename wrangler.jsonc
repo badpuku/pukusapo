@@ -27,7 +27,7 @@
 				"custom_domain": true
       },
 			"vars": {
-				"VITE_CLERK_PUBLISHABLE_KEY": "pk_test_ZXRlcm5hbC1jaGlja2VuLTQxLmNsZXJrLmFjY291bnRzLmRldiQ",
+				"VITE_CLERK_PUBLISHABLE_KEY": "pk_test_d2VsbC1wdXAtNzYuY2xlcmsuYWNjb3VudHMuZGV2JA",
 				"SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFramVkZ3puZmxrcm5vd3VidmF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2OTM5MTMsImV4cCI6MjA2NDI2OTkxM30.-uGtfVoAW_B40LZ_fZ1rQqoQla1cwbsjCVZPHrLL424"
 			}
     }
