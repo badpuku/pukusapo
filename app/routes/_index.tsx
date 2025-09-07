@@ -27,9 +27,12 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
   let userProfile = null;
 
   try {
+    console.log(supabase);
     // 接続確認
     const { error } = await supabase.from("profiles").select("*").limit(1);
     supabaseStatus = !error;
+
+    console.log(error);
 
     // ログイン中の場合はプロファイル情報を取得
     if (auth.userId) {
