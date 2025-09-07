@@ -1,15 +1,4 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/react-router";
-import { getAuth } from "@clerk/react-router/ssr.server";
-import { type MetaFunction, useLoaderData } from "react-router";
-
-import { createServerSupabaseClient } from "~/services/supabase.server";
-
-import type { Route } from "./+types/_index";
+import { type MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => {
   return [
