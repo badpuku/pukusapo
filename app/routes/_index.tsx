@@ -25,6 +25,7 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
   // Supabaseの接続状況を確認
   let supabaseStatus = false;
   let userProfile = null;
+  let profileError = null;
 
   try {
     console.log(supabase);
@@ -32,7 +33,7 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
     const { error } = await supabase.from("profiles").select("*").limit(1);
     supabaseStatus = !error;
 
-    console.log(error);
+    profileError = error;
 
     // ログイン中の場合はプロファイル情報を取得
     if (auth.userId) {
@@ -59,7 +60,7 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
     auth,
     userProfile,
     supabase,
-    error,
+    error: profileError,
   };
 };
 
