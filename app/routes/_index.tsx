@@ -25,14 +25,15 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
   // Supabaseの接続状況を確認
   let supabaseStatus = false;
   let userProfile = null;
+  // TODO: 削除
   let profileError = null;
 
   try {
-    console.log(supabase);
     // 接続確認
     const { error } = await supabase.from("profiles").select("*").limit(1);
     supabaseStatus = !error;
 
+    // TODO: 削除
     profileError = error;
 
     // ログイン中の場合はプロファイル情報を取得
@@ -60,19 +61,17 @@ export const loader = async ({ context, request }: Route.LoaderArgs) => {
     auth,
     userProfile,
     supabase,
+    // TODO: 削除
     error: profileError,
   };
 };
 
 export default function Index() {
-  const { supabaseConnected, auth, userProfile, supabase, error } =
+  const { supabaseConnected, auth, userProfile, error } =
     useLoaderData<typeof loader>();
 
-  console.log("supabase", supabase);
+  // TODO: 削除
   console.log("error", error);
-  console.log("userProfile", userProfile);
-  console.log("auth", auth);
-  console.log("supabaseConnected", supabaseConnected);
 
 
   return (
