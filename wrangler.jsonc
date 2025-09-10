@@ -18,7 +18,7 @@
   "upload_source_maps": true,
 	"vars": {
 		"VITE_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuYXV0aC5iYWRwdWt1LmNvbSQ",
-		"SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFramVkZ3puZmxrcm5vd3VidmF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2OTM5MTMsImV4cCI6MjA2NDI2OTkxM30.-uGtfVoAW_B40LZ_fZ1rQqoQla1cwbsjCVZPHrLL424"
+		"SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4cXp4cXZvYnVrZ3p1cnFsYXBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1NTU2NDksImV4cCI6MjA2MzEzMTY0OX0.PURc3UkMqGtRoNzYAAJb1-tw15pgF3Tlim0oOmh7QXk"
 	},
 	"env": {
     "development": {
