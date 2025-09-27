@@ -18,9 +18,9 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ context, request }: Route.LoaderArgs) => {
-  const supabase = createServerSupabaseClient(request, context);
-  const auth = await getAuth({ request, context });
+export const loader = async (args: Route.LoaderArgs) => {
+  const supabase = createServerSupabaseClient(args);
+  const auth = await getAuth(args);
 
   // Supabaseの接続状況を確認
   let supabaseStatus = false;

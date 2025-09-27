@@ -1,17 +1,16 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { createClient } from "@supabase/supabase-js";
-import type { AppLoadContext } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 
 export const createServerSupabaseClient = (
-  request: Request,
-  context: AppLoadContext,
+  args: LoaderFunctionArgs,
 ) => {
   return createClient(
-    context.cloudflare.env.SUPABASE_URL!,
-    context.cloudflare.env.SUPABASE_ANON_KEY!,
+    args.context.cloudflare.env.SUPABASE_URL!,
+    args.context.cloudflare.env.SUPABASE_ANON_KEY!,
     {
       async accessToken() {
-        return (await getAuth({ request, context })).getToken();
+        return (await getAuth(args)).getToken();
       },
     },
   );
