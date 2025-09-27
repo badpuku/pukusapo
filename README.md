@@ -104,26 +104,54 @@ npm run db:push
 
 ### Cloudflare
 
-| 環境     | 設定場所                                                 |
-| -------- | -------------------------------------------------------- |
-| 本番     | cloudflare の管理画面, wrangler.jsonc                    |
-| テスト   | cloudflare の管理画面, wrangler.jsonc(env > development) |
-| ローカル | .dev.vars                                                |
+<table>
+  <tr>
+    <th>環境</th>
+    <th>Publish / Secret</th>
+    <th>設定場所</th>
+  </tr>
+  <tr>
+    <td rowspan="2">本番</td>
+    <td>Publish</td>
+    <td>wrangler.jsonc (`VITE_` 接頭辞の変数は .dev.vars)</td>
+  </tr>
+  <tr>
+    <td>Secret</td>
+    <td>Cloudflare の管理画面</td>
+  </tr>
+  <tr>
+    <td rowspan="2">テスト</td>
+    <td>Publish</td>
+    <td>wrangler.jsonc (env > development)</td>
+  </tr>
+  <tr>
+    <td>Secret</td>
+    <td>Cloudflare の管理画面</td>
+  </tr>
+  <tr>
+    <td rowspan="2">ローカル</td>
+    <td>Publish</td>
+    <td>.dev.vars.local</td>
+  </tr>
+  <tr>
+    <td>Secret</td>
+    <td>.dev.vars.local</td>
+  </tr>
+</table>
 
-| 変数名                         | 説明                                          | 取得方法                                                           |
-| ------------------------------ | --------------------------------------------- | ------------------------------------------------------------------ |
-| `APP_ENV`                      | 未使用                                        | -                                                                  |
-| `APP_VERSION`                  | 未使用                                        | -                                                                  |
-| `SESSION_SECRET`               | セッション暗号化用のシークレットキー          | ランダム文字列を生成                                               |
-| `SUPABASE_URL`                 | SupabaseプロジェクトのURL（本番環境）         | Supabase Dashboard → Settings → Data API → Project URL             |
-| `SUPABASE_ANON_KEY`            | Supabaseの匿名キー（本番環境）                | Supabase Dashboard → Settings → API Keys → anon public             |
-| `DATABASE_URL`                 | 削除して SUPABASE_URL に統合したい            | SUPABASE_URL と同じ                                                |
-| `CLOUDFLARE_API_TOKEN`         | Cloudflare API操作用のトークン                | Cloudflare Dashboard → My Profile → API Tokens → Create Token      |
-| `CLOUDFLARE_ACCOUNT_ID`        | CloudflareアカウントID                        | Cloudflare Dashboard → Workers & Pages → 右サイドバーの Account ID |
-| `CLERK_SECRET_KEY`             | Clerkの秘密キー（本番環境）                   | Clerk Dashboard → Configure → API Keys → Secret keys               |
-| `VITE_CLERK_PUBLISHABLE_KEY`   | Clerkの公開キー（フロントエンド用、本番環境） | Clerk Dashboard → Configure → API Keys → Publishable keys          |
-| `CLERK_WEBHOOK_SIGNING_SECRET` | Clerk Webhook署名検証用のシークレット         | Clerk Dashboard → Webhooks → Add Endpoint → Signing Secret         |
-| `ALLOWED_HOSTS`                | 許可するホスト名のリスト（セキュリティ用）    | ドメイン名を設定（例: your-domain.com）                            |
+| 変数名                         | Publish / Secret | 説明                                          | 取得方法                                                           |
+| ------------------------------ | --------------- | --------------------------------------------- | ------------------------------------------------------------------ |
+| `APP_ENV`                      | Publish         | 未使用                                        | -                                                                  |
+| `APP_VERSION`                  | Publish         | 未使用                                        | -                                                                  |
+| `SESSION_SECRET`               | Secret          | セッション暗号化用のシークレットキー               | ランダム文字列を生成                                                   |
+| `SUPABASE_URL`                 | Publish         | SupabaseプロジェクトのURL                       | Supabase Dashboard → Settings → Data API → Project URL             |
+| `SUPABASE_ANON_KEY`            | Secret          | Supabaseの匿名キー                             | Supabase Dashboard → Settings → API Keys → anon public             |
+| `CLOUDFLARE_API_TOKEN`         | Secret          | Cloudflare API操作用のトークン                  | Cloudflare Dashboard → My Profile → API Tokens → Create Token      |
+| `CLOUDFLARE_ACCOUNT_ID`        | Secret          | CloudflareアカウントID                         | Cloudflare Dashboard → Workers & Pages → 右サイドバーの Account ID |
+| `CLERK_SECRET_KEY`             | Publish         | Clerkの秘密キー                                | Clerk Dashboard → Configure → API Keys → Secret keys               |
+| `VITE_CLERK_PUBLISHABLE_KEY`   | Secret          | Clerkの公開キー                                | Clerk Dashboard → Configure → API Keys → Publishable keys          |
+| `CLERK_WEBHOOK_SIGNING_SECRET` | Secret          | Clerk Webhook署名検証用のシークレット             | Clerk Dashboard → Webhooks → Add Endpoint → Signing Secret         |
+| `ALLOWED_HOSTS`                | Publish         | 許可するホスト名のリスト（ローカル用）              | ngrok のドメイン名を設定（例: your-domain.ngrok-free.app）              |
 
 ### Supabase
 
