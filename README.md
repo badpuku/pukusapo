@@ -113,7 +113,7 @@ npm run db:push
   <tr>
     <td rowspan="2">本番</td>
     <td>Publish</td>
-    <td>wrangler.jsonc (`VITE_` 接頭辞の変数は .dev.vars)</td>
+    <td>wrangler.jsonc</td>
   </tr>
   <tr>
     <td>Secret</td>
@@ -152,6 +152,10 @@ npm run db:push
 | `VITE_CLERK_PUBLISHABLE_KEY`   | Secret          | Clerkの公開キー                                | Clerk Dashboard → Configure → API Keys → Publishable keys          |
 | `CLERK_WEBHOOK_SIGNING_SECRET` | Secret          | Clerk Webhook署名検証用のシークレット             | Clerk Dashboard → Webhooks → Add Endpoint → Signing Secret         |
 | `ALLOWED_HOSTS`                | Publish         | 許可するホスト名のリスト（ローカル用）              | ngrok のドメイン名を設定（例: your-domain.ngrok-free.app）              |
+
+> [!CAUTION]
+> ローカル環境から `npm run deploy` などで deploy すると、.dev.vars ファイルに定義している `VITE_` 接頭辞の変数がアプリ上で読み込めるようになる。
+> ローカル用の環境変数が使われ、アプリが正常に動作しなくなるため、Github Actions を使ってデプロイすること。
 
 ### Supabase
 
