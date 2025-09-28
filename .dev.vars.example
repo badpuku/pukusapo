@@ -1,15 +1,23 @@
-# remix-auth settings
+# base
+APP_ENV=local
+APP_VERSION=0.0.1
+
+# remix-auth
 SESSION_SECRET=""
 
-# LINE API settings
-VITE_LINE_CLIENT_ID=""
-VITE_LINE_CLIENT_SECRET=""
-VITE_LINE_CALLBACK_URL=http://localhost:3000/callback
-VITE_LINE_LOGIN_BASE_URL=https://access.line.me/oauth2/v2.1/authorize
-VITE_LINE_TOKEN_BASE_URL=https://api.line.me/oauth2/v2.1/token
-VITE_LINE_PROFILE_BASE_URL=https://api.line.me/v2/profile
-
-# supabase settings
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
+# Supabase
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_ANON_KEY=eyxxxxxxxxxxxxxx
 DATABASE_URL=
+
+# Cloudflare
+CLOUDFLARE_API_TOKEN=
+CLOUDFLARE_ACCOUNT_ID=
+
+# Clerk 
+CLERK_SECRET_KEY=sk_xxxxxxxxxxxxxxxxxxxxxxxx
+VITE_CLERK_PUBLISHABLE_KEY=pk_xxxxxxxxxxxxxxxxxxxxxxxx
+CLERK_WEBHOOK_SIGNING_SECRET=whec_xxxxxxxxxxxxxxxxxxxxxx
+
+# ローカル開発用 ngrok
+ALLOWED_HOSTS=xxxxxxxxxx.ngrok-free.app

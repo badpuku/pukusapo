@@ -4,8 +4,10 @@ node_modules
 /.cache
 /build
 .env
+.env.dev
 .env.local
 .dev.vars
+.dev.vars.local
 
 *storybook.log
 

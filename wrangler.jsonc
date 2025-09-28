@@ -1,28 +1,34 @@
 {
-	"$schema": "./node_modules/wrangler/config-schema.json",
-	"name": "pukusapo",
-	"main": "./workers/app.ts",
-	"compatibility_date": "2025-02-14",
-	"workers_dev": false,
-	"preview_urls": false,
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
-	"route": {
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "pukusapo",
+  "main": "./workers/app.ts",
+  "compatibility_date": "2025-02-14",
+  "workers_dev": false,
+  "preview_urls": false,
+  "compatibility_flags": ["nodejs_compat"],
+  "route": {
     "pattern": "sapo.badpuku.com",
-		"custom_domain": true
+    "custom_domain": true,
   },
-	"observability": {
-		"enabled": true
-	},
+  "observability": {
+    "enabled": true,
+  },
   "upload_source_maps": true,
-	"env": {
+  "vars": {
+    "VITE_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsuc2Fwby5iYWRwdWt1LmNvbSQ",
+    "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4cXp4cXZvYnVrZ3p1cnFsYXBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1NTU2NDksImV4cCI6MjA2MzEzMTY0OX0.PURc3UkMqGtRoNzYAAJb1-tw15pgF3Tlim0oOmh7QXk",
+  },
+  "env": {
     "development": {
       "name": "pukusapo-dev",
       "route": {
         "pattern": "sapo-dev.badpuku.com",
-				"custom_domain": true
+        "custom_domain": true,
       },
-    }
-	}
+      "vars": {
+        "VITE_CLERK_PUBLISHABLE_KEY": "pk_test_d2VsbC1wdXAtNzYuY2xlcmsuYWNjb3VudHMuZGV2JA",
+        "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFramVkZ3puZmxrcm5vd3VidmF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2OTM5MTMsImV4cCI6MjA2NDI2OTkxM30.-uGtfVoAW_B40LZ_fZ1rQqoQla1cwbsjCVZPHrLL424",
+      },
+    },
+  },
 }
