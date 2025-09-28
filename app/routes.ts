@@ -9,5 +9,4 @@ export default [
     route("admin/forms", "./routes/admin/forms.tsx"),
     route("admin/users", "./routes/admin/users.tsx"),
   ]),
-  // ...(await flatRoutes()),
 ] satisfies RouteConfig;
