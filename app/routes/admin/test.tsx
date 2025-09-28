@@ -7,7 +7,7 @@ export const handle: RouteHandle = {
   }),
 };
 
-export default function AdminRoute() {
+export default function AdminTestRoute() {
   return (
     <>
       <h1>admin</h1>
