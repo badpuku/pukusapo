@@ -45,22 +45,22 @@ type SidebarMenuItem = {
 
 const sidebarMenuItems: SidebarMenuItem[] = [
   {
-    to: "/",
+    to: "/admin/",
     icon: <Home size={20} />,
     label: "ホーム",
   },
   {
-    to: "/events",
+    to: "/admin/events",
     icon: <CalendarCheck2 size={20} />,
     label: "イベント",
   },
   {
-    to: "/forms",
+    to: "/admin/forms",
     icon: <ClipboardSignature size={20} />,
     label: "フォーム",
   },
   {
-    to: "/users",
+    to: "/admin/users",
     icon: <Users size={20} />,
     label: "ユーザー",
   },
