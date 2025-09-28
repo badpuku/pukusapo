@@ -76,6 +76,15 @@ npm run db:migrate
 npm run db:seed
 ```
 
+#### Migration Strategy
+When creating new database tables or schemas:
+1. First create the Drizzle ORM schema file in `app/db/schema/`
+2. Use `npm run db:generate:custom` to generate an empty migration file
+3. Write the SQL statements manually in the generated migration file
+4. Apply migrations with `npm run db:migrate`
+
+Note: Do not use `db:generate` for new table creation as it may not properly handle complex schemas. Always use `db:generate:custom` and write SQL manually.
+
 ### Storybook
 ```bash
 # Start Storybook
