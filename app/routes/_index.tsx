@@ -7,7 +7,7 @@ import {
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { type MetaFunction, useLoaderData } from "react-router";
 
-import { createServerSupabaseClient } from "~/services/supabase.server";
+import { createServerSupabaseClient } from "~/services/supabase/client.server";
 
 import type { Route } from "./+types/_index";
 
