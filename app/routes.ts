@@ -4,7 +4,10 @@ export default [
   index("./routes/_index.tsx"),
 
   layout("./routes/admin/layout.tsx", [
-    route("admin/test", "./routes/admin/test.tsx"),
+    route("admin", "./routes/admin/home.tsx"),
+    route("admin/events", "./routes/admin/events.tsx"),
+    route("admin/forms", "./routes/admin/forms.tsx"),
+    route("admin/users", "./routes/admin/users.tsx"),
   ]),
   // ...(await flatRoutes()),
 ] satisfies RouteConfig;
