@@ -2,7 +2,7 @@ import { getAuth } from "@clerk/react-router/ssr.server";
 import { createClient } from "@supabase/supabase-js";
 import type { LoaderFunctionArgs } from "react-router";
 
-import type { Database } from "~/services/supabase/schema";
+import type { Database } from "~/models/supabase";
 
 export const createServerSupabaseClient = (args: LoaderFunctionArgs) => {
   return createClient<Database>(
