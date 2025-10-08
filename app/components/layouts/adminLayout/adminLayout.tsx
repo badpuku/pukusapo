@@ -35,6 +35,7 @@ import {
   SidebarTrigger,
 } from "~/components/ui/sidebar";
 import { cn } from "~/lib/utils";
+import type { Profile } from "~/models/profiles";
 import type { AppUIMatch } from "~/route-handle";
 
 type SidebarMenuItem = {
@@ -42,6 +43,14 @@ type SidebarMenuItem = {
   icon: React.ReactNode;
   label: string;
 };
+
+type AdminSidebarProps = {
+  userProfile: Profile | null;
+};
+
+type AdminLayoutProps = PropsWithChildren<{
+  userProfile: Profile | null;
+}>;
 
 const sidebarMenuItems: SidebarMenuItem[] = [
   {
@@ -66,9 +75,9 @@ const sidebarMenuItems: SidebarMenuItem[] = [
   },
 ];
 
-const AdminSidebar = () => {
+const AdminSidebar = ({ userProfile }: AdminSidebarProps) => {
   // https://github.com/shadcn.png
-  const userAvatar = "";
+  const userAvatar = userProfile?.avatar_url || "";
 
   return (
     <Sidebar className="border-r-zinc-200">
@@ -177,10 +186,10 @@ const AdminMain = ({ children }: PropsWithChildren) => {
   );
 };
 
-export const AdminLayout = ({ children }: PropsWithChildren) => {
+export const AdminLayout = ({ children, userProfile }: AdminLayoutProps) => {
   return (
     <SidebarProvider>
-      <AdminSidebar />
+      <AdminSidebar userProfile={userProfile} />
       <AdminMain>{children}</AdminMain>
     </SidebarProvider>
   );
