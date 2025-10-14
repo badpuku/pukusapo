@@ -34,11 +34,7 @@ erDiagram
         uuid created_by FK "作成者（profiles.id）"
         varchar title "フォームタイトル"
         text description "説明"
-        text slug UK "URL用スラッグ"
         varchar status "draft/published/closed"
-        jsonb settings "フォーム設定（JSON）"
-        boolean is_template "テンプレートフラグ"
-        integer max_submissions "最大提出数"
         timestamp publish_start_at "公開開始日時"
         timestamp publish_end_at "公開終了日時"
         timestamp created_at
@@ -56,7 +52,6 @@ erDiagram
         integer capacity "定員"
         integer waitlist_capacity "キャンセル待ち定員"
         varchar status "draft/published/in_progress/completed/cancelled"
-        jsonb settings "イベント設定（JSON）"
         timestamp created_at
         timestamp updated_at
     }
@@ -72,7 +67,7 @@ erDiagram
     form_fields {
         uuid id PK
         uuid form_id FK
-        varchar field_type "text/email/tel/select/checkbox/radio/textarea/date/file"
+        varchar field_type "text/email/tel/select/checkbox/radio/textarea   "
         varchar label "フィールドラベル"
         text description "説明文"
         boolean is_required "必須フラグ"
@@ -88,7 +83,6 @@ erDiagram
         uuid form_id FK
         uuid submitted_by FK "提出者（profiles.id）"
         varchar status "draft/submitted/approved/rejected"
-        text notes "管理者メモ"
         timestamp submitted_at "提出日時"
         timestamp created_at
         timestamp updated_at
