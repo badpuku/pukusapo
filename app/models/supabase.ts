@@ -34,6 +34,343 @@ export type Database = {
   }
   public: {
     Tables: {
+      event_participations: {
+        Row: {
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          created_at: string
+          event_id: string
+          id: string
+          profile_id: string
+          registered_at: string
+          status: string
+          submission_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          event_id: string
+          id?: string
+          profile_id: string
+          registered_at?: string
+          status?: string
+          submission_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          event_id?: string
+          id?: string
+          profile_id?: string
+          registered_at?: string
+          status?: string
+          submission_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_event_participations_event_id"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_event_participations_profile_id"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_event_participations_submission_id"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "form_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          capacity: number
+          created_at: string
+          created_by: string
+          description: string | null
+          end_at: string
+          id: string
+          location: string | null
+          start_at: string
+          status: string
+          title: string
+          updated_at: string
+          waitlist_capacity: number
+        }
+        Insert: {
+          capacity: number
+          created_at?: string
+          created_by: string
+          description?: string | null
+          end_at: string
+          id?: string
+          location?: string | null
+          start_at: string
+          status?: string
+          title: string
+          updated_at?: string
+          waitlist_capacity?: number
+        }
+        Update: {
+          capacity?: number
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          end_at?: string
+          id?: string
+          location?: string | null
+          start_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          waitlist_capacity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_events_created_by"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      form_events: {
+        Row: {
+          created_at: string
+          event_id: string
+          form_id: string
+          is_required: boolean
+          priority: number
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          form_id: string
+          is_required?: boolean
+          priority?: number
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          form_id?: string
+          is_required?: boolean
+          priority?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_form_events_event_id"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_form_events_form_id"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      form_fields: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          field_options: Json | null
+          field_type: string
+          form_id: string
+          id: string
+          is_required: boolean
+          label: string
+          updated_at: string
+          validation_rules: Json | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          field_options?: Json | null
+          field_type: string
+          form_id: string
+          id?: string
+          is_required?: boolean
+          label: string
+          updated_at?: string
+          validation_rules?: Json | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          field_options?: Json | null
+          field_type?: string
+          form_id?: string
+          id?: string
+          is_required?: boolean
+          label?: string
+          updated_at?: string
+          validation_rules?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_form_fields_form_id"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      form_submission_answers: {
+        Row: {
+          answer_data: Json | null
+          answer_text: string | null
+          created_at: string
+          field_id: string
+          id: string
+          submission_id: string
+          updated_at: string
+        }
+        Insert: {
+          answer_data?: Json | null
+          answer_text?: string | null
+          created_at?: string
+          field_id: string
+          id?: string
+          submission_id: string
+          updated_at?: string
+        }
+        Update: {
+          answer_data?: Json | null
+          answer_text?: string | null
+          created_at?: string
+          field_id?: string
+          id?: string
+          submission_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_form_submission_answers_field_id"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "form_fields"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_form_submission_answers_submission_id"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "form_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      form_submissions: {
+        Row: {
+          created_at: string
+          form_id: string
+          id: string
+          status: string
+          submitted_at: string | null
+          submitted_by: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          form_id: string
+          id?: string
+          status?: string
+          submitted_at?: string | null
+          submitted_by: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          form_id?: string
+          id?: string
+          status?: string
+          submitted_at?: string | null
+          submitted_by?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_form_submissions_form_id"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_form_submissions_submitted_by"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forms: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          publish_end_at: string | null
+          publish_start_at: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          publish_end_at?: string | null
+          publish_start_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          publish_end_at?: string | null
+          publish_start_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_forms_created_by"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       permissions: {
         Row: {
           action: string
@@ -182,6 +519,60 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      waitlists: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          event_id: string
+          expires_at: string | null
+          id: string
+          offered_at: string | null
+          position: number
+          profile_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          event_id: string
+          expires_at?: string | null
+          id?: string
+          offered_at?: string | null
+          position: number
+          profile_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          event_id?: string
+          expires_at?: string | null
+          id?: string
+          offered_at?: string | null
+          position?: number
+          profile_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_waitlists_event_id"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_waitlists_profile_id"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
