@@ -756,7 +756,7 @@ function SidebarSignOutButton({
     <button
       data-slot="sidebar-sign-out-button"
       data-sidebar="sign-out-button"
-      className={cn("p-1 group/link flex justify-center w-full", className)}
+      className={cn("p-1 group/link flex justify-center w-full cursor-pointer", className)}
       {...props}
     >
       <div className="size-9 flex items-center justify-center text-primary-800 group-hover/link:bg-zinc-100 transition-colors duration-200 rounded-lg">
