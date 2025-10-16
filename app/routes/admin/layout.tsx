@@ -1,9 +1,10 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
-import { Outlet, useLoaderData } from "react-router";
+import { Outlet, redirect } from "react-router";
 
 import { AdminLayout } from "~/components/layouts/adminLayout/adminLayout";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { getProfileByUserId } from "~/services/supabase/profiles";
+import { hasModeratorPermission } from "~/utils/permissions";
 
 import type { Route } from "./+types/layout";
 
@@ -12,22 +13,31 @@ export const loader = async (args: Route.LoaderArgs) => {
   const auth = await getAuth(args);
 
   if (!auth.isAuthenticated) {
-    return {
-      userProfile: null,
-    };
+    throw redirect("/");
   }
 
   const profileResponse = auth.userId
     ? await getProfileByUserId(supabase, auth.userId)
     : null;
 
+  if (!profileResponse?.data) {
+    throw redirect("/");
+  }
+
+  const userProfile = profileResponse.data;
+  const permissionLevel = userProfile.roles?.permission_level;
+
+  if (!hasModeratorPermission(permissionLevel)) {
+    throw redirect("/unauthorized");
+  }
+
   return {
-    userProfile: profileResponse?.data || null,
+    userProfile,
   };
 };
 
-export default function AdminLayoutRoute() {
-  const { userProfile } = useLoaderData<typeof loader>();
+export default function AdminLayoutRoute({loaderData}: Route.ComponentProps) {
+  const { userProfile } = loaderData;
 
   return (
     <AdminLayout userProfile={userProfile}>
