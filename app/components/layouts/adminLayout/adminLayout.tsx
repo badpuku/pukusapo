@@ -1,3 +1,4 @@
+import { SignOutButton } from "@clerk/react-router";
 import {
   CalendarCheck2,
   ClipboardSignature,
@@ -32,6 +33,7 @@ import {
   SidebarMenuLinkButton,
   SidebarProvider,
   SidebarSeparator,
+  SidebarSignOutButton,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
 import { cn } from "~/lib/utils";
@@ -107,10 +109,12 @@ const AdminSidebar = ({ userProfile }: AdminSidebarProps) => {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarContentBottom>
-          <SidebarMenuLinkButton to="/logout" icon={<LogOut size={20} />} />
+          <SignOutButton>
+            <SidebarSignOutButton icon={<LogOut size={20} />} />
+          </SignOutButton>
         </SidebarContentBottom>
       </SidebarContent>
-      <SidebarFooter className="py-3">
+      <SidebarFooter>
         <SidebarSeparator className="mx-auto data-[orientation=horizontal]:w-9" />
         <Link to="/profile" className="p-2 flex justify-center">
           <Avatar className="size-7">
