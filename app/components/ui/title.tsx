@@ -13,7 +13,7 @@ type Props = {
   children: React.ReactNode;
 }
 
-function Title({ as = "h1", className, children }: Props) {
+function Title({ as , className, children }: Props) {
   const Comp = as;
   return <Comp className={cn(TitleMap[as], className)}>{children}</Comp>;
 }
