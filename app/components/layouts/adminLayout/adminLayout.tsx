@@ -185,7 +185,7 @@ const AdminMain = ({ children }: PropsWithChildren) => {
   return (
     <main className="h-svh flex-1 bg-zinc-100">
       <AdminNavbar />
-      <div className="p-4 overflow-y-auto">{children}</div>
+      <div className="overflow-y-auto">{children}</div>
     </main>
   );
 };
