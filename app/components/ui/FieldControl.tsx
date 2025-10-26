@@ -14,6 +14,7 @@ const RequiredMap = {
 
 interface Props {
   label: string;
+  htmlFor: string;
   required?: boolean;
   errors?: Array<{ message?: string } | undefined>;
 }
@@ -22,6 +23,7 @@ function FieldControl({
   className,
   children,
   label,
+  htmlFor,
   required = false,
   errors,
   ...props
@@ -31,7 +33,7 @@ function FieldControl({
   return (
     <div className={cn("flex flex-col gap-2", className)} {...props}>
       <div>
-        <FieldLabel>{label}</FieldLabel>
+        <FieldLabel htmlFor={htmlFor}>{label}</FieldLabel>
         <span className={cn("text-white text-xs font-medium px-2 py-1", requiredLabel.backgroundColor)}>{requiredLabel.label}</span>
       </div>
       {children}
