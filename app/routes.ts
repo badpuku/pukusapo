@@ -17,4 +17,6 @@ export default [
     ]),
     route("admin/users", "./routes/admin/users.tsx"),
   ]),
+
+  route("api/forms/create", "./routes/api/forms/create/route.tsx"),
 ] satisfies RouteConfig;
