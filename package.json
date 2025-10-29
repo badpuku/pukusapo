@@ -27,6 +27,7 @@
     "db:secrets:prod": "npx supabase secrets set --env-file ./supabase/.env",
     "db:secrets:dev": "npx supabase secrets set --env-file ./supabase/.env.dev",
     "db:gen-types": "npx supabase gen types typescript --local > app/models/supabase.ts",
+    "test": "vitest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
