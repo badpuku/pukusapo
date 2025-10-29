@@ -45,6 +45,7 @@ export default function AdminLayoutRoute({ loaderData }: Route.ComponentProps) {
   return (
     <AdminLayout
       userProfile={userProfile}
+      // NOTE: Clerk の SignOutButton を AdminLayout 内で使用すると、Storybook でエラーが発生するため、コンポーネント外から提供する
       signOutButton={
         <SignOutButton>
           <SidebarSignOutButton icon={<LogOut size={20} />} />
