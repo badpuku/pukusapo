@@ -1,7 +1,10 @@
+import { SignOutButton } from "@clerk/react-router";
 import { getAuth } from "@clerk/react-router/ssr.server";
+import { LogOut } from "lucide-react";
 import { Outlet, redirect } from "react-router";
 
 import { AdminLayout } from "~/components/layouts/adminLayout/adminLayout";
+import { SidebarSignOutButton } from "~/components/ui/sidebar";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { getProfileByUserId } from "~/services/supabase/profiles";
 import { hasModeratorPermission } from "~/utils/permissions";
@@ -36,11 +39,18 @@ export const loader = async (args: Route.LoaderArgs) => {
   };
 };
 
-export default function AdminLayoutRoute({loaderData}: Route.ComponentProps) {
+export default function AdminLayoutRoute({ loaderData }: Route.ComponentProps) {
   const { userProfile } = loaderData;
 
   return (
-    <AdminLayout userProfile={userProfile}>
+    <AdminLayout
+      userProfile={userProfile}
+      signOutButton={
+        <SignOutButton>
+          <SidebarSignOutButton icon={<LogOut size={20} />} />
+        </SignOutButton>
+      }
+    >
       <Outlet />
     </AdminLayout>
   );

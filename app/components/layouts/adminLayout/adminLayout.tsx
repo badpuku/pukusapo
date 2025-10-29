@@ -1,9 +1,8 @@
-import { SignOutButton } from "@clerk/react-router";
+
 import {
   CalendarCheck2,
   ClipboardSignature,
   Home,
-  LogOut,
   User,
   Users,
 } from "lucide-react";
@@ -33,7 +32,6 @@ import {
   SidebarMenuLinkButton,
   SidebarProvider,
   SidebarSeparator,
-  SidebarSignOutButton,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
 import { cn } from "~/lib/utils";
@@ -48,11 +46,10 @@ type SidebarMenuItem = {
 
 type AdminSidebarProps = {
   userProfile: Profile | null;
+  signOutButton: React.ReactNode;
 };
 
-type AdminLayoutProps = PropsWithChildren<{
-  userProfile: Profile | null;
-}>;
+type AdminLayoutProps = PropsWithChildren<AdminSidebarProps>;
 
 const sidebarMenuItems: SidebarMenuItem[] = [
   {
@@ -77,7 +74,7 @@ const sidebarMenuItems: SidebarMenuItem[] = [
   },
 ];
 
-const AdminSidebar = ({ userProfile }: AdminSidebarProps) => {
+const AdminSidebar = ({ userProfile, signOutButton }: AdminSidebarProps) => {
   // https://github.com/shadcn.png
   const userAvatar = userProfile?.avatar_url || "";
 
@@ -108,11 +105,7 @@ const AdminSidebar = ({ userProfile }: AdminSidebarProps) => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarContentBottom>
-          <SignOutButton>
-            <SidebarSignOutButton icon={<LogOut size={20} />} />
-          </SignOutButton>
-        </SidebarContentBottom>
+        <SidebarContentBottom>{signOutButton}</SidebarContentBottom>
       </SidebarContent>
       <SidebarFooter>
         <SidebarSeparator className="mx-auto data-[orientation=horizontal]:w-9" />
@@ -131,8 +124,6 @@ const AdminSidebar = ({ userProfile }: AdminSidebarProps) => {
 
 const AdminNavbar = () => {
   const matches = useMatches() as AppUIMatch[];
-
-  console.log(matches);
 
   return (
     <div className="sticky top-0 w-full h-16 px-4 py-[10px] flex items-center gap-4 border-b border-zinc-200 bg-white">
@@ -190,10 +181,14 @@ const AdminMain = ({ children }: PropsWithChildren) => {
   );
 };
 
-export const AdminLayout = ({ children, userProfile }: AdminLayoutProps) => {
+export const AdminLayout = ({
+  children,
+  userProfile,
+  signOutButton,
+}: AdminLayoutProps) => {
   return (
     <SidebarProvider>
-      <AdminSidebar userProfile={userProfile} />
+      <AdminSidebar userProfile={userProfile} signOutButton={signOutButton} />
       <AdminMain>{children}</AdminMain>
     </SidebarProvider>
   );
