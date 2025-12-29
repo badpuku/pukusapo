@@ -16,7 +16,7 @@ interface Props {
   label: string;
   htmlFor: string;
   required?: boolean;
-  errors?: Array<{ message?: string } | undefined>;
+  errors?: string[];
 }
 
 function FieldControl({
@@ -37,7 +37,11 @@ function FieldControl({
         <span className={cn("text-white text-xs font-medium px-2 py-1", requiredLabel.backgroundColor)}>{requiredLabel.label}</span>
       </div>
       {children}
-      <FieldError errors={errors} />
+      {errors && errors.length > 0 && (
+        <FieldError>
+          {errors.join("\n")}
+        </FieldError>
+      )}
     </div>
   );
 }
