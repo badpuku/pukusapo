@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export const FORM_STATUS = {
+  DRAFT: "draft",
+  PUBLISHED: "published",
+} as const;
+
+export type FormStatus = (typeof FORM_STATUS)[keyof typeof FORM_STATUS];
+
 export const CreateFormSchema = z.object({
   title: z
     .string()
@@ -10,7 +17,7 @@ export const CreateFormSchema = z.object({
     .max(1000, { message: "概要は1000文字以内で入力してください" })
     .optional()
     .or(z.literal("")),
-  status: z.enum(["draft", "published"]),
+  status: z.enum([FORM_STATUS.DRAFT, FORM_STATUS.PUBLISHED]),
 });
 
 export type CreateFormInput = z.infer<typeof CreateFormSchema>;

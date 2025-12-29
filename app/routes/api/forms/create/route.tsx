@@ -1,4 +1,5 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
+import { parseWithZod } from "@conform-to/zod";
 import { err, ok, Result } from "neverthrow";
 import { data } from "react-router";
 
@@ -7,101 +8,100 @@ import {
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
+import { CreateFormSchema } from "~/models/forms";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { getProfileByUserId } from "~/services/supabase/profiles";
 import { hasModeratorPermission } from "~/utils/permissions";
 
 import type { Route } from "./+types/route";
-import { createFormSchema } from "./validation";
 
-type JsonParseError = {
-  code: typeof ERROR_CODES.INVALID_JSON;
+type UnauthorizedError = {
+  code: typeof ERROR_CODES.UNAUTHORIZED;
   message: string;
 };
-type SchemaValidationError = {
-  code: typeof ERROR_CODES.VALIDATION_ERROR;
-  message: string;
-  details: Record<string, string[] | undefined>;
+
+export type FormCreateFetcherDataType = {
+  data: {
+    success: boolean;
+    error: {
+      code: string;
+      message: string;
+    } | null;
+    data: {
+      id: string;
+      title: string;
+      description: string | null;
+      status: string;
+      created_at: string;
+      created_by: string;
+    } | null;
+  } | null;
 };
 
-type RequestBodyError = JsonParseError | SchemaValidationError;
+const validateAuthResult = (
+  userId: string | null,
+): Result<string, UnauthorizedError> => {
+  if (!userId) {
+    return err({
+      code: ERROR_CODES.UNAUTHORIZED,
+      message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
+    });
+  }
+  return ok(userId);
+};
 
 export const action = async (args: Route.ActionArgs) => {
   const { request } = args;
+  const formData = await request.formData();
+  const submission = parseWithZod(formData, { schema: CreateFormSchema });
+
   const auth = await getAuth(args);
   const userId = auth.userId;
 
-  if (!userId) {
+  // 認証チェック
+  const authResult = validateAuthResult(userId);
+  if (authResult.isErr()) {
+    const error = authResult.error;
     return data(
       {
         success: false,
         error: {
-          code: ERROR_CODES.UNAUTHORIZED,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
+          code: error.code,
+          message: error.message,
         },
       },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED] },
+      { status: ERROR_STATUS_MAP[error.code] },
     );
   }
 
-  const parseJsonResult: Result<unknown, RequestBodyError> = await request
-    .json()
-    .then((data) => ok(data))
-    .catch(() =>
-      err({
-        code: ERROR_CODES.INVALID_JSON,
-        message: ERROR_MESSAGES_MAP[ERROR_CODES.INVALID_JSON],
-      }),
-    );
+  const validatedUserId = authResult.value;
 
-  const validationResult = parseJsonResult.andThen((requestData) => {
-    const parseResult = createFormSchema.safeParse(requestData);
-    if (parseResult.success) {
-      return ok(parseResult.data);
-    }
-    return err({
-      code: ERROR_CODES.VALIDATION_ERROR,
-      message: ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
-      details: parseResult.error.flatten().fieldErrors,
-    });
-  });
-
-  if (validationResult.isErr()) {
-    const error = validationResult.error;
+  // バリデーションエラーチェック
+  if (submission.status !== "success") {
     return data(
       {
         success: false,
-        error:
-          error.code === ERROR_CODES.VALIDATION_ERROR
-            ? {
-                code: error.code,
-                message: error.message,
-                details: error.details,
-              }
-            : {
-                code: error.code,
-                message: error.message,
-              },
+        error: {
+          code: ERROR_CODES.VALIDATION_ERROR,
+          message: ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
+        },
       },
-      {
-        status: ERROR_STATUS_MAP[error.code],
-      },
+      { status: ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR] },
     );
   }
 
-  const { title, description, status } = validationResult.value;
+  const { title, description, status } = submission.value;
 
   const supabase = createServerSupabaseClient(args);
+  const profileResponse = await getProfileByUserId(supabase, validatedUserId);
 
-  const profileResponse = await getProfileByUserId(supabase, userId);
-
-  if (!profileResponse?.data) {
+  if (profileResponse.error || !profileResponse.data) {
     return data(
       {
         success: false,
         error: {
           code: ERROR_CODES.PROFILE_NOT_FOUND,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
+          message: profileResponse.error || ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
         },
       },
       { status: ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND] },
@@ -109,7 +109,7 @@ export const action = async (args: Route.ActionArgs) => {
   }
 
   const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles?.permission_level;
+  const permissionLevel = userProfile.roles.permission_level;
   if (!hasModeratorPermission(permissionLevel)) {
     return data(
       {
