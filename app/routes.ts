@@ -14,9 +14,11 @@ export default [
     route("admin/forms", "./routes/admin/forms/route.tsx", [
       index("./routes/admin/forms/index/route.tsx"),
       route("new", "./routes/admin/forms/new/route.tsx"),
+      route(":id", "./routes/admin/forms/:id/route.tsx"),
     ]),
     route("admin/users", "./routes/admin/users.tsx"),
   ]),
 
   route("api/forms/create", "./routes/api/forms/create/route.tsx"),
+  route("api/forms/list", "./routes/api/forms/list/route.tsx"),
 ] satisfies RouteConfig;
