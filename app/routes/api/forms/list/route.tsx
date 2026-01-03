@@ -13,18 +13,20 @@ import { hasModeratorPermission } from "~/utils/permissions";
 
 import type { Route } from "./+types/route";
 
+const FormDataSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  status: z.string(),
+  created_at: z.string(),
+  updated_at: z.string().nullable(),
+});
+
+type FormData = z.infer<typeof FormDataSchema>;
+
 export const FormsListSchema = z.object({
   success: z.boolean(),
   data: z
-    .array(
-      z.object({
-        id: z.string(),
-        title: z.string(),
-        status: z.string(),
-        created_at: z.string(),
-        updated_at: z.string().nullable(),
-      }),
-    )
+    .array(FormDataSchema)
     .nullable(),
   error: z
     .object({
@@ -132,19 +134,22 @@ export const action = async (args: Route.ActionArgs) => {
     );
   }
 
-  const formsData = forms.map((form) => ({
-    id: form.id,
-    title: form.title,
-    status: form.status,
-    created_at: form.created_at,
-    updated_at: form.updated_at,
-  }));
+  const formsData = forms.map((form: FormData) => FormDataSchema.safeParse(form));
+  if (formsData.some((result) => !result.success)) {
+    return data(
+      {
+        success: false,
+        error: {
+          code: ERROR_CODES.VALIDATION_ERROR,
+          message: ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
+        },
+      },
+      { status: ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR] },
+    );
+  }
 
   return data(
-    {
-      success: true,
-      data: formsData,
-    },
+    { success: true, data: formsData.map((result) => result.data) },
     { status: 200 },
   );
 };
