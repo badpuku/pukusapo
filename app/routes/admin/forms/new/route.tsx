@@ -12,7 +12,7 @@ import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { FORM_STATUS, type FormStatus } from "~/models/forms";
 import type { RouteHandle } from "~/route-handle";
-import { useFormsCreateForm } from "~/routes/admin/forms/new/useFormsCreateForm";
+import { useFormsForm } from "~/routes/admin/forms/useFormsForm";
 
 export const handle: RouteHandle = {
   breadcrumb: (match) => ({
@@ -27,7 +27,7 @@ export default function AdminFormsNewRoute() {
 
   const [status, setStatus] = useState<FormStatus>(FORM_STATUS.DRAFT);
 
-  const [form, fields] = useFormsCreateForm();
+  const [form, fields] = useFormsForm();
 
   // API呼び出し成功時にリダイレクト
   useEffect(() => {

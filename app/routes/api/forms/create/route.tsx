@@ -7,7 +7,7 @@ import {
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
-import { CreateFormSchema } from "~/models/forms";
+import { FormSchema } from "~/models/forms";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { getProfileByUserId } from "~/services/supabase/profiles";
 import { hasModeratorPermission } from "~/utils/permissions";
@@ -17,7 +17,7 @@ import type { Route } from "./+types/route";
 export const action = async (args: Route.ActionArgs) => {
   const { request } = args;
   const formData = await request.formData();
-  const submission = parseWithZod(formData, { schema: CreateFormSchema });
+  const submission = parseWithZod(formData, { schema: FormSchema });
 
   const auth = await getAuth(args);
   const userId = auth.userId;
