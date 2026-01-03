@@ -17,7 +17,7 @@ import type { Route } from "./+types/route";
 
 export const loader = async (args: Route.LoaderArgs) => {
   const result = await getFormsList(args);
-  return data(result, { status: 200 });
+  return data({ success: result.success, data: result.data, error: result.error }, { status: result.status });
 };
 
 export default function AdminFormsHomeRoute() {

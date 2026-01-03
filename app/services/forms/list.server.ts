@@ -1,7 +1,11 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
 import type { LoaderFunctionArgs } from "react-router";
 
-import { ERROR_CODES, ERROR_MESSAGES_MAP } from "~/constants/errors";
+import {
+  ERROR_CODES,
+  ERROR_MESSAGES_MAP,
+  ERROR_STATUS_MAP,
+} from "~/constants/errors";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { getProfileByUserId } from "~/services/supabase/profiles";
 import { hasModeratorPermission } from "~/utils/permissions";
@@ -26,12 +30,13 @@ export async function getFormsList(
 
   if (!userId) {
     return {
-      success: false,
-      data: null,
-      error: {
-        code: ERROR_CODES.UNAUTHORIZED,
-        message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
-      },
+        success: false,
+        data: null,
+        error: {
+          code: ERROR_CODES.UNAUTHORIZED,
+          message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
+        },
+        status: ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
     };
   }
 
@@ -51,6 +56,7 @@ export async function getFormsList(
           profileResponse.error ||
           ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
       },
+      status: ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
     };
   }
 
@@ -66,6 +72,7 @@ export async function getFormsList(
         code: ERROR_CODES.FORBIDDEN,
         message: ERROR_MESSAGES_MAP[ERROR_CODES.FORBIDDEN],
       },
+      status: ERROR_STATUS_MAP[ERROR_CODES.FORBIDDEN],
     };
   }
 
@@ -86,6 +93,7 @@ export async function getFormsList(
         message:
           formsError.message || ERROR_MESSAGES_MAP[ERROR_CODES.DATABASE_ERROR],
       },
+      status: ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
     };
   }
 
@@ -100,11 +108,13 @@ export async function getFormsList(
         code: ERROR_CODES.VALIDATION_ERROR,
         message: ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
       },
+      status: ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR],
     };
   }
 
   return {
     success: true,
     data: formsData.map((result) => result.data!),
+    status: 200,
   };
 }

@@ -25,6 +25,7 @@ export const FormsListSchema = z.object({
       message: z.string(),
     })
     .optional(),
+  status: z.number(),
 });
 
 export type FormsListResponse = z.infer<typeof FormsListSchema>;
