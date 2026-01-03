@@ -24,7 +24,7 @@ import type { Route } from "./+types/route";
 export const loader = async (args: Route.LoaderArgs) => {
   const auth = await getAuth(args);
   const token = await auth.getToken();
-  const response = await fetch("http://localhost:3000/api/forms/list", {
+  const response = await fetch(`${args.context.cloudflare.env.API_ENDPOINT_URL}/api/forms/list`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
