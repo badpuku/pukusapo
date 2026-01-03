@@ -1,8 +1,10 @@
-// import { getAuth } from "@clerk/react-router/ssr.server";
+import { createClerkClient } from "@clerk/react-router/api.server";
+import { clerkClient } from "@clerk/react-router/server";
+import { getAuth } from "@clerk/react-router/ssr.server";
 import { data } from "react-router";
 import { z } from "zod";
 
-/* import {
+import {
   ERROR_CODES,
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
@@ -11,24 +13,34 @@ import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { getProfileByUserId } from "~/services/supabase/profiles";
 import { hasModeratorPermission } from "~/utils/permissions";
 
-import type { Route } from "./+types/route"; */
+import type { Route } from "./+types/route";
 
 export const FormsListSchema = z.object({
   success: z.boolean(),
-  data: z.array(z.object({
-    id: z.string(),
-    title: z.string(),
-    status: z.string(),
-    created_at: z.string(),
-    updated_at: z.string().nullable(),
-  })),
-  error: z.object({
-    code: z.string(),
-    message: z.string(),
-  }).nullable(),
+  data: z
+    .array(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        status: z.string(),
+        created_at: z.string(),
+        updated_at: z.string().nullable(),
+      }),
+    )
+    .nullable(),
+  error: z
+    .object({
+      code: z.string(),
+      message: z.string(),
+    })
+    .optional(),
 });
 
 export type FormsListResponse = z.infer<typeof FormsListSchema>;
+
+const paramsSchema = z.object({
+  offset: z.number().default(0),
+});
 
 const MOCK_DATA = [
   {
@@ -47,17 +59,9 @@ const MOCK_DATA = [
   },
 ];
 
-export const action = async () => {
-  return data(
-    {
-      success: true,
-      data: MOCK_DATA,
-      error: null,
-    },
-    { status: 200 },
-  );
+export const action = async (args: Route.ActionArgs) => {
   // 認証チェック
-  /* const auth = await getAuth(args);
+  const auth = await getAuth(args);
   const userId = auth.userId;
 
   if (!userId) {
@@ -67,80 +71,36 @@ export const action = async () => {
         data: null,
         error: {
           code: ERROR_CODES.UNAUTHORIZED,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
+          message: "",
         },
       },
       { status: ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED] },
     );
   }
 
-  // Supabase クライアント作成
-  const supabase = createServerSupabaseClient(args);
-
-  // プロフィール取得
-  const profileResponse = await getProfileByUserId(supabase, userId);
-
-  if (profileResponse.error || !profileResponse.data) {
+  /* const params = await args.request.json();
+  const validatedParams = paramsSchema.safeParse(params);
+  if (!validatedParams.success) {
     return data(
       {
         success: false,
         data: null,
         error: {
-          code: ERROR_CODES.PROFILE_NOT_FOUND,
-          message:
-            profileResponse.error ||
-            ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
+          code: ERROR_CODES.VALIDATION_ERROR,
+          message: ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
         },
       },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND] },
+      { status: ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR] },
     );
   }
 
-  // 権限チェック（moderator 以上）
-  const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles.permission_level;
-
-  if (!hasModeratorPermission(permissionLevel)) {
-    return data(
-      {
-        success: false,
-        data: null,
-        error: {
-          code: ERROR_CODES.FORBIDDEN,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.FORBIDDEN],
-        },
-      },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.FORBIDDEN] },
-    );
-  }
-
-  // フォーム一覧取得（created_at 降順）
-  const { data: forms, error: fetchError } = await supabase
-    .from("forms")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (fetchError) {
-    console.error("Forms list fetch error:", fetchError);
-    return data(
-      {
-        success: false,
-        data: null,
-        error: {
-          code: ERROR_CODES.DATABASE_ERROR,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.DATABASE_ERROR],
-        },
-      },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR] },
-    );
-  }
+  const { offset } = validatedParams.data; */
 
   return data(
     {
       success: true,
-      data: forms,
-      error: null,
+      data: MOCK_DATA,
     },
     { status: 200 },
-  ); */
+  );
 };

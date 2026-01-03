@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { data, Link, useLoaderData } from "react-router";
+import { getAuth } from "@clerk/react-router/ssr.server";
 
 import { PageTitle } from "~/components/ui/admin/pageTitle";
 import { Button } from "~/components/ui/button";
@@ -18,14 +19,21 @@ import {
 import { FormsListSchema } from "~/routes/api/forms/list/route";
 import { formatDateTime } from "~/utils/date";
 
-export const loader = async () => {
+import type { Route } from "./+types/route";
+
+export const loader = async (args: Route.LoaderArgs) => {
+  const auth = await getAuth(args);
+  const token = await auth.getToken();
   const response = await fetch("http://localhost:3000/api/forms/list", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
-  const parsedResponse = FormsListSchema.safeParse(await response.json());
+  const jsonData = await response.json();
+  console.log(jsonData);
+  const parsedResponse = FormsListSchema.safeParse(jsonData);
   if (!parsedResponse.success) {
     return data(
       {
