@@ -1,4 +1,3 @@
-import { getAuth } from "@clerk/react-router/ssr.server";
 import { Plus } from "lucide-react";
 import { data, Link, useLoaderData } from "react-router";
 
@@ -11,48 +10,14 @@ import {
   ItemDescription,
   ItemTitle,
 } from "~/components/ui/item";
-import {
-  ERROR_CODES,
-  ERROR_MESSAGES_MAP,
-  ERROR_STATUS_MAP,
-} from "~/constants/errors";
-import { FormsListSchema } from "~/routes/api/forms/list/route";
+import { getFormsList } from "~/services/forms";
 import { formatDateTime } from "~/utils/date";
 
 import type { Route } from "./+types/route";
 
 export const loader = async (args: Route.LoaderArgs) => {
-  const auth = await getAuth(args);
-  const token = await auth.getToken();
-  const response = await fetch(`${args.context.cloudflare.env.API_ENDPOINT_URL}/api/forms/list`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const jsonData = await response.json();
-  console.log(jsonData);
-  const parsedResponse = FormsListSchema.safeParse(jsonData);
-  if (!parsedResponse.success) {
-    return data(
-      {
-        success: false,
-        data: null,
-        error: {
-          code: ERROR_CODES.VALIDATION_ERROR,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
-        },
-      },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR] },
-    );
-  }
-  return data(
-    {
-      ...parsedResponse.data,
-    },
-    { status: 200 },
-  );
+  const result = await getFormsList(args);
+  return data(result, { status: 200 });
 };
 
 export default function AdminFormsHomeRoute() {
