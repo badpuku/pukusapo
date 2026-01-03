@@ -5,7 +5,7 @@ import type { RouteHandle } from "~/route-handle";
 export const handle: RouteHandle = {
   breadcrumb: (match) => ({
     to: match.pathname,
-    title: "フォーム",
+    title: "フォーム一覧",
   }),
 };
 
