@@ -1,6 +1,5 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { parseWithZod } from "@conform-to/zod";
-import { err, ok, Result } from "neverthrow";
 import { data } from "react-router";
 
 import {
@@ -15,41 +14,6 @@ import { hasModeratorPermission } from "~/utils/permissions";
 
 import type { Route } from "./+types/route";
 
-type UnauthorizedError = {
-  code: typeof ERROR_CODES.UNAUTHORIZED;
-  message: string;
-};
-
-export type FormCreateFetcherDataType = {
-  data: {
-    success: boolean;
-    error: {
-      code: string;
-      message: string;
-    } | null;
-    data: {
-      id: string;
-      title: string;
-      description: string | null;
-      status: string;
-      created_at: string;
-      created_by: string;
-    } | null;
-  } | null;
-};
-
-const validateAuthResult = (
-  userId: string | null,
-): Result<string, UnauthorizedError> => {
-  if (!userId) {
-    return err({
-      code: ERROR_CODES.UNAUTHORIZED,
-      message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
-    });
-  }
-  return ok(userId);
-};
-
 export const action = async (args: Route.ActionArgs) => {
   const { request } = args;
   const formData = await request.formData();
@@ -59,22 +23,19 @@ export const action = async (args: Route.ActionArgs) => {
   const userId = auth.userId;
 
   // 認証チェック
-  const authResult = validateAuthResult(userId);
-  if (authResult.isErr()) {
-    const error = authResult.error;
+  if (!userId) {
     return data(
       {
         success: false,
+        data: null,
         error: {
-          code: error.code,
-          message: error.message,
+          code: ERROR_CODES.UNAUTHORIZED,
+          message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
         },
       },
-      { status: ERROR_STATUS_MAP[error.code] },
+      { status: ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED] },
     );
   }
-
-  const validatedUserId = authResult.value;
 
   // バリデーションエラーチェック
   if (submission.status !== "success") {
@@ -93,7 +54,7 @@ export const action = async (args: Route.ActionArgs) => {
   const { title, description, status } = submission.value;
 
   const supabase = createServerSupabaseClient(args);
-  const profileResponse = await getProfileByUserId(supabase, validatedUserId);
+  const profileResponse = await getProfileByUserId(supabase, userId);
 
   if (profileResponse.error || !profileResponse.data) {
     return data(
