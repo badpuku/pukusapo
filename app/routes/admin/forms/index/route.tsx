@@ -1,6 +1,6 @@
+import { getAuth } from "@clerk/react-router/ssr.server";
 import { Plus } from "lucide-react";
 import { data, Link, useLoaderData } from "react-router";
-import { getAuth } from "@clerk/react-router/ssr.server";
 
 import { PageTitle } from "~/components/ui/admin/pageTitle";
 import { Button } from "~/components/ui/button";

@@ -1,5 +1,3 @@
-import { createClerkClient } from "@clerk/react-router/api.server";
-import { clerkClient } from "@clerk/react-router/server";
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { data } from "react-router";
 import { z } from "zod";
@@ -42,23 +40,6 @@ const paramsSchema = z.object({
   offset: z.number().default(0),
 });
 
-const MOCK_DATA = [
-  {
-    id: "1",
-    title: "フォーム1",
-    status: "公開中",
-    created_at: "2026-01-01 10:00:00",
-    updated_at: "2026-01-02 12:00:00",
-  },
-  {
-    id: "2",
-    title: "フォーム2",
-    status: "非公開",
-    created_at: "2026-01-01 10:00:00",
-    updated_at: "",
-  },
-];
-
 export const action = async (args: Route.ActionArgs) => {
   // 認証チェック
   const auth = await getAuth(args);
@@ -78,7 +59,7 @@ export const action = async (args: Route.ActionArgs) => {
     );
   }
 
-  /* const params = await args.request.json();
+  const params = await args.params;
   const validatedParams = paramsSchema.safeParse(params);
   if (!validatedParams.success) {
     return data(
@@ -94,12 +75,75 @@ export const action = async (args: Route.ActionArgs) => {
     );
   }
 
-  const { offset } = validatedParams.data; */
+  const { offset } = validatedParams.data;
+
+  const supabase = createServerSupabaseClient(args);
+  const profileResponse = await getProfileByUserId(supabase, userId);
+
+  if (profileResponse.error || !profileResponse.data) {
+    return data(
+      {
+        success: false,
+        error: {
+          code: ERROR_CODES.PROFILE_NOT_FOUND,
+          message:
+            profileResponse.error ||
+            ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
+        },
+      },
+      { status: ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND] },
+    );
+  }
+
+  const userProfile = profileResponse.data;
+  const permissionLevel = userProfile.roles.permission_level;
+  if (!hasModeratorPermission(permissionLevel)) {
+    return data(
+      {
+        success: false,
+        error: {
+          code: ERROR_CODES.FORBIDDEN,
+          message: ERROR_MESSAGES_MAP[ERROR_CODES.FORBIDDEN],
+        },
+      },
+      { status: ERROR_STATUS_MAP[ERROR_CODES.FORBIDDEN] },
+    );
+  }
+
+  const { data: forms, error: formsError } = await supabase
+    .from("forms")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(10)
+    .range(offset, offset + 9);
+
+  if (formsError) {
+    return data(
+      {
+        success: false,
+        error: {
+          code: ERROR_CODES.DATABASE_ERROR,
+          message:
+            formsError.message ||
+            ERROR_MESSAGES_MAP[ERROR_CODES.DATABASE_ERROR],
+        },
+      },
+      { status: ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR] },
+    );
+  }
+
+  const formsData = forms.map((form) => ({
+    id: form.id,
+    title: form.title,
+    status: form.status,
+    created_at: form.created_at,
+    updated_at: form.updated_at,
+  }));
 
   return data(
     {
       success: true,
-      data: MOCK_DATA,
+      data: formsData,
     },
     { status: 200 },
   );
