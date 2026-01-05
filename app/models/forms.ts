@@ -7,7 +7,7 @@ export const FORM_STATUS = {
 
 export type FormStatus = (typeof FORM_STATUS)[keyof typeof FORM_STATUS];
 
-export const FormSchema = z.object({
+export const FormInputSchema = z.object({
   title: z
     .string()
     .min(1, { message: "タイトルを入力してください" })
@@ -24,4 +24,4 @@ export const FormSchema = z.object({
   status: z.enum([FORM_STATUS.DRAFT, FORM_STATUS.PUBLISHED]).default(FORM_STATUS.DRAFT),
 });
 
-export type FormInput = z.infer<typeof FormSchema>;
+export type FormInput = z.infer<typeof FormInputSchema>;

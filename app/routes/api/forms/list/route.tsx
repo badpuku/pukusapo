@@ -7,36 +7,12 @@ import {
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
+import { FormResponseSchema } from "~/services/forms/schemas";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { getProfileByUserId } from "~/services/supabase/profiles";
 import { hasModeratorPermission } from "~/utils/permissions";
 
 import type { Route } from "./+types/route";
-
-const FormDataSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  status: z.string(),
-  created_at: z.string(),
-  updated_at: z.string().nullable(),
-});
-
-type FormData = z.infer<typeof FormDataSchema>;
-
-export const FormsListSchema = z.object({
-  success: z.boolean(),
-  data: z
-    .array(FormDataSchema)
-    .nullable(),
-  error: z
-    .object({
-      code: z.string(),
-      message: z.string(),
-    })
-    .optional(),
-});
-
-export type FormsListResponse = z.infer<typeof FormsListSchema>;
 
 const paramsSchema = z.object({
   offset: z.number().default(0),
@@ -134,7 +110,7 @@ export const action = async (args: Route.ActionArgs) => {
     );
   }
 
-  const formsData = forms.map((form: FormData) => FormDataSchema.safeParse(form));
+  const formsData = forms.map((form) => FormResponseSchema.safeParse(form));
   if (formsData.some((result) => !result.success)) {
     return data(
       {

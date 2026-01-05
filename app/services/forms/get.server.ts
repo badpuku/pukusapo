@@ -11,11 +11,13 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~/lib/apiResponse";
+import {
+  type FormResponse,
+  FormResponseSchema,
+} from "~/services/forms/schemas";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { getProfileByUserId } from "~/services/supabase/profiles";
 import { hasModeratorPermission } from "~/utils/permissions";
-
-import { type FormData, FormDataSchema } from "./schemas";
 
 /**
  * IDを指定してフォームを取得するサービス関数
@@ -25,7 +27,7 @@ import { type FormData, FormDataSchema } from "./schemas";
 export async function getFormById(
   args: LoaderFunctionArgs,
   formId: string,
-): Promise<ApiResponse<FormData>> {
+): Promise<ApiResponse<FormResponse>> {
   // 認証チェック
   const auth = await getAuth(args);
   const userId = auth.userId;
@@ -47,7 +49,8 @@ export async function getFormById(
   if (profileResponse.error || !profileResponse.data) {
     return createErrorResponse(
       ERROR_CODES.PROFILE_NOT_FOUND,
-      profileResponse.error || ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
+      profileResponse.error ||
+        ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
       ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
     );
   }
@@ -89,10 +92,10 @@ export async function getFormById(
   }
 
   // バリデーション
-  const formData = FormDataSchema.safeParse(form);
+  const formData = FormResponseSchema.safeParse(form);
 
   if (!formData.success) {
-      return createErrorResponse(
+    return createErrorResponse(
       ERROR_CODES.VALIDATION_ERROR,
       ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
       ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR],

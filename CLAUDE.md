@@ -149,6 +149,25 @@ The system uses a comprehensive RBAC schema with the following core tables:
 
 ## Development Patterns
 
+### Schema Naming Convention
+This project follows a strict two-layer naming convention for schemas and types:
+
+- **Validation Layer** (`app/models/`): `[Entity]InputSchema` → `[Entity]Input`
+- **API Layer** (`app/services/*/schemas.ts`): `[Entity]ResponseSchema` → `[Entity]Response`
+
+**Full documentation**: See [`docs/SCHEMA_NAMING_CONVENTION.md`](docs/SCHEMA_NAMING_CONVENTION.md)
+
+**Quick reference for new entities**:
+```typescript
+// 1. Validation (app/models/users.ts)
+export const UserInputSchema = z.object({...});
+export type UserInput = z.infer<typeof UserInputSchema>;
+
+// 2. API (app/services/users/schemas.ts)
+export const UserResponseSchema = z.object({...});
+export type UserResponse = z.infer<typeof UserResponseSchema>;
+```
+
 ### Database Operations
 - Use Drizzle ORM for all database operations
 - Schema files are organized by feature in `app/db/schema/`

@@ -1,7 +1,7 @@
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 
-import { type FormInput, FormSchema } from "~/models/forms";
+import { type FormInput, FormInputSchema } from "~/models/forms";
 
 export const useFormsForm = (options?: {
   defaultValue?: Partial<FormInput>;
@@ -9,7 +9,7 @@ export const useFormsForm = (options?: {
   return useForm({
     defaultValue: options?.defaultValue,
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: FormSchema });
+      return parseWithZod(formData, { schema: FormInputSchema });
     },
   });
 };

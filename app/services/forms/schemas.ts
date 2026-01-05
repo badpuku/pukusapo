@@ -3,9 +3,9 @@ import { z } from "zod";
 import { FORM_STATUS } from "~/models/forms";
 
 /**
- * フォームデータのスキーマ定義
+ * フォームレスポンスのスキーマ定義
  */
-export const FormDataSchema = z.object({
+export const FormResponseSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string().nullable(),
@@ -14,14 +14,14 @@ export const FormDataSchema = z.object({
   updated_at: z.string().nullable(),
 });
 
-export type FormData = z.infer<typeof FormDataSchema>;
+export type FormResponse = z.infer<typeof FormResponseSchema>;
 
 /**
  * フォーム一覧APIレスポンスのスキーマ定義
  */
 export const FormsListSchema = z.object({
   success: z.boolean(),
-  data: z.array(FormDataSchema).nullable(),
+  data: z.array(FormResponseSchema).nullable(),
   error: z
     .object({
       code: z.string(),

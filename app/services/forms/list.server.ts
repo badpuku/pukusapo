@@ -6,11 +6,13 @@ import {
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
+import {
+  FormResponseSchema,
+  type FormsListResponse,
+} from "~/services/forms/schemas";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { getProfileByUserId } from "~/services/supabase/profiles";
 import { hasModeratorPermission } from "~/utils/permissions";
-
-import { FormDataSchema, type FormsListResponse } from "./schemas";
 
 /**
  * フォーム一覧を取得するサービス関数
@@ -30,13 +32,13 @@ export async function getFormsList(
 
   if (!userId) {
     return {
-        success: false,
-        data: null,
-        error: {
-          code: ERROR_CODES.UNAUTHORIZED,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
-        },
-        status: ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
+      success: false,
+      data: null,
+      error: {
+        code: ERROR_CODES.UNAUTHORIZED,
+        message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
+      },
+      status: ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
     };
   }
 
@@ -98,7 +100,7 @@ export async function getFormsList(
   }
 
   // バリデーション
-  const formsData = forms.map((form) => FormDataSchema.safeParse(form));
+  const formsData = forms.map((form) => FormResponseSchema.safeParse(form));
 
   if (formsData.some((result) => !result.success)) {
     return {

@@ -3,10 +3,15 @@
  * @module services/forms
  */
 
-export { getFormsList } from "./list.server";
-export type { FormData, FormsListParams, FormsListResponse } from "./schemas";
+export { getFormById } from "~/services/forms/get.server";
+export { getFormsList } from "~/services/forms/list.server";
+export type {
+  FormResponse,
+  FormsListParams,
+  FormsListResponse,
+} from "~/services/forms/schemas";
 export {
-  FormDataSchema,
+  FormResponseSchema,
   FormsListParamsSchema,
   FormsListSchema,
-} from "./schemas";
+} from "~/services/forms/schemas";
