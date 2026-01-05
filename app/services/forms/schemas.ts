@@ -1,12 +1,15 @@
 import { z } from "zod";
 
+import { FORM_STATUS } from "~/models/forms";
+
 /**
  * フォームデータのスキーマ定義
  */
 export const FormDataSchema = z.object({
   id: z.string(),
   title: z.string(),
-  status: z.string(),
+  description: z.string().nullable(),
+  status: z.enum([FORM_STATUS.DRAFT, FORM_STATUS.PUBLISHED]),
   created_at: z.string(),
   updated_at: z.string().nullable(),
 });

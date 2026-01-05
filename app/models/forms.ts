@@ -23,3 +23,5 @@ export const FormSchema = z.object({
     .or(z.literal("")),
   status: z.enum([FORM_STATUS.DRAFT, FORM_STATUS.PUBLISHED]).default(FORM_STATUS.DRAFT),
 });
+
+export type FormInput = z.infer<typeof FormSchema>;
