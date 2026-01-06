@@ -6,6 +6,7 @@ import {
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
+import { findAllForms } from "~/repositories/forms.server";
 import {
   FormResponseSchema,
   type FormsListResponse,
@@ -78,13 +79,11 @@ export async function getFormsList(
     };
   }
 
-  // フォームデータ取得
-  const { data: forms, error: formsError } = await supabase
-    .from("forms")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(limit)
-    .range(offset, offset + limit - 1);
+  // フォームデータ取得（Repository経由）
+  const { data: forms, error: formsError } = await findAllForms(supabase, {
+    offset,
+    limit,
+  });
 
   if (formsError) {
     return {
