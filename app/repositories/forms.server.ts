@@ -33,3 +33,47 @@ export async function findAllForms(
     .order("created_at", { ascending: false })
     .range(options.offset, options.offset + options.limit - 1);
 }
+
+/**
+ * フォームを作成
+ *
+ * @param supabase - Supabaseクライアント
+ * @param data - フォーム作成データ
+ * @returns 作成されたフォームまたはエラー
+ */
+export async function createForm(
+  supabase: SupabaseClient<Database>,
+  data: Database["public"]["Tables"]["forms"]["Insert"],
+) {
+  return supabase.from("forms").insert(data).select().single();
+}
+
+/**
+ * フォームを更新
+ *
+ * @param supabase - Supabaseクライアント
+ * @param id - フォームID
+ * @param data - フォーム更新データ
+ * @returns 更新されたフォームまたはエラー
+ */
+export async function updateForm(
+  supabase: SupabaseClient<Database>,
+  id: string,
+  data: Database["public"]["Tables"]["forms"]["Update"],
+) {
+  return supabase.from("forms").update(data).eq("id", id).select().single();
+}
+
+/**
+ * フォームを削除
+ *
+ * @param supabase - Supabaseクライアント
+ * @param id - フォームID
+ * @returns 削除結果またはエラー
+ */
+export async function deleteForm(
+  supabase: SupabaseClient<Database>,
+  id: string,
+) {
+  return supabase.from("forms").delete().eq("id", id);
+}
