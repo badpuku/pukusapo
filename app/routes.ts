@@ -20,6 +20,5 @@ export default [
   ]),
 
   route("api/forms/create", "./routes/api/forms/create/route.tsx"),
-  route("api/forms/list", "./routes/api/forms/list/route.tsx"),
   route("api/forms/:id/update", "./routes/api/forms/:id/update/route.tsx"),
 ] satisfies RouteConfig;
