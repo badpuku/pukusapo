@@ -17,23 +17,6 @@ export const FormResponseSchema = z.object({
 export type FormResponse = z.infer<typeof FormResponseSchema>;
 
 /**
- * フォーム一覧APIレスポンスのスキーマ定義
- */
-export const FormsListSchema = z.object({
-  success: z.boolean(),
-  data: z.array(FormResponseSchema).nullable(),
-  error: z
-    .object({
-      code: z.string(),
-      message: z.string(),
-    })
-    .optional(),
-  status: z.number(),
-});
-
-export type FormsListResponse = z.infer<typeof FormsListSchema>;
-
-/**
  * フォーム一覧取得パラメータのスキーマ定義
  */
 export const FormsListParamsSchema = z.object({

@@ -17,22 +17,18 @@ import {
   FormResponseSchema,
 } from "~/services/forms/schemas";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
-import { getProfileByUserId } from "~/services/supabase/profiles";
-import { hasModeratorPermission } from "~/utils/permissions";
 
 /**
- * IDを指定してフォームを取得するサービス関数
- *
- * 認証済みユーザーが自身の作成したフォーム、またはadminが全てのフォームを取得できます。
+ * IDを指定してフォームを取得する
  */
 export async function getFormById(
   args: LoaderFunctionArgs,
   formId: string,
 ): Promise<ApiResponse<FormResponse>> {
-  // 認証チェック
   const auth = await getAuth(args);
   const userId = auth.userId;
 
+  // 認証チェック
   if (!userId) {
     return createErrorResponse(
       ERROR_CODES.UNAUTHORIZED,
@@ -41,36 +37,11 @@ export async function getFormById(
     );
   }
 
-  // Supabaseクライアント作成
+  // フォームデータ取得
   const supabase = createServerSupabaseClient(args);
-
-  // プロフィール取得
-  const profileResponse = await getProfileByUserId(supabase, userId);
-
-  if (profileResponse.error || !profileResponse.data) {
-    return createErrorResponse(
-      ERROR_CODES.PROFILE_NOT_FOUND,
-      profileResponse.error ||
-        ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
-      ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
-    );
-  }
-
-  // 権限チェック
-  const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles.permission_level;
-
-  if (!hasModeratorPermission(permissionLevel)) {
-    return createErrorResponse(
-      ERROR_CODES.FORBIDDEN,
-      ERROR_MESSAGES_MAP[ERROR_CODES.FORBIDDEN],
-      ERROR_STATUS_MAP[ERROR_CODES.FORBIDDEN],
-    );
-  }
-
-  // フォームデータ取得（Repository経由）
   const { data: form, error: formError } = await findFormById(supabase, formId);
 
+  // フォームデータ取得エラーチェック
   if (formError) {
     return createErrorResponse(
       ERROR_CODES.DATABASE_ERROR,
@@ -79,9 +50,8 @@ export async function getFormById(
     );
   }
 
-  // バリデーション
+  // フォームデータバリデーション
   const formData = FormResponseSchema.safeParse(form);
-
   if (!formData.success) {
     return createErrorResponse(
       ERROR_CODES.VALIDATION_ERROR,
@@ -90,5 +60,5 @@ export async function getFormById(
     );
   }
 
-  return createSuccessResponse(formData.data, 200);
+  return createSuccessResponse(formData.data);
 }
