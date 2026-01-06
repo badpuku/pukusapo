@@ -11,6 +11,7 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~/lib/apiResponse";
+import { findFormById } from "~/repositories/forms.server";
 import {
   type FormResponse,
   FormResponseSchema,
@@ -67,12 +68,8 @@ export async function getFormById(
     );
   }
 
-  // フォームデータ取得
-  const { data: form, error: formError } = await supabase
-    .from("forms")
-    .select("*")
-    .eq("id", formId)
-    .single();
+  // フォームデータ取得（Repository経由）
+  const { data: form, error: formError } = await findFormById(supabase, formId);
 
   if (formError) {
     // フォームが見つからない場合
