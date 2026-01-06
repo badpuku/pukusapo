@@ -78,12 +78,12 @@ npm run db:seed
 
 #### Migration Strategy
 When creating new database tables or schemas:
-1. First create the Drizzle ORM schema file in `app/db/schema/`
-2. Use `npm run db:generate:custom` to generate an empty migration file
-3. Write the SQL statements manually in the generated migration file
-4. Apply migrations with `npm run db:migrate`
+1. Use `npm run db:generate:custom` to generate an empty migration file
+2. Write the SQL statements manually in the generated migration file
+3. Apply migrations with `npm run db:migrate`
+4. Regenerate TypeScript types with `npm run db:gen-types`
 
-Note: Do not use `db:generate` for new table creation as it may not properly handle complex schemas. Always use `db:generate:custom` and write SQL manually.
+Note: Always write SQL migrations manually to ensure proper schema control and RLS policy setup.
 
 ### Storybook
 ```bash
@@ -101,7 +101,7 @@ npm run build-storybook
 - **Runtime**: Cloudflare Workers
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Clerk
-- **ORM**: Drizzle ORM
+- **Database Client**: Supabase JS Client
 - **Styling**: Tailwind CSS 4.0
 
 ### Project Structure
@@ -110,12 +110,13 @@ app/
 ├── components/         # Reusable UI components
 │   ├── ui/            # shadcn/ui components
 │   └── layouts/       # Layout components
-├── db/                # Database layer
-│   ├── schema/        # Database schema definitions
-│   ├── queries/       # Database queries
-│   └── client.ts      # Database client setup
+├── repositories/      # Database operations layer
+│   └── forms.server.ts  # Forms CRUD operations
 ├── routes/            # React Router routes
-├── services/          # External service integrations
+├── services/          # Business logic & external integrations
+│   ├── forms/         # Form-related business logic
+│   └── supabase/      # Supabase client setup
+├── models/            # Type definitions & schemas
 ├── lib/               # Utility functions
 └── hooks/             # Custom React hooks
 ```
@@ -169,10 +170,30 @@ export type UserResponse = z.infer<typeof UserResponseSchema>;
 ```
 
 ### Database Operations
-- Use Drizzle ORM for all database operations
-- Schema files are organized by feature in `app/db/schema/`
-- Database client is created per request with connection pooling
-- All tables use Row Level Security (RLS) for fine-grained access control
+
+**Architecture Pattern**: Repository Layer
+
+The application uses a **Repository pattern** to separate database operations from business logic:
+
+**Repository Layer** (`app/repositories/`):
+- Handles all direct database operations using Supabase client
+- Function-based approach (no classes)
+- Provides CRUD operations: `findFormById`, `findAllForms`, `createForm`, `updateForm`, `deleteForm`
+- Type-safe with Database type definitions from `app/models/supabase.ts`
+
+**Service Layer** (`app/services/`):
+- Contains business logic, authentication, and authorization
+- Calls Repository functions for database operations
+- Handles error responses and data validation
+- Never directly accesses Supabase queries
+
+**Benefits**:
+- Clear separation of concerns
+- Easier testing (Repository can be mocked)
+- Consistent database access patterns
+- Reduced code duplication
+
+All tables use Row Level Security (RLS) for fine-grained access control through Supabase policies.
 
 ### Component Development
 - UI components use shadcn/ui with Tailwind CSS
@@ -214,8 +235,10 @@ The application deploys to Cloudflare Workers:
 ## Key Files to Understand
 
 - `app/root.tsx`: Application root with Clerk provider
-- `app/db/client.ts`: Database connection setup
-- `app/db/schema/`: Database schema definitions
+- `app/repositories/forms.server.ts`: Database operations for forms (Repository pattern)
+- `app/services/forms/`: Business logic for forms (authentication, authorization, validation)
+- `app/services/supabase/client.server.ts`: Supabase client configuration
+- `app/models/supabase.ts`: Auto-generated TypeScript types from Supabase schema
 - `supabase/migrations/`: Database migration files
 - `react-router.config.ts`: React Router configuration
 - `vite.config.ts`: Vite and development server configuration
