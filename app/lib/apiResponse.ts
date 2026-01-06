@@ -1,6 +1,7 @@
 export interface ApiSuccessResponse<T> {
   success: true;
   data: T;
+  error: null;
   status: number;
 }
 
@@ -20,7 +21,7 @@ export function createSuccessResponse<T>(
   data: T,
   status: number = 200,
 ): ApiSuccessResponse<T> {
-  return { success: true, data, status };
+  return { success: true, data, error: null, status };
 }
 
 export function createErrorResponse(
