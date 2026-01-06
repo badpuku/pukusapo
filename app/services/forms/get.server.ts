@@ -72,18 +72,9 @@ export async function getFormById(
   const { data: form, error: formError } = await findFormById(supabase, formId);
 
   if (formError) {
-    // フォームが見つからない場合
-    if (formError.code === "PGRST116") {
-      return createErrorResponse(
-        ERROR_CODES.RESOURCE_NOT_FOUND,
-        "フォームが見つかりません",
-        ERROR_STATUS_MAP[ERROR_CODES.RESOURCE_NOT_FOUND],
-      );
-    }
-
     return createErrorResponse(
       ERROR_CODES.DATABASE_ERROR,
-      formError.message || ERROR_MESSAGES_MAP[ERROR_CODES.DATABASE_ERROR],
+      `[Supabase Error] ${formError.code}: ${formError.message}`,
       ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
     );
   }
