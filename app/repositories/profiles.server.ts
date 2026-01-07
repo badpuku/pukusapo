@@ -17,13 +17,13 @@ export async function findProfileByUserId(
     .from("profiles")
     .select(
       `
-    *,
-    roles(*)
-  `,
+         *,
+         roles(*)
+       `,
     )
     .eq("user_id", userId)
     .eq("is_active", true)
-    .single();
+    .maybeSingle();
 }
 
 /**

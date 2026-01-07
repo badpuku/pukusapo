@@ -39,7 +39,10 @@ export async function getProfileByUserId(
 
   // フォームデータ取得
   const supabase = createServerSupabaseClient(args);
-  const { data: profile, error: profileError } = await findProfileByUserId(supabase, userId);
+  const { data: profile, error: profileError } = await findProfileByUserId(
+    supabase,
+    userId,
+  );
 
   // フォームデータ取得エラーチェック
   if (profileError) {
@@ -47,6 +50,15 @@ export async function getProfileByUserId(
       ERROR_CODES.DATABASE_ERROR,
       `[Supabase Error] ${profileError.code}: ${profileError.message}`,
       ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
+    );
+  }
+
+  // プロフィールが存在しない場合
+  if (!profile) {
+    return createErrorResponse(
+      ERROR_CODES.PROFILE_NOT_FOUND,
+      ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
+      ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
     );
   }
 
