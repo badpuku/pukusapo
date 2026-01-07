@@ -5,11 +5,10 @@ import {
   withRouter,
 } from "storybook-addon-remix-react-router";
 
+import { AdminLayout } from "~/components/layouts/adminLayout/adminLayout";
 import { SidebarSignOutButton } from "~/components/ui/sidebar";
-import type { Profile } from "~/models/profiles";
 import type { AppUIMatch } from "~/route-handle";
-
-import { AdminLayout } from "./adminLayout";
+import type { ProfileResponse } from "~/services/profiles/schemas";
 
 const meta: Meta<typeof AdminLayout> = {
   title: "Layouts/AdminLayout",
@@ -26,8 +25,8 @@ const meta: Meta<typeof AdminLayout> = {
 export default meta;
 type Story = StoryObj<typeof AdminLayout>;
 
-const userProfile: Profile = {
-  avatar_url: null,
+const userProfile: ProfileResponse = {
+  avatar_url: "https://example.com/avatar.png",
   created_at: new Date().toISOString(),
   full_name: "test user",
   id: "123",
