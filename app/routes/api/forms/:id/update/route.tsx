@@ -8,8 +8,8 @@ import {
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
 import { FormInputSchema } from "~/models/forms";
+import { getProfileByUserId } from "~/services/profiles/get.server";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
-import { getProfileByUserId } from "~/services/supabase/profiles";
 import { hasModeratorPermission } from "~/utils/permissions";
 
 import type { Route } from "./+types/route";
@@ -69,7 +69,7 @@ export const action = async (args: Route.ActionArgs) => {
   const { title, description, status } = submission.value;
 
   const supabase = createServerSupabaseClient(args);
-  const profileResponse = await getProfileByUserId(supabase, userId);
+  const profileResponse = await getProfileByUserId(args, userId);
 
   if (profileResponse.error || !profileResponse.data) {
     return data(
