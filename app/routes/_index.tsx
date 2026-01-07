@@ -5,10 +5,9 @@ import {
   UserButton,
 } from "@clerk/react-router";
 import { getAuth } from "@clerk/react-router/ssr.server";
-import { type MetaFunction, useLoaderData } from "react-router";
+import { data, type MetaFunction, useLoaderData } from "react-router";
 
-import { createServerSupabaseClient } from "~/services/supabase/client.server";
-import { getProfileByUserId } from "~/services/supabase/profiles";
+import { getProfileByUserId } from "~/services/profiles/get.server";
 
 import type { Route } from "./+types/_index";
 
@@ -20,21 +19,23 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async (args: Route.LoaderArgs) => {
-  const supabase = createServerSupabaseClient(args);
   const auth = await getAuth(args);
 
-  if(!auth.isAuthenticated) {
+  if (!auth.isAuthenticated) {
     return {
       userProfile: null,
     };
   }
 
-  const profileResponse = auth.userId
-    ? await getProfileByUserId(supabase, auth.userId)
-    : null;
+  const profileResponse = await getProfileByUserId(args, auth.userId);
+  if (!profileResponse.success) {
+    throw data(profileResponse.error.message, {
+      status: profileResponse.status,
+    });
+  }
 
   return {
-    userProfile: profileResponse?.data || null,
+    userProfile: profileResponse.data,
   };
 };
 
@@ -68,8 +69,8 @@ export default function Index() {
                     <p>名前: {userProfile.full_name || "未設定"}</p>
                     <p>ユーザー名: {userProfile.username || "未設定"}</p>
                     <p>
-                      ロール: {userProfile.roles?.name} ({userProfile.roles?.code}
-                      )
+                      ロール: {userProfile.roles?.name} (
+                      {userProfile.roles?.code})
                     </p>
                   </div>
                 )}

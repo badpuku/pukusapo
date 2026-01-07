@@ -35,8 +35,8 @@ import {
   SidebarTrigger,
 } from "~/components/ui/sidebar";
 import { cn } from "~/lib/utils";
-import type { Profile } from "~/models/profiles";
 import type { AppUIMatch } from "~/route-handle";
+import type { ProfileResponse } from "~/services/profiles/schemas";
 
 type SidebarMenuItem = {
   to: string;
@@ -45,7 +45,7 @@ type SidebarMenuItem = {
 };
 
 type AdminSidebarProps = {
-  userProfile: Profile | null;
+  userProfile: ProfileResponse;
   signOutButton: React.ReactNode;
 };
 
@@ -75,8 +75,7 @@ const sidebarMenuItems: SidebarMenuItem[] = [
 ];
 
 const AdminSidebar = ({ userProfile, signOutButton }: AdminSidebarProps) => {
-  // https://github.com/shadcn.png
-  const userAvatar = userProfile?.avatar_url || "";
+  const userAvatar = userProfile.avatar_url;
 
   return (
     <Sidebar className="border-r-zinc-200">
