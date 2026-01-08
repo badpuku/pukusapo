@@ -1,13 +1,17 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { parseWithZod } from "@conform-to/zod";
-import { data } from "react-router";
 
 import {
   ERROR_CODES,
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+} from "~/lib/apiResponse";
 import { FormInputSchema } from "~/models/forms";
+import { createForm } from "~/repositories/forms.server";
 import { getProfileByUserId } from "~/services/profiles/get.server";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { hasModeratorPermission } from "~/utils/permissions";
@@ -15,39 +19,27 @@ import { hasModeratorPermission } from "~/utils/permissions";
 import type { Route } from "./+types/route";
 
 export const action = async (args: Route.ActionArgs) => {
-  const { request } = args;
-  const formData = await request.formData();
-  const submission = parseWithZod(formData, { schema: FormInputSchema });
-
   const auth = await getAuth(args);
   const userId = auth.userId;
 
   // 認証チェック
   if (!userId) {
-    return data(
-      {
-        success: false,
-        data: null,
-        error: {
-          code: ERROR_CODES.UNAUTHORIZED,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
-        },
-      },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED] },
+    return createErrorResponse(
+      ERROR_CODES.UNAUTHORIZED,
+      ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
+      ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
     );
   }
 
+  const formData = await args.request.formData();
+  const submission = parseWithZod(formData, { schema: FormInputSchema });
+
   // バリデーションエラーチェック
   if (submission.status !== "success") {
-    return data(
-      {
-        success: false,
-        error: {
-          code: ERROR_CODES.VALIDATION_ERROR,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
-        },
-      },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR] },
+    return createErrorResponse(
+      ERROR_CODES.VALIDATION_ERROR,
+      ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
+      ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR],
     );
   }
 
@@ -56,66 +48,38 @@ export const action = async (args: Route.ActionArgs) => {
   const supabase = createServerSupabaseClient(args);
   const profileResponse = await getProfileByUserId(args, userId);
 
-  if (profileResponse.error || !profileResponse.data) {
-    return data(
-      {
-        success: false,
-        error: {
-          code: ERROR_CODES.PROFILE_NOT_FOUND,
-          message:
-            profileResponse.error ||
-            ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
-        },
-      },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND] },
+  if (!profileResponse.success) {
+    return createErrorResponse(
+      ERROR_CODES.PROFILE_NOT_FOUND,
+      profileResponse.error.message,
+      ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
     );
   }
 
   const userProfile = profileResponse.data;
   const permissionLevel = userProfile.roles.permission_level;
   if (!hasModeratorPermission(permissionLevel)) {
-    return data(
-      {
-        success: false,
-        error: {
-          code: ERROR_CODES.FORBIDDEN,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.FORBIDDEN],
-        },
-      },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.FORBIDDEN] },
+    return createErrorResponse(
+      ERROR_CODES.FORBIDDEN,
+      ERROR_MESSAGES_MAP[ERROR_CODES.FORBIDDEN],
+      ERROR_STATUS_MAP[ERROR_CODES.FORBIDDEN],
     );
   }
 
-  const { data: newForm, error: insertError } = await supabase
-    .from("forms")
-    .insert({
-      title,
-      description: description || null,
-      status,
-      created_by: userProfile.id,
-    })
-    .select()
-    .single();
+  const { data: newForm, error: insertError } = await createForm(supabase, {
+    title,
+    description: description || null,
+    status,
+    created_by: userProfile.id,
+  });
 
   if (insertError) {
-    console.error("Form creation error:", insertError);
-    return data(
-      {
-        success: false,
-        error: {
-          code: ERROR_CODES.DATABASE_ERROR,
-          message: ERROR_MESSAGES_MAP[ERROR_CODES.DATABASE_ERROR],
-        },
-      },
-      { status: ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR] },
+    return createErrorResponse(
+      ERROR_CODES.DATABASE_ERROR,
+      `[Supabase Error] ${insertError.code}: ${insertError.message}`,
+      ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
     );
   }
 
-  return data(
-    {
-      success: true,
-      data: newForm,
-    },
-    { status: 201 },
-  );
+  return createSuccessResponse(newForm, 201);
 };
