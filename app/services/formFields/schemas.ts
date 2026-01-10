@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { FIELD_TYPE, FieldOptionsSchema } from "~/models/formFields";
+import { FIELD_TYPE } from "~/models/formFields";
+import { JsonSchema } from "~/models/json";
 
 export const FormFieldsResponseSchema = z.object({
   id: z.string(),
@@ -18,8 +19,8 @@ export const FormFieldsResponseSchema = z.object({
   description: z.string().nullable(),
   isRequired: z.boolean(),
   displayOrder: z.number(),
-  validationRules: z.record(z.string(), z.any()).nullable(),
-  fieldOptions: FieldOptionsSchema.nullable(),
+  validationRules: JsonSchema.nullable(),
+  fieldOptions: JsonSchema.nullable(),
 });
 
 export type FormFieldsResponse = z.infer<typeof FormFieldsResponseSchema>;
