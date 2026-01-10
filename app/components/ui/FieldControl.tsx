@@ -16,6 +16,7 @@ interface Props {
   label: string;
   htmlFor: string;
   required?: boolean;
+  noRequiredLabel?: boolean;
   errors?: string[];
 }
 
@@ -25,6 +26,7 @@ function FieldControl({
   label,
   htmlFor,
   required = false,
+  noRequiredLabel = false,
   errors,
   ...props
 }: React.ComponentProps<"div"> & Props) {
@@ -34,7 +36,7 @@ function FieldControl({
     <div className={cn("flex flex-col gap-2", className)} {...props}>
       <div>
         <FieldLabel htmlFor={htmlFor}>{label}</FieldLabel>
-        <span className={cn("text-white text-xs font-medium px-2 py-1", requiredLabel.backgroundColor)}>{requiredLabel.label}</span>
+        {!noRequiredLabel && <span className={cn("text-white text-xs font-medium px-2 py-1", requiredLabel.backgroundColor)}>{requiredLabel.label}</span>}
       </div>
       {children}
       {errors && errors.length > 0 && (
