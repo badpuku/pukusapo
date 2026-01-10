@@ -13,7 +13,7 @@ import { PageTitle } from "~/components/ui/admin/pageTitle";
 import { Button } from "~/components/ui/button";
 import { Container } from "~/components/ui/container";
 import { FieldGroup, FieldSet } from "~/components/ui/field";
-import { FieldControl } from "~/components/ui/FieldControl";
+import { FieldControl } from "~/components/ui/fieldControl";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { ERROR_CODES, ERROR_STATUS_MAP } from "~/constants/errors";
