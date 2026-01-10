@@ -22,6 +22,7 @@ export const FieldOptionsSchema = z.object({
   ] as const),
   options: z.array(z.string()),
 });
+export type FieldOptions = z.infer<typeof FieldOptionsSchema>;
 
 const FieldBaseSchema = z.object({
   fieldType: z.enum([
@@ -38,7 +39,7 @@ const FieldBaseSchema = z.object({
   isRequired: z.boolean().default(false),
   displayOrder: z.number().default(0),
   validationRules: JsonSchema.optional(),
-  fieldOptions: JsonSchema.optional(),
+  fieldOptions: FieldOptionsSchema.optional(),
 });
 
 export const FieldDraftSchema = FieldBaseSchema;
