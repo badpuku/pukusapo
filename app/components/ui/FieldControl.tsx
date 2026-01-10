@@ -34,10 +34,12 @@ function FieldControl({
 
   return (
     <div className={cn("flex flex-col gap-2", className)} {...props}>
+      {label !== "" && (
       <div>
         <FieldLabel htmlFor={htmlFor}>{label}</FieldLabel>
         {!noRequiredLabel && <span className={cn("text-white text-xs font-medium px-2 py-1", requiredLabel.backgroundColor)}>{requiredLabel.label}</span>}
       </div>
+      )}
       {children}
       {errors && errors.length > 0 && (
         <FieldError>
