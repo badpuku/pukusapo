@@ -35,6 +35,20 @@ export async function createField(
 }
 
 /**
+ * フォーム項目を複数作成
+ *
+ * @param supabase - Supabaseクライアント
+ * @param data - フォーム項目複数作成データ
+ * @returns 作成されたフォーム項目複数またはエラー
+ */
+export async function createFields(
+  supabase: SupabaseClient<Database>,
+  data: Database["public"]["Tables"]["form_fields"]["Insert"][],
+) {
+  return supabase.from("form_fields").insert(data).select();
+}
+
+/**
  * フォーム項目を更新
  *
  * @param supabase - Supabaseクライアント
