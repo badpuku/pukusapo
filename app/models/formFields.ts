@@ -15,11 +15,6 @@ export const FIELD_TYPE = {
 export type FieldType = (typeof FIELD_TYPE)[keyof typeof FIELD_TYPE];
 
 export const FieldOptionsSchema = z.object({
-  type: z.enum([
-    FIELD_TYPE.SELECT,
-    FIELD_TYPE.CHECKBOX,
-    FIELD_TYPE.RADIO,
-  ] as const),
   options: z.array(z.string()),
 });
 export type FieldOptions = z.infer<typeof FieldOptionsSchema>;
