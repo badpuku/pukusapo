@@ -23,8 +23,7 @@ export const FieldOptionsSchema = z.object({
   options: z.array(z.string()),
 });
 
-export const FieldInputSchema = z.object({
-  formId: z.string().uuid(),
+const FieldBaseSchema = z.object({
   fieldType: z.enum([
     FIELD_TYPE.TEXT,
     FIELD_TYPE.EMAIL,
@@ -33,7 +32,7 @@ export const FieldInputSchema = z.object({
     FIELD_TYPE.CHECKBOX,
     FIELD_TYPE.RADIO,
     FIELD_TYPE.TEXTAREA,
-  ] as const),
+  ]),
   label: z.string().min(1).max(200),
   description: z.string().max(1000).optional(),
   isRequired: z.boolean().default(false),
@@ -42,4 +41,10 @@ export const FieldInputSchema = z.object({
   fieldOptions: JsonSchema.optional(),
 });
 
+export const FieldDraftSchema = FieldBaseSchema;
+export type FieldDraft = z.infer<typeof FieldDraftSchema>;
+
+export const FieldInputSchema = FieldBaseSchema.extend({
+  formId: z.string().uuid(),
+});
 export type FieldInput = z.infer<typeof FieldInputSchema>;
