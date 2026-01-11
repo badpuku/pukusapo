@@ -1,9 +1,10 @@
 import type { FieldMetadata } from "@conform-to/react";
 import { getFormProps, getInputProps } from "@conform-to/react";
-import { Copy, Save, Trash2 } from "lucide-react";
+import { Copy, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useFetcher, useNavigate } from "react-router";
+import { useFetcher, useNavigate } from "react-router";
 
+import { SubmitActions } from "~/components/form/submitActions";
 import { PageTitle } from "~/components/ui/admin/pageTitle";
 import { Button } from "~/components/ui/button";
 import { ConformSwitch } from "~/components/ui/conform/conformSwitch";
@@ -224,20 +225,6 @@ export default function AdminFormsNewRoute() {
                             </SelectContent>
                           </Select>
                         </FieldControl>
-                        <FieldControl
-                          label=""
-                          htmlFor={fieldset.isRequired.id}
-                          errors={fieldset.isRequired.errors}
-                          noRequiredLabel={true}
-                          className="flex-row items-center gap-2"
-                        >
-                          <Label htmlFor={fieldset.isRequired.id}>必須</Label>
-                          <ConformSwitch
-                            id={fieldset.isRequired.id}
-                            name={fieldset.isRequired.name}
-                            defaultChecked={fieldset.isRequired.defaultChecked}
-                          />
-                        </FieldControl>
                       </div>
                       <div>
                         <FieldControl
@@ -265,13 +252,26 @@ export default function AdminFormsNewRoute() {
                     </Button>
                     <Button
                       type="button"
-                      variant="outline"
-                      size="sm"
+                      variant="ghost"
+                      size="icon"
                       onClick={() => handleCopyField(index)}
                     >
-                      コピー
                       <Copy className="h-4 w-4" />
                     </Button>
+                    <FieldControl
+                      label=""
+                      htmlFor={fieldset.isRequired.id}
+                      errors={fieldset.isRequired.errors}
+                      noRequiredLabel={true}
+                      className="flex-row items-center gap-2"
+                    >
+                      <Label htmlFor={fieldset.isRequired.id}>必須</Label>
+                      <ConformSwitch
+                        id={fieldset.isRequired.id}
+                        name={fieldset.isRequired.name}
+                        defaultChecked={fieldset.isRequired.defaultChecked}
+                      />
+                    </FieldControl>
                   </FieldCardFooter>
                 </FieldCard>
               );
@@ -288,28 +288,13 @@ export default function AdminFormsNewRoute() {
             </div>
           )}
 
-          <div className="flex items-center gap-4">
-            <Button
-              type="submit"
-              onClick={() => setStatus(FORM_STATUS.DRAFT)}
-              disabled={fetcher.state === "submitting"}
-            >
-              <Save className="mr-2 h-4 w-4" />
-              下書きで保存
-            </Button>
-            <Button
-              type="submit"
-              onClick={() => setStatus(FORM_STATUS.PUBLISHED)}
-              disabled={fetcher.state === "submitting"}
-            >
-              <Save className="mr-2 h-4 w-4" />
-              公開
-            </Button>
-            <input type="hidden" name="status" value={status} />
-            <Button type="button" variant="outline" asChild>
-              <Link to="/admin/forms">キャンセル</Link>
-            </Button>
-          </div>
+          <input type="hidden" name="status" value={status} />
+          <SubmitActions
+            isSubmitting={fetcher.state === "submitting"}
+            onDraftSave={() => setStatus(FORM_STATUS.DRAFT)}
+            onPublish={() => setStatus(FORM_STATUS.PUBLISHED)}
+            linkTo="/admin/forms"
+          />
         </fetcher.Form>
       </Container>
     </div>
