@@ -29,7 +29,7 @@ import { Title } from "~/components/ui/title";
 import { FIELD_TYPE, type FieldDraft } from "~/models/formFields";
 import { FORM_STATUS, type FormStatus } from "~/models/forms";
 import type { RouteHandle } from "~/route-handle";
-import { FieldOptionsEditor } from "~/routes/admin/forms/new/features/fieldOptionsEditor";
+import { FieldOptionsEditor } from "~/routes/admin/forms/features/fieldOptionsEditor";
 import { useFormsForm } from "~/routes/admin/forms/useFormsForm";
 
 export const handle: RouteHandle = {

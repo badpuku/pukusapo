@@ -5,7 +5,7 @@ import { Textarea } from "~/components/ui/textarea";
 import type { FieldDraft } from "~/models/formFields";
 import { FIELD_TYPE } from "~/models/formFields";
 import type { FormWithFieldsInput } from "~/models/forms";
-import { OptionsListEditor } from "~/routes/admin/forms/new/features/optionsListEditor";
+import { OptionsListEditor } from "~/routes/admin/forms/features/optionsListEditor";
 
 interface FieldOptionsEditorProps {
   form: FormMetadata<FormWithFieldsInput>;
