@@ -6,12 +6,10 @@ import {
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from "~/lib/apiResponse";
-import { FormInputSchema } from "~/models/forms";
+import { createErrorResponse, createSuccessResponse } from "~/lib/apiResponse";
+import { FormWithFieldsInputSchema } from "~/models/forms";
 import { createForm } from "~/repositories/forms.server";
+import { createFields } from "~/services/formFields/create.server";
 import { getProfileByUserId } from "~/services/profiles/get.server";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { hasModeratorPermission } from "~/utils/permissions";
@@ -32,7 +30,9 @@ export const action = async (args: Route.ActionArgs) => {
   }
 
   const formData = await args.request.formData();
-  const submission = parseWithZod(formData, { schema: FormInputSchema });
+  const submission = parseWithZod(formData, {
+    schema: FormWithFieldsInputSchema,
+  });
 
   // バリデーションエラーチェック
   if (submission.status !== "success") {
@@ -43,7 +43,7 @@ export const action = async (args: Route.ActionArgs) => {
     );
   }
 
-  const { title, description, status } = submission.value;
+  const { title, description, status, fields } = submission.value;
 
   const supabase = createServerSupabaseClient(args);
   const profileResponse = await getProfileByUserId(args, userId);
@@ -76,10 +76,29 @@ export const action = async (args: Route.ActionArgs) => {
   if (insertError) {
     return createErrorResponse(
       ERROR_CODES.DATABASE_ERROR,
-      `[Supabase Error] ${insertError.code}: ${insertError.message}`,
+      `[Supabase Error - createForm] ${insertError.code}: ${insertError.message}`,
       ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
     );
   }
 
-  return createSuccessResponse(newForm, 201);
+  const { data: newFields, error: insertFieldsError } = await createFields(
+    supabase,
+    fields.map((field) => ({
+      formId: newForm.id,
+      ...field,
+    })),
+  );
+
+  if (insertFieldsError) {
+    return createErrorResponse(
+      ERROR_CODES.DATABASE_ERROR,
+      `[Supabase Error - createFields] ${insertFieldsError.code}: ${insertFieldsError.message}`,
+      ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
+    );
+  }
+
+  return createSuccessResponse({
+    form: newForm,
+    fields: newFields,
+  }, 200);
 };

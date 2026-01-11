@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-import { FIELD_TYPE } from "~/models/formFields";
+import { FIELD_TYPE, FieldOptionsSchema } from "~/models/formFields";
 import { JsonSchema } from "~/models/json";
 
 export const FormFieldsResponseSchema = z.object({
   id: z.string(),
-  formId: z.string(),
-  fieldType: z.enum([
+  form_id: z.string(),
+  field_type: z.enum([
     FIELD_TYPE.TEXT,
     FIELD_TYPE.EMAIL,
     FIELD_TYPE.TEL,
@@ -17,10 +17,10 @@ export const FormFieldsResponseSchema = z.object({
   ] as const),
   label: z.string(),
   description: z.string().nullable(),
-  isRequired: z.boolean(),
-  displayOrder: z.number(),
-  validationRules: JsonSchema.nullable(),
-  fieldOptions: JsonSchema.nullable(),
+  is_required: z.boolean(),
+  display_order: z.number(),
+  validation_rules: JsonSchema.nullable(),
+  field_options: FieldOptionsSchema.nullable(),
 });
 
 export type FormFieldsResponse = z.infer<typeof FormFieldsResponseSchema>;
