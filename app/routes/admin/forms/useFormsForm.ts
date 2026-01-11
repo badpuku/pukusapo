@@ -9,7 +9,7 @@ import {
 export const useFormsForm = (options?: {
   defaultValue?: Partial<FormWithFieldsInput>;
 }) => {
-  return useForm({
+  return useForm<FormWithFieldsInput>({
     defaultValue: options?.defaultValue,
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: FormWithFieldsInputSchema });
