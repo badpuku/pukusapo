@@ -293,7 +293,7 @@ export default function AdminFormsNewRoute() {
             isSubmitting={fetcher.state === "submitting"}
             onDraftSave={() => setStatus(FORM_STATUS.DRAFT)}
             onPublish={() => setStatus(FORM_STATUS.PUBLISHED)}
-            linkTo="/admin/forms"
+            cancelTo="/admin/forms"
           />
         </fetcher.Form>
       </Container>
