@@ -6,7 +6,7 @@ function FieldCard({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "border-input dark:bg-input/30 shadow-xs relative w-full rounded-md border outline-none transition-[color,box-shadow]",
+        "border-input dark:bg-input/30 shadow-xs relative w-full bg-white rounded-md border outline-none transition-[color,box-shadow]",
         className,
       )}
       {...props}

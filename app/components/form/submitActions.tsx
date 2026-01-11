@@ -5,37 +5,55 @@ import { Button } from "~/components/ui/button";
 
 interface SubmitActionsProps {
   isSubmitting: boolean;
-  onDraftSave: () => void;
-  onPublish: () => void;
-  onDelete?: () => void;
+  formId: string;
+  handleDraftSubmit: () => void;
+  handlePublishSubmit: () => void;
+  handleDelete?: () => void;
   cancelTo: string;
 }
 
 export function SubmitActions({
   isSubmitting,
-  onDraftSave,
-  onPublish,
-  onDelete,
+  formId,
+  handleDraftSubmit,
+  handlePublishSubmit,
+  handleDelete,
   cancelTo,
 }: SubmitActionsProps) {
   return (
-    <div className="flex gap-2">
-      {onDelete && (
-        <Button type="button" variant="outline" onClick={onDelete}>
+    <div className="flex gap-2 items-center px-6 py-4">
+      <Button type="button" variant="ghost" size="sm" asChild>
+        <Link to={cancelTo}>キャンセル</Link>
+      </Button>
+      {handleDelete && (
+        <Button
+          form={formId}
+          type="submit"
+          variant="outline"
+          onClick={handleDelete}
+        >
           <Trash2 className="size-4" />
           削除
         </Button>
       )}
-      <Button type="submit" disabled={isSubmitting} onClick={onDraftSave}>
+      <Button
+        form={formId}
+        type="submit"
+        variant="secondary"
+        disabled={isSubmitting}
+        onClick={handleDraftSubmit}
+      >
         <Save className="size-4" />
         下書き保存
       </Button>
-      <Button type="submit" disabled={isSubmitting} onClick={onPublish}>
+      <Button
+        form={formId}
+        type="submit"
+        disabled={isSubmitting}
+        onClick={handlePublishSubmit}
+      >
         <Save className="size-4" />
         公開
-      </Button>
-      <Button type="button" variant="outline" asChild>
-        <Link to={cancelTo}>キャンセル</Link>
       </Button>
     </div>
   );
