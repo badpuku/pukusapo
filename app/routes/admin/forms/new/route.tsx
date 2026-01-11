@@ -131,8 +131,8 @@ export default function AdminFormsNewRoute() {
 
   return (
     <div className="flex flex-col">
-      <Container>
-        <PageTitle title="新規フォーム作成" />
+      <Container className="border-b border-zinc-200">
+        <PageTitle title="フォーム新規作成" />
       </Container>
       <Container>
         <fetcher.Form
