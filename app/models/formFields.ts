@@ -20,6 +20,7 @@ export const FieldOptionsSchema = z.object({
 export type FieldOptions = z.infer<typeof FieldOptionsSchema>;
 
 const FieldBaseSchema = z.object({
+  id: z.string().uuid().optional(),
   fieldType: z.enum([
     FIELD_TYPE.TEXT,
     FIELD_TYPE.EMAIL,

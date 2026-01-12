@@ -46,6 +46,7 @@ export const FieldItem = ({
     <FieldCard>
       <FieldCardContent>
         <FieldGroup>
+          <input type="hidden" name={fieldset.id.name} value={fieldset.id.value} />
           <div>
             <FieldControl
               label=""
