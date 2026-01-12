@@ -11,10 +11,12 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~/lib/apiResponse";
-import { findFormById } from "~/repositories/forms.server";
+import { findFormById, findFormByIdWithFields } from "~/repositories/forms.server";
 import {
   type FormResponse,
   FormResponseSchema,
+  type FormWithFieldsResponse,
+  FormWithFieldsResponseSchema,
 } from "~/services/forms/schemas";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 
@@ -52,6 +54,51 @@ export async function getFormById(
 
   // フォームデータバリデーション
   const formData = FormResponseSchema.safeParse(form);
+  if (!formData.success) {
+    return createErrorResponse(
+      ERROR_CODES.VALIDATION_ERROR,
+      ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
+      ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR],
+    );
+  }
+
+  return createSuccessResponse(formData.data);
+}
+
+export async function getFormByIdWithFields(
+  args: LoaderFunctionArgs,
+  formId: string,
+): Promise<ApiResponse<FormWithFieldsResponse>> {
+  const auth = await getAuth(args);
+  const userId = auth.userId;
+
+  // 認証チェック
+  if (!userId) {
+    return createErrorResponse(
+      ERROR_CODES.UNAUTHORIZED,
+      ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
+      ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
+    );
+  }
+
+  // フォームデータ取得
+  const supabase = createServerSupabaseClient(args);
+  const { data: form, error: formError } = await findFormByIdWithFields(
+    supabase,
+    formId,
+  );
+
+  // フォームデータ取得エラーチェック
+  if (formError) {
+    return createErrorResponse(
+      ERROR_CODES.DATABASE_ERROR,
+      `[Supabase Error] ${formError.code}: ${formError.message}`,
+      ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
+    );
+  }
+
+  // フォームデータバリデーション
+  const formData = FormWithFieldsResponseSchema.safeParse(form);
   if (!formData.success) {
     return createErrorResponse(
       ERROR_CODES.VALIDATION_ERROR,

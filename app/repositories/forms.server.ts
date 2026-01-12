@@ -16,6 +16,17 @@ export async function findFormById(
   return supabase.from("forms").select("*").eq("id", id).single();
 }
 
+export async function findFormByIdWithFields(
+  supabase: SupabaseClient<Database>,
+  id: string,
+) {
+  return supabase
+    .from("forms")
+    .select("*, fields:form_fields(*)")
+    .eq("id", id)
+    .single();
+}
+
 /**
  * フォーム一覧を取得
  *

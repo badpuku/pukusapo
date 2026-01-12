@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { FORM_STATUS } from "~/models/forms";
+import { FormFieldsResponseSchema } from "~/services/formFields/schemas";
 
 /**
  * フォームレスポンスのスキーマ定義
@@ -15,6 +16,13 @@ export const FormResponseSchema = z.object({
 });
 
 export type FormResponse = z.infer<typeof FormResponseSchema>;
+
+export const FormWithFieldsResponseSchema = z.object({
+  ...FormResponseSchema.shape,
+  fields: z.array(FormFieldsResponseSchema),
+});
+
+export type FormWithFieldsResponse = z.infer<typeof FormWithFieldsResponseSchema>;
 
 /**
  * フォーム一覧取得パラメータのスキーマ定義
