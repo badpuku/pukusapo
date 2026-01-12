@@ -92,6 +92,13 @@ export default function AdminFormsIdRoute() {
     }
   }, [fetcher.data?.success, navigate]);
 
+  const handleDelete = () => {
+    fetcher.submit({},{
+      method: "POST",
+      action: `/api/forms/${formData.id}/delete`,
+    });
+  };
+
   const handleAddField = () => {
     const index = formFieldsList.length;
     form.insert({
@@ -198,8 +205,9 @@ export default function AdminFormsIdRoute() {
         <SubmitActions
           isSubmitting={fetcher.state === "submitting"}
           formId={form.id}
-          handleDraftSubmit={() => setStatus(FORM_STATUS.DRAFT)}
-          handlePublishSubmit={() => setStatus(FORM_STATUS.PUBLISHED)}
+          onDraftSubmit={() => setStatus(FORM_STATUS.DRAFT)}
+          onPublishSubmit={() => setStatus(FORM_STATUS.PUBLISHED)}
+          onDelete={handleDelete}
           cancelTo="/admin/forms"
         />
       </div>

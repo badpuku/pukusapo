@@ -6,18 +6,18 @@ import { Button } from "~/components/ui/button";
 interface SubmitActionsProps {
   isSubmitting: boolean;
   formId: string;
-  handleDraftSubmit: () => void;
-  handlePublishSubmit: () => void;
-  handleDelete?: () => void;
+  onDraftSubmit: () => void;
+  onPublishSubmit: () => void;
+  onDelete?: () => void;
   cancelTo: string;
 }
 
 export function SubmitActions({
   isSubmitting,
   formId,
-  handleDraftSubmit,
-  handlePublishSubmit,
-  handleDelete,
+  onDraftSubmit,
+  onPublishSubmit,
+  onDelete,
   cancelTo,
 }: SubmitActionsProps) {
   return (
@@ -25,12 +25,12 @@ export function SubmitActions({
       <Button type="button" variant="ghost" size="sm" asChild>
         <Link to={cancelTo}>キャンセル</Link>
       </Button>
-      {handleDelete && (
+      {onDelete && (
         <Button
           form={formId}
-          type="submit"
+          type="button"
           variant="outline"
-          onClick={handleDelete}
+          onClick={onDelete}
         >
           <Trash2 className="size-4" />
           削除
@@ -41,7 +41,7 @@ export function SubmitActions({
         type="submit"
         variant="secondary"
         disabled={isSubmitting}
-        onClick={handleDraftSubmit}
+        onClick={onDraftSubmit}
       >
         <Save className="size-4" />
         下書き保存
@@ -50,7 +50,7 @@ export function SubmitActions({
         form={formId}
         type="submit"
         disabled={isSubmitting}
-        onClick={handlePublishSubmit}
+        onClick={onPublishSubmit}
       >
         <Save className="size-4" />
         公開

@@ -157,9 +157,9 @@ export default function AdminFormsNewRoute() {
       <div className="sticky bottom-0 bg-white border-t border-zinc-200">
         <SubmitActions
           isSubmitting={fetcher.state === "submitting"}
-          formId={form.id}
-          handleDraftSubmit={() => setStatus(FORM_STATUS.DRAFT)}
-          handlePublishSubmit={() => setStatus(FORM_STATUS.PUBLISHED)}
+          formId={form.id}  
+          onDraftSubmit={() => setStatus(FORM_STATUS.DRAFT)}
+          onPublishSubmit={() => setStatus(FORM_STATUS.PUBLISHED)}
           cancelTo="/admin/forms"
         />
       </div>

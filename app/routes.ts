@@ -21,4 +21,5 @@ export default [
 
   route("api/forms/create", "./routes/api/forms/create/route.tsx"),
   route("api/forms/:id/update", "./routes/api/forms/:id/update/route.tsx"),
+  route("api/forms/:id/delete", "./routes/api/forms/:id/delete/route.tsx"),
 ] satisfies RouteConfig;
