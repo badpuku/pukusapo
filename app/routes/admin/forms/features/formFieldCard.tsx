@@ -24,18 +24,13 @@ import { FIELD_TYPE, type FieldDraft } from "~/models/formFields";
 import type { FormWithFieldsInput } from "~/models/forms";
 import { FieldOptionsEditor } from "~/routes/admin/forms/features/fieldOptionsEditor";
 
-/**
- * FormFieldCard Props
- * 個別フォーム項目のカードコンポーネントのProps
- */
 interface FormFieldCardProps {
   fieldMetadata: FieldMetadata<FieldDraft>;
   form: FormMetadata<FormWithFieldsInput>;
   onRemove: () => void;
   onCopy: () => void;
   onChangeFieldType: (value: string) => void;
-  /** 自動フォーカス */
-  autoFocus?: boolean;
+  initialFocus?: boolean;
 }
 export const FormFieldCard = ({
   fieldMetadata,
@@ -43,7 +38,7 @@ export const FormFieldCard = ({
   onRemove,
   onCopy,
   onChangeFieldType,
-  autoFocus = false,
+  initialFocus = false,
 }: FormFieldCardProps) => {
   const fieldset = fieldMetadata.getFieldset();
 
@@ -63,8 +58,11 @@ export const FormFieldCard = ({
                   type: "text",
                 })}
                 placeholder="項目名"
-                // eslint-disable-next-line jsx-a11y/no-autofocus -- フィールド追加時のUX向上のため必要
-                autoFocus={autoFocus}
+                ref={(el) => {
+                  if (el && initialFocus) {
+                    el.focus();
+                  }
+                }}
               />
             </FieldControl>
           </div>

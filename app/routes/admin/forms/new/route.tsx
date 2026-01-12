@@ -1,35 +1,18 @@
 import type { FieldMetadata } from "@conform-to/react";
-import { getFormProps, getInputProps } from "@conform-to/react";
-import { Copy, Trash2 } from "lucide-react";
+import { getFormProps } from "@conform-to/react";
 import { useEffect, useState } from "react";
 import { useFetcher, useNavigate } from "react-router";
 
 import { SubmitActions } from "~/components/form/submitActions";
-import { Button } from "~/components/ui/button";
-import { ConformSwitch } from "~/components/ui/conform/conformSwitch";
 import { Container } from "~/components/ui/container";
-import { FieldGroup, FieldSet } from "~/components/ui/field";
-import {
-  FieldCard,
-  FieldCardContent,
-  FieldCardFooter,
-} from "~/components/ui/fieldCard";
-import { FieldControl } from "~/components/ui/fieldControl";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import { Textarea } from "~/components/ui/textarea";
+import { FieldSet } from "~/components/ui/field";
+import { FieldCard, FieldCardContent } from "~/components/ui/fieldCard";
 import { Title } from "~/components/ui/title";
 import { FIELD_TYPE, type FieldDraft } from "~/models/formFields";
 import { FORM_STATUS, type FormStatus } from "~/models/forms";
 import type { RouteHandle } from "~/route-handle";
-import { FieldOptionsEditor } from "~/routes/admin/forms/features/fieldOptionsEditor";
+import { BasicInfoFields } from "~/routes/admin/forms/features/basicInfoFields";
+import { FormFieldsEditor } from "~/routes/admin/forms/features/formFieldsEditor";
 import { useFormsForm } from "~/routes/admin/forms/useFormsForm";
 
 export const handle: RouteHandle = {
@@ -135,154 +118,31 @@ export default function AdminFormsNewRoute() {
             {...getFormProps(form)}
             action="/api/forms/create"
           >
-            <Title as="h3" className="mb-2">基本情報</Title>
+            <Title as="h3" className="mb-2">
+              基本情報
+            </Title>
             <FieldCard>
               <FieldCardContent>
                 <FieldSet>
-                  <FieldGroup>
-                    <FieldControl
-                      label="フォームタイトル"
-                      htmlFor="title"
-                      required
-                      errors={fields.title.errors}
-                    >
-                      <Input
-                        {...getInputProps(fields.title, { type: "text" })}
-                      />
-                    </FieldControl>
-                    <FieldControl
-                      label="概要"
-                      htmlFor="description"
-                      errors={fields.description.errors}
-                    >
-                      <Textarea id="description" name="description" />
-                    </FieldControl>
-                  </FieldGroup>
+                  <BasicInfoFields
+                    titleField={fields.title}
+                    descriptionField={fields.description}
+                  />
                 </FieldSet>
               </FieldCardContent>
             </FieldCard>
-            <Title as="h3" className="mb-2">フォーム項目</Title>
-            <FieldSet>
-              {formFieldsList.map((fieldMeta, index) => {
-                const fieldset = fieldMeta.getFieldset();
-                return (
-                  <FieldCard key={fieldMeta.key}>
-                    <FieldCardContent>
-                      <FieldGroup>
-                        <div>
-                          <FieldControl
-                            label=""
-                            htmlFor={fieldset.label.id}
-                            errors={fieldset.label.errors}
-                            noRequiredLabel={true}
-                          >
-                            <Input
-                              {...getInputProps(fieldset.label, {
-                                type: "text",
-                              })}
-                              placeholder="項目名"
-                              ref={(el) => {
-                                if (el && index === lastFocusedFieldIndex) {
-                                  el.focus();
-                                  setLastFocusedFieldIndex(null);
-                                }
-                              }}
-                            />
-                          </FieldControl>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <FieldControl
-                            label=""
-                            htmlFor={fieldset.fieldType.id}
-                            errors={fieldset.fieldType.errors}
-                            noRequiredLabel={true}
-                            className="grow"
-                          >
-                            <Select
-                              key={fieldset.fieldType.key}
-                              name={fieldset.fieldType.name}
-                              value={fieldset.fieldType.initialValue}
-                              onValueChange={(value) => {
-                                handleChangeFieldType(fieldMeta, value);
-                              }}
-                              defaultValue={FIELD_TYPE.RADIO}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="フィールドタイプ" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value={FIELD_TYPE.TEXT}>
-                                  テキスト
-                                </SelectItem>
-                                <SelectItem value={FIELD_TYPE.TEXTAREA}>
-                                  テキストエリア
-                                </SelectItem>
-                                <SelectItem value={FIELD_TYPE.CHECKBOX}>
-                                  チェックボックス
-                                </SelectItem>
-                                <SelectItem value={FIELD_TYPE.RADIO}>
-                                  ラジオボタン
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FieldControl>
-                        </div>
-                        <div>
-                          <FieldControl
-                            label=""
-                            htmlFor={`fields.${index}.fieldOptions`}
-                            errors={fields.fields.errors}
-                            noRequiredLabel={true}
-                          >
-                            <FieldOptionsEditor
-                              form={form}
-                              fieldMetadata={fieldMeta}
-                            />
-                          </FieldControl>
-                        </div>
-                      </FieldGroup>
-                    </FieldCardContent>
-                    <FieldCardFooter>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleRemoveField(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleCopyField(index)}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                      <FieldControl
-                        label=""
-                        htmlFor={fieldset.isRequired.id}
-                        errors={fieldset.isRequired.errors}
-                        noRequiredLabel={true}
-                        className="flex-row items-center gap-2"
-                      >
-                        <Label htmlFor={fieldset.isRequired.id}>必須</Label>
-                        <ConformSwitch
-                          id={fieldset.isRequired.id}
-                          name={fieldset.isRequired.name}
-                          defaultChecked={fieldset.isRequired.defaultChecked}
-                        />
-                      </FieldControl>
-                    </FieldCardFooter>
-                  </FieldCard>
-                );
-              })}
-            </FieldSet>
-            <div>
-              <Button type="button" variant="outline" onClick={handleAddField}>
-                フォーム項目を追加
-              </Button>
-            </div>
+            <Title as="h3" className="mb-2">
+              フォーム項目
+            </Title>
+            <FormFieldsEditor
+              form={form}
+              fields={fields.fields}
+              onAddField={handleAddField}
+              onRemoveField={handleRemoveField}
+              onCopyField={handleCopyField}
+              onChangeFieldType={handleChangeFieldType}
+              lastFocusedFieldIndex={lastFocusedFieldIndex}
+            />
             {fetcher.data && !fetcher.data.success && (
               <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">
                 {fetcher.data.error.message}
