@@ -47,7 +47,7 @@ export const FieldsEditor = ({
       </FieldSet>
 
       <div>
-        <Button type="button" variant="outline" onClick={onAddField}>
+        <Button type="button" variant="outline" onClick={onAddField} className="w-full shadow-none border-dotted">
           フォーム項目を追加
         </Button>
       </div>
