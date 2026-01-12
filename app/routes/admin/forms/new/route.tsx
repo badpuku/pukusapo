@@ -12,7 +12,7 @@ import { FIELD_TYPE, type FieldDraft } from "~/models/formFields";
 import { FORM_STATUS, type FormStatus } from "~/models/forms";
 import type { RouteHandle } from "~/route-handle";
 import { BasicInfoFields } from "~/routes/admin/forms/features/basicInfoFields";
-import { FormFieldsEditor } from "~/routes/admin/forms/features/formFieldsEditor";
+import { FieldsEditor } from "~/routes/admin/forms/features/fieldsEditor";
 import { useFormsForm } from "~/routes/admin/forms/useFormsForm";
 
 export const handle: RouteHandle = {
@@ -134,7 +134,7 @@ export default function AdminFormsNewRoute() {
             <Title as="h3" className="mb-2">
               フォーム項目
             </Title>
-            <FormFieldsEditor
+            <FieldsEditor
               form={form}
               fields={fields.fields}
               onAddField={handleAddField}

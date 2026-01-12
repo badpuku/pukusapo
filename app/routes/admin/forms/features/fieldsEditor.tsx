@@ -4,9 +4,9 @@ import { Button } from "~/components/ui/button";
 import { FieldSet } from "~/components/ui/field";
 import type { FieldDraft } from "~/models/formFields";
 import type { FormWithFieldsInput } from "~/models/forms";
-import { FormFieldCard } from "~/routes/admin/forms/features/formFieldCard";
+import { FieldItem } from "~/routes/admin/forms/features/fieldItem";
 
-interface FormFieldsEditorProps {
+interface FieldsEditorProps {
   form: FormMetadata<FormWithFieldsInput>;
   fields: FieldMetadata<FieldDraft[]>;
   onAddField: () => void;
@@ -19,7 +19,7 @@ interface FormFieldsEditorProps {
   lastFocusedFieldIndex: number | null;
 }
 
-export const FormFieldsEditor = ({
+export const FieldsEditor = ({
   form,
   fields,
   onAddField,
@@ -27,14 +27,14 @@ export const FormFieldsEditor = ({
   onCopyField,
   onChangeFieldType,
   lastFocusedFieldIndex,
-}: FormFieldsEditorProps) => {
+}: FieldsEditorProps) => {
   const formFieldsList = fields.getFieldList();
 
   return (
     <>
       <FieldSet>
         {formFieldsList.map((fieldMeta, index) => (
-          <FormFieldCard
+          <FieldItem
             key={fieldMeta.key}
             fieldMetadata={fieldMeta}
             form={form}

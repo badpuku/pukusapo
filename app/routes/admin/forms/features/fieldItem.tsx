@@ -24,7 +24,7 @@ import { FIELD_TYPE, type FieldDraft } from "~/models/formFields";
 import type { FormWithFieldsInput } from "~/models/forms";
 import { FieldOptionsEditor } from "~/routes/admin/forms/features/fieldOptionsEditor";
 
-interface FormFieldCardProps {
+interface FieldItemProps {
   fieldMetadata: FieldMetadata<FieldDraft>;
   form: FormMetadata<FormWithFieldsInput>;
   onRemove: () => void;
@@ -32,14 +32,14 @@ interface FormFieldCardProps {
   onChangeFieldType: (value: string) => void;
   initialFocus?: boolean;
 }
-export const FormFieldCard = ({
+export const FieldItem = ({
   fieldMetadata,
   form,
   onRemove,
   onCopy,
   onChangeFieldType,
   initialFocus = false,
-}: FormFieldCardProps) => {
+}: FieldItemProps) => {
   const fieldset = fieldMetadata.getFieldset();
 
   return (

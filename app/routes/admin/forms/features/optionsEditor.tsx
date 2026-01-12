@@ -11,15 +11,15 @@ import { Input } from "~/components/ui/input";
 import type { FieldDraft } from "~/models/formFields";
 import type { FormWithFieldsInput } from "~/models/forms";
 
-interface OptionsListEditorProps {
+interface OptionsEditorProps {
   form: FormMetadata<FormWithFieldsInput>;
   fieldMetadata: FieldMetadata<FieldDraft>;
 }
 
-export const OptionsListEditor = ({
+export const OptionsEditor = ({
   form,
   fieldMetadata,
-}: OptionsListEditorProps) => {
+}: OptionsEditorProps) => {
   const fieldOptionsList = fieldMetadata
     .getFieldset()
     .fieldOptions.getFieldset().options;

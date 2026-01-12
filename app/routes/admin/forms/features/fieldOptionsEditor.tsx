@@ -5,7 +5,7 @@ import { Textarea } from "~/components/ui/textarea";
 import type { FieldDraft } from "~/models/formFields";
 import { FIELD_TYPE } from "~/models/formFields";
 import type { FormWithFieldsInput } from "~/models/forms";
-import { OptionsListEditor } from "~/routes/admin/forms/features/optionsListEditor";
+import { OptionsEditor } from "~/routes/admin/forms/features/optionsEditor";
 
 interface FieldOptionsEditorProps {
   form: FormMetadata<FormWithFieldsInput>;
@@ -20,9 +20,9 @@ export const FieldOptionsEditor = ({
 
   switch (fieldType) {
     case FIELD_TYPE.RADIO:
-      return <OptionsListEditor form={form} fieldMetadata={fieldMetadata} />;
+      return <OptionsEditor form={form} fieldMetadata={fieldMetadata} />;
     case FIELD_TYPE.CHECKBOX:
-      return <OptionsListEditor form={form} fieldMetadata={fieldMetadata} />;
+      return <OptionsEditor form={form} fieldMetadata={fieldMetadata} />;
     case FIELD_TYPE.TEXT:
       return <Input type="text" placeholder="短文の入力フィールドを表示" readOnly disabled />;
     case FIELD_TYPE.TEXTAREA:
