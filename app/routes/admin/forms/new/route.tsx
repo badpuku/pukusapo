@@ -13,6 +13,7 @@ import { FORM_STATUS, type FormStatus } from "~/models/forms";
 import type { RouteHandle } from "~/route-handle";
 import { BasicInfoFields } from "~/routes/admin/forms/features/basicInfoFields";
 import { FieldsEditor } from "~/routes/admin/forms/features/fieldsEditor";
+import { Preview } from "~/routes/admin/forms/features/preview";
 import { useFormsForm } from "~/routes/admin/forms/useFormsForm";
 
 export const handle: RouteHandle = {
@@ -152,12 +153,12 @@ export default function AdminFormsNewRoute() {
             <input type="hidden" name="status" value={status} />
           </fetcher.Form>
         </Container>
-        <div className="w-[375px] bg-white">プレビュー</div>
+        <Preview form={form} />
       </div>
       <div className="sticky bottom-0 bg-white border-t border-zinc-200">
         <SubmitActions
           isSubmitting={fetcher.state === "submitting"}
-          formId={form.id}  
+          formId={form.id}
           onDraftSubmit={() => setStatus(FORM_STATUS.DRAFT)}
           onPublishSubmit={() => setStatus(FORM_STATUS.PUBLISHED)}
           cancelTo="/admin/forms"

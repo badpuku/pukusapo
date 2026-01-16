@@ -6,7 +6,9 @@ import {
 } from "@clerk/react-router";
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { data, type MetaFunction, useLoaderData } from "react-router";
+import { Link } from "react-router";
 
+import { Button } from "~/components/ui/button";
 import { getProfileByUserId } from "~/services/profiles/get.server";
 
 import type { Route } from "./+types/_index";
@@ -79,6 +81,14 @@ export default function Index() {
             </div>
           </div>
         </SignedIn>
+      </div>
+      <div className="flex gap-4">
+        <Button asChild>
+          <Link to="/admin">管理画面</Link>
+        </Button>
+        <Button asChild>
+          <Link to="/portal">アプリ画面</Link>
+        </Button>
       </div>
     </div>
   );

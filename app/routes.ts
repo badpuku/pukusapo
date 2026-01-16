@@ -19,6 +19,13 @@ export default [
     route("admin/users", "./routes/admin/users.tsx"),
   ]),
 
+  layout("./routes/portal/layout.tsx", [
+    route("portal", "./routes/portal/route.tsx"),
+    route("portal/forms", "./routes/portal/forms/route.tsx", [
+      index("./routes/portal/forms/:id/route.tsx"),
+    ]),
+  ]),
+
   route("api/forms/create", "./routes/api/forms/create/route.tsx"),
   route("api/forms/:id/update", "./routes/api/forms/:id/update/route.tsx"),
   route("api/forms/:id/delete", "./routes/api/forms/:id/delete/route.tsx"),
