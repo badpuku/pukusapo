@@ -1,10 +1,7 @@
-import { SignOutButton } from "@clerk/react-router";
 import { getAuth } from "@clerk/react-router/ssr.server";
-import { LogOut } from "lucide-react";
 import { Outlet, redirect } from "react-router";
 
-import { AdminLayout } from "~/components/layouts/adminLayout/adminLayout";
-import { SidebarSignOutButton } from "~/components/ui/sidebar";
+import { PortalLayout } from "~/components/layouts/portalLayout/portalLayout";
 import { getProfileByUserId } from "~/services/profiles/get.server";
 
 import type { Route } from "./+types/layout";
@@ -29,11 +26,14 @@ export const loader = async (args: Route.LoaderArgs) => {
   };
 };
 
-export default function PortalLayoutRoute({ loaderData }: Route.ComponentProps) {
+export default function PortalLayoutRoute({
+  loaderData,
+}: Route.ComponentProps) {
   const { userProfile } = loaderData;
-  console.log(userProfile);
 
   return (
-    <Outlet />
+    <PortalLayout userProfile={userProfile}>
+      <Outlet />
+    </PortalLayout>
   );
 }

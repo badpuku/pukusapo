@@ -1,3 +1,5 @@
+import { Container } from "~/components/ui/container";
+import { Title } from "~/components/ui/title";
 import type { RouteHandle } from "~/route-handle";
 
 export const handle: RouteHandle = {
@@ -9,8 +11,8 @@ export const handle: RouteHandle = {
 
 export default function PortalHomeRoute() {
   return (
-    <>
-      <h1>portal</h1>
-    </>
+    <Container className="pt-15">
+      <Title as="h1">ぷくさぽ</Title>
+    </Container>
   );
 }
