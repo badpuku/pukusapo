@@ -7,15 +7,17 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const isStorybook = process.argv[1]?.includes("storybook");
+const isVitest = process.argv[1]?.includes("vitest");
+const isServerRunning = !isStorybook && !isVitest;
 
 // .dev.varsファイルを読み込む
 config({ path: path.resolve(process.cwd(), ".dev.vars") });
 
 export default defineConfig(({ mode }) => ({
   plugins: [
-    cloudflare({ viteEnvironment: { name: "ssr" } }),
+    isServerRunning && cloudflare({ viteEnvironment: { name: "ssr" } }),
     tailwindcss(),
-    !isStorybook && reactRouter(),
+    isServerRunning && reactRouter(),
     tsconfigPaths(),
   ],
   resolve: {

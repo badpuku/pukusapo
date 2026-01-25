@@ -347,7 +347,7 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="sidebar-footer"
       data-sidebar="footer"
-      className={cn("flex flex-col gap-2 p-2", className)}
+      className={cn("flex flex-col gap-2 px-2 pb-3", className)}
       {...props}
     />
   );
@@ -747,6 +747,25 @@ function SidebarContentBottom({
   );
 }
 
+function SidebarSignOutButton({
+  className,
+  icon,
+  ...props
+}: React.ComponentProps<"button"> & { icon: React.ReactNode }) {
+  return (
+    <button
+      data-slot="sidebar-sign-out-button"
+      data-sidebar="sign-out-button"
+      className={cn("p-1 group/link flex justify-center w-full cursor-pointer", className)}
+      {...props}
+    >
+      <div className="size-9 flex items-center justify-center text-primary-800 group-hover/link:bg-zinc-100 transition-colors duration-200 rounded-lg">
+        {icon}
+      </div>
+    </button>
+  );
+}
+
 export {
   Sidebar,
   SidebarContent,
@@ -772,6 +791,7 @@ export {
   SidebarProvider,
   SidebarRail,
   SidebarSeparator,
+  SidebarSignOutButton,
   SidebarTrigger,
   useSidebar,
 };

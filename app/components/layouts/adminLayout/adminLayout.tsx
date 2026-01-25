@@ -1,8 +1,8 @@
+
 import {
   CalendarCheck2,
   ClipboardSignature,
   Home,
-  LogOut,
   User,
   Users,
 } from "lucide-react";
@@ -36,6 +36,7 @@ import {
 } from "~/components/ui/sidebar";
 import { cn } from "~/lib/utils";
 import type { AppUIMatch } from "~/route-handle";
+import type { ProfileResponse } from "~/services/profiles/schemas";
 
 type SidebarMenuItem = {
   to: string;
@@ -43,32 +44,38 @@ type SidebarMenuItem = {
   label: string;
 };
 
+type AdminSidebarProps = {
+  userProfile: ProfileResponse;
+  signOutButton: React.ReactNode;
+};
+
+type AdminLayoutProps = PropsWithChildren<AdminSidebarProps>;
+
 const sidebarMenuItems: SidebarMenuItem[] = [
   {
-    to: "/",
+    to: "/admin/",
     icon: <Home size={20} />,
     label: "ホーム",
   },
   {
-    to: "/events",
+    to: "/admin/events",
     icon: <CalendarCheck2 size={20} />,
     label: "イベント",
   },
   {
-    to: "/forms",
+    to: "/admin/forms",
     icon: <ClipboardSignature size={20} />,
     label: "フォーム",
   },
   {
-    to: "/users",
+    to: "/admin/users",
     icon: <Users size={20} />,
     label: "ユーザー",
   },
 ];
 
-const AdminSidebar = () => {
-  // https://github.com/shadcn.png
-  const userAvatar = "";
+const AdminSidebar = ({ userProfile, signOutButton }: AdminSidebarProps) => {
+  const userAvatar = userProfile.avatar_url;
 
   return (
     <Sidebar className="border-r-zinc-200">
@@ -97,11 +104,9 @@ const AdminSidebar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarContentBottom>
-          <SidebarMenuLinkButton to="/logout" icon={<LogOut size={20} />} />
-        </SidebarContentBottom>
+        <SidebarContentBottom>{signOutButton}</SidebarContentBottom>
       </SidebarContent>
-      <SidebarFooter className="py-3">
+      <SidebarFooter>
         <SidebarSeparator className="mx-auto data-[orientation=horizontal]:w-9" />
         <Link to="/profile" className="p-2 flex justify-center">
           <Avatar className="size-7">
@@ -118,8 +123,6 @@ const AdminSidebar = () => {
 
 const AdminNavbar = () => {
   const matches = useMatches() as AppUIMatch[];
-
-  console.log(matches);
 
   return (
     <div className="sticky top-0 w-full h-16 px-4 py-[10px] flex items-center gap-4 border-b border-zinc-200 bg-white">
@@ -170,17 +173,21 @@ const AdminNavbar = () => {
 
 const AdminMain = ({ children }: PropsWithChildren) => {
   return (
-    <main className="h-svh flex-1 bg-zinc-100">
+    <main className="h-svh flex flex-col flex-1 bg-zinc-100">
       <AdminNavbar />
-      <div className="p-4 overflow-y-auto">{children}</div>
+      <div className="overflow-y-auto flex flex-col flex-1">{children}</div>
     </main>
   );
 };
 
-export const AdminLayout = ({ children }: PropsWithChildren) => {
+export const AdminLayout = ({
+  children,
+  userProfile,
+  signOutButton,
+}: AdminLayoutProps) => {
   return (
     <SidebarProvider>
-      <AdminSidebar />
+      <AdminSidebar userProfile={userProfile} signOutButton={signOutButton} />
       <AdminMain>{children}</AdminMain>
     </SidebarProvider>
   );
