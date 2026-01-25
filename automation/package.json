@@ -10,6 +10,7 @@
     "hono": "^4.11.5"
   },
   "devDependencies": {
+    "@cloudflare/playwright": "^1.1.0",
     "wrangler": "^4.4.0"
   }
 }
