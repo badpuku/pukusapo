@@ -1,0 +1,1 @@
+import{w as t,j as s}from"./chunk-JMJ3UQ3L-BiyHQKbA.js";const n={breadcrumb:e=>({to:e.pathname,title:"users"})},o=t(function(){return s.jsx(s.Fragment,{children:s.jsx("h1",{children:"users"})})});export{o as default,n as handle};
