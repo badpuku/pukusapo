@@ -1,10 +1,11 @@
 # pukusapo
 
-## 📋 概要
+## 概要
 
-pukusapo は、フォーム作成・管理システムです。
+pukusapo は、サークル運営に関わるさまざまをサポートするサービスです。
+フォーム作成、参加人数管理、当選確認などなど...
 
-## 🚀 クイックスタート
+## クイックスタート
 
 ### 前提条件
 
@@ -54,8 +55,11 @@ ngrok http --url=your-url.ngrok-free.app 54321
 #### 開発環境（Vite）
 
 ```bash
+npm run build
 npm run dev
 ```
+
+初回のみ、`npm run build` が必要です。
 
 🌐 **アクセス**: http://localhost:3000/
 
@@ -68,7 +72,7 @@ npm run start
 
 🌐 **アクセス**: http://localhost:8788/
 
-## 🔧 開発ツール
+## 開発ツール
 
 ### データベース操作
 
@@ -85,7 +89,7 @@ npx drizzle-kit generate --custom --name=your_migration_name
 npm run db:push
 ```
 
-## 📚 セットアップガイド
+## セットアップガイド
 
 ### Clerk Application の設定
 
