@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 
+/.cache
+/build
 .env
 .env.dev
 .env.local
@@ -8,5 +10,9 @@ node_modules
 .dev.vars.local
 
 *storybook.log
+
+.react-router/
+
+app/components/icons/
 
 .claude
