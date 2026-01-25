@@ -20,12 +20,10 @@ export default [
   ]),
 
   layout("./routes/portal/layout.tsx", [
-    route("portal", "./routes/portal/route.tsx", [
-      index("./routes/portal/route.tsx"),
-      route("portal/forms", "./routes/portal/forms/route.tsx", [
-        index("./routes/portal/forms/index/route.tsx"),
-        route(":id", "./routes/portal/forms/:id/route.tsx"),
-      ]),
+    route("portal", "./routes/portal/route.tsx"),
+    route("portal/forms", "./routes/portal/forms/route.tsx", [
+      index("./routes/portal/forms/index/route.tsx"),
+      route(":id", "./routes/portal/forms/:id/route.tsx"),
     ]),
   ]),
 
