@@ -1,13 +1,17 @@
 import { Hono } from 'hono'
 
-const app = new Hono()
+type Bindings = {
+  MY_VAR: string
+}
+
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
 app.post('/results', async (c) => {
-  return c.json({ message: 'Hello Hono!' })
+  return c.json({ success: true })
 })
 
 export default app
