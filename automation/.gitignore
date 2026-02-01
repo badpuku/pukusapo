@@ -17,8 +17,12 @@ node_modules/
 
 # env
 .env
+.env.local
 .env.production
 .dev.vars
+
+# sensitive data
+accounts.json
 
 # logs
 logs/
