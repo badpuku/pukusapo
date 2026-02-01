@@ -16,6 +16,14 @@ export default [
       route("new", "./routes/admin/forms/new/route.tsx"),
       route(":id", "./routes/admin/forms/:id/route.tsx"),
     ]),
+    route("admin/facility", "./routes/admin/facility/route.tsx", [
+      index("./routes/admin/facility/index/route.tsx"),
+      route("accounts", "./routes/admin/facility/accounts/route.tsx", [
+        index("./routes/admin/facility/accounts/index/route.tsx"),
+        route("new", "./routes/admin/facility/accounts/new/route.tsx"),
+        route(":id", "./routes/admin/facility/accounts/:id/route.tsx"),
+      ]),
+    ]),
     route("admin/users", "./routes/admin/users.tsx"),
   ]),
 
@@ -30,4 +38,17 @@ export default [
   route("api/forms/create", "./routes/api/forms/create/route.tsx"),
   route("api/forms/:id/update", "./routes/api/forms/:id/update/route.tsx"),
   route("api/forms/:id/delete", "./routes/api/forms/:id/delete/route.tsx"),
+
+  route(
+    "api/facility-accounts/create",
+    "./routes/api/facility-accounts/create/route.tsx",
+  ),
+  route(
+    "api/facility-accounts/:id/update",
+    "./routes/api/facility-accounts/:id/update/route.tsx",
+  ),
+  route(
+    "api/facility-accounts/:id/delete",
+    "./routes/api/facility-accounts/:id/delete/route.tsx",
+  ),
 ] satisfies RouteConfig;
