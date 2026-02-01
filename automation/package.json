@@ -1,5 +1,5 @@
 {
-  "name": "automation",
+  "name": "@pukusapo/automation",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",

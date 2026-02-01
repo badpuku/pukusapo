@@ -1,0 +1,29 @@
+{
+  "name": "pukusapo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "automation",
+    "supabase"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w frontend",
+    "dev:automation": "npm run dev -w automation",
+    "build": "npm run build -w frontend",
+    "deploy": "npm run deploy -w frontend",
+    "deploy:dev": "npm run deploy:dev -w frontend",
+    "db:start": "npm run start -w supabase",
+    "db:stop": "npm run stop -w supabase",
+    "db:reset": "npm run reset -w supabase",
+    "db:migrate": "npm run migrate -w supabase",
+    "db:gen-types": "npm run gen-types -w supabase > frontend/app/models/supabase.ts",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "volta": {
+    "node": "20.18.0"
+  }
+}
