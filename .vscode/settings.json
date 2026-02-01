@@ -6,5 +6,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "deno.enable": false,
   "deno.codeLens.implementations": false,
-  "deno.enablePaths": ["supabase/functions/"]
+  "deno.enablePaths": [
+    "supabase/functions/"
+  ]
 }
