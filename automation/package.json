@@ -11,6 +11,7 @@
     "collect:headed": "HEADED=1 vite-node scripts/collect.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.93.3",
     "hono": "^4.11.5",
     "octokit": "^5.0.5"
   },

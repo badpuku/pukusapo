@@ -1,4 +1,8 @@
-# GitHub API設定（Cloudflare Workers用）
+# GitHub
 GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 GITHUB_REPO_OWNER=your-username
 GITHUB_REPO_NAME=your-repo-name
+
+# Supabase
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_ANON_KEY=eyxxxxxxxxxxxxxx
