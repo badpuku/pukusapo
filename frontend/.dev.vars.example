@@ -22,3 +22,7 @@ CLERK_WEBHOOK_SIGNING_SECRET=whec_xxxxxxxxxxxxxxxxxxxxxx
 
 # ローカル開発用 ngrok
 ALLOWED_HOSTS=xxxxxxxxxx.ngrok-free.app
+
+# 施設アカウントパスワード暗号化キー (AES-256)
+# 生成: openssl rand -base64 32
+ENCRYPTION_KEY=

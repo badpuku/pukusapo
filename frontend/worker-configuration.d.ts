@@ -19,6 +19,7 @@ declare namespace Cloudflare {
 		VITE_CLERK_PUBLISHABLE_KEY: string;
 		CLERK_WEBHOOK_SIGNING_SECRET: string;
 		ALLOWED_HOSTS: string;
+		ENCRYPTION_KEY: string;
 	}
 }
 interface Env extends Cloudflare.Env {}
