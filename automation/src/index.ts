@@ -1,10 +1,13 @@
 import { Hono } from 'hono'
 import { Octokit } from 'octokit'
+import type { ReservationResult } from '~/types'
 
 type Bindings = {
   GITHUB_TOKEN: string
   GITHUB_REPO_OWNER: string
   GITHUB_REPO_NAME: string
+  SUPABASE_URL: string
+  SUPABASE_ANON_KEY: string
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -81,7 +84,7 @@ app.get('/jobs/:id', async (c) => {
  */
 app.post('/reservations', async (c) => {
   // TODO: 実際の保存ロジックを実装
-  const body = await c.req.json()
+  const body = await c.req.json<ReservationResult>()
   console.log('Received reservations:', JSON.stringify(body, null, 2))
 
   return c.json({

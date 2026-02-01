@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type Account = {
   userId: string
   password: string
@@ -10,7 +12,9 @@ export const RESERVATION_STATUS = {
   won_confirmed: 'won_confirmed', // 当選確定
   lottery_pending: 'lottery_pending', // 抽選待ち
   lost: 'lost',                   // 落選
-} as const
+} as const;
+
+export const ReservationStatusSchema = z.enum(Object.values(RESERVATION_STATUS) as [string, ...string[]]);
 
 export type ReservationStatusType = typeof RESERVATION_STATUS[keyof typeof RESERVATION_STATUS]
 
@@ -23,18 +27,23 @@ export const RESERVATION_STATUS_MAP: Record<string, ReservationStatusType> = {
   '落選': 'lost',
 }
 
-export type Reservation = {
-  date: string
-  time: string
-  facilityName: string
-  status: ReservationStatusType
-}
+export const ReservationSchema = z.object({
+  date: z.string(),
+  time: z.string(),
+  facilityName: z.string(),
+  status: ReservationStatusSchema,
+});
+
+export type Reservation = z.infer<typeof ReservationSchema>;
 
 export type AccountConfig = {
   accounts: Account[]
 }
 
-export type ReservationResult = {
-  accountId: string
-  reservations: Reservation[]
-}
+
+export const ReservationResultSchema = z.object({
+  accountId: z.string(),
+  reservations: z.array(ReservationSchema),
+});
+
+export type ReservationResult = z.infer<typeof ReservationResultSchema>;
