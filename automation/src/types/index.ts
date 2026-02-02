@@ -3,6 +3,8 @@ import { z } from "zod";
 export type Account = {
   userId: string
   password: string
+  circleName?: string
+  representativeName?: string
 }
 
 export const RESERVATION_STATUS = {

@@ -56,6 +56,8 @@ export async function fetchAccountsFromSheet(
     .filter(isValidAccountRow)
     .map((row) => ({
       userId: row[0],
+      circleName: row[1],
+      representativeName: row[2],
       password: row[4],
     }));
 

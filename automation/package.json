@@ -8,7 +8,8 @@
     "test": "vitest",
     "test:watch": "vitest --watch",
     "collect": "vite-node scripts/collect.ts",
-    "collect:headed": "HEADED=1 vite-node scripts/collect.ts"
+    "collect:headed": "HEADED=1 vite-node scripts/collect.ts",
+    "seed:accounts": "vite-node scripts/seed-facility-accounts.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.93.3",
