@@ -49,3 +49,13 @@ export const ReservationResultSchema = z.object({
 });
 
 export type ReservationResult = z.infer<typeof ReservationResultSchema>;
+
+export type ReservationRequest = {
+  reservations: ReservationResult[]
+}
+
+export type CollectionJob = {
+  id: number
+  collected_at: string
+  status: string
+}
