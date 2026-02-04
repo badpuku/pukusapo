@@ -18,7 +18,8 @@
     "db:migrate": "npm run migrate -w supabase",
     "db:gen-types": "npm run gen-types -w supabase > frontend/app/models/supabase.ts",
     "test": "npm run test --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "npm run format --workspaces --if-present"
   },
   "engines": {
     "node": ">=20.18.0"

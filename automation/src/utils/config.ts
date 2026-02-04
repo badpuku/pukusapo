@@ -1,5 +1,5 @@
-import type { AccountConfig } from '~/types'
-import { fetchAccountsFromSheet } from '~/utils/sheets'
+import type { AccountConfig } from "~/types";
+import { fetchAccountsFromSheet } from "~/utils/sheets";
 
 /**
  * Google Sheets からアカウント情報を読み込む
@@ -7,8 +7,12 @@ import { fetchAccountsFromSheet } from '~/utils/sheets'
 export async function loadAccountsFromSheet(
   spreadsheetId: string,
   apiKey: string,
-  sheetName?: string
+  sheetName?: string,
 ): Promise<AccountConfig> {
-  const accounts = await fetchAccountsFromSheet(spreadsheetId, apiKey, sheetName)
-  return { accounts }
+  const accounts = await fetchAccountsFromSheet(
+    spreadsheetId,
+    apiKey,
+    sheetName,
+  );
+  return { accounts };
 }

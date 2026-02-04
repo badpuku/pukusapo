@@ -17,14 +17,15 @@ Pass the `CloudflareBindings` as generics when instantiation `Hono`:
 
 ```ts
 // src/index.ts
-const app = new Hono<{ Bindings: CloudflareBindings }>()
+const app = new Hono<{ Bindings: CloudflareBindings }>();
 ```
 
 ## Scripts
 
 ### 施設アカウント一括登録
 
-Google Sheets からアカウント情報を取得し、`facility_accounts` テーブルに一括登録する。
+Google Sheets からアカウント情報を取得し、`facility_accounts`
+テーブルに一括登録する。
 
 #### 環境変数
 
