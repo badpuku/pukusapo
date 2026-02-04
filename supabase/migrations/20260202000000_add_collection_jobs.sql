@@ -49,3 +49,25 @@ ALTER TABLE public.facility_reservations
 ALTER TABLE public.facility_reservations
   ADD CONSTRAINT uq_facility_reservations_job_account_facility_datetime
   UNIQUE (collection_job_id, facility_account_id, facility_name, reservation_date, reservation_time);
+
+-- ----------------------------------------------------------------------------
+-- 5. Row Level Security (RLS) 設定
+-- ----------------------------------------------------------------------------
+
+ALTER TABLE public.collection_jobs ENABLE ROW LEVEL SECURITY;
+
+-- SELECT: 管理者のみ参照可能
+CREATE POLICY "collection_jobs_select_policy" ON public.collection_jobs
+  FOR SELECT USING (public.is_admin());
+
+-- INSERT: 管理者のみ作成可能
+CREATE POLICY "collection_jobs_insert_policy" ON public.collection_jobs
+  FOR INSERT WITH CHECK (public.is_admin());
+
+-- UPDATE: 管理者のみ更新可能
+CREATE POLICY "collection_jobs_update_policy" ON public.collection_jobs
+  FOR UPDATE USING (public.is_admin());
+
+-- DELETE: 管理者のみ削除可能
+CREATE POLICY "collection_jobs_delete_policy" ON public.collection_jobs
+  FOR DELETE USING (public.is_admin());
