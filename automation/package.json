@@ -7,6 +7,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareBindings",
     "test": "vitest",
     "test:watch": "vitest --watch",
+    "lint": "eslint --cache .",
     "collect": "vite-node scripts/collect.ts",
     "collect:headed": "HEADED=1 vite-node scripts/collect.ts",
     "seed:accounts": "vite-node scripts/seed-facility-accounts.ts"

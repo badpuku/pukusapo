@@ -1,12 +1,6 @@
 {
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
-  },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "deno.enable": false,
-  "deno.codeLens.implementations": false,
-  "deno.enablePaths": [
-    "supabase/functions/"
+  "eslint.workingDirectories": [
+    { "directory": "frontend", "changeProcessCWD": true },
+    { "directory": "automation", "changeProcessCWD": true }
   ]
 }
