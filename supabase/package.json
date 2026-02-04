@@ -6,6 +6,7 @@
     "stop": "supabase stop",
     "reset": "supabase db reset",
     "migrate": "supabase migration up",
+    "migrate:down": "supabase migration down",
     "gen-types": "supabase gen types typescript --local",
     "secrets:prod": "supabase secrets set --env-file .env",
     "secrets:dev": "supabase secrets set --env-file .env.dev"
