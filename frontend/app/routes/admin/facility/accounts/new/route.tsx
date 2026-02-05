@@ -47,7 +47,7 @@ export default function AdminFacilityAccountsNewRoute() {
             className="max-w-2xl space-y-6"
             method="post"
             {...getFormProps(form)}
-            action="/api/facility-accounts/create"
+            action="/api/facility/accounts/create"
           >
             <Title as="h3" className="mb-2">
               アカウント情報

@@ -72,7 +72,7 @@ export default function AdminFacilityAccountsIdRoute() {
         {},
         {
           method: "POST",
-          action: `/api/facility-accounts/${accountData.id}/delete`,
+          action: `/api/facility/accounts/${accountData.id}/delete`,
         },
       );
     }
@@ -86,7 +86,7 @@ export default function AdminFacilityAccountsIdRoute() {
             className="max-w-2xl space-y-6"
             method="post"
             {...getFormProps(form)}
-            action={`/api/facility-accounts/${accountData.id}/update`}
+            action={`/api/facility/accounts/${accountData.id}/update`}
           >
             <Title as="h3" className="mb-2">
               アカウント情報

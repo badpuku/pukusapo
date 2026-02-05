@@ -40,15 +40,15 @@ export default [
   route("api/forms/:id/delete", "./routes/api/forms/:id/delete/route.tsx"),
 
   route(
-    "api/facility-accounts/create",
-    "./routes/api/facility-accounts/create/route.tsx",
+    "api/facility/accounts/create",
+    "./routes/api/facility/accounts/create/route.tsx",
   ),
   route(
-    "api/facility-accounts/:id/update",
-    "./routes/api/facility-accounts/:id/update/route.tsx",
+    "api/facility/accounts/:id/update",
+    "./routes/api/facility/accounts/:id/update/route.tsx",
   ),
   route(
-    "api/facility-accounts/:id/delete",
-    "./routes/api/facility-accounts/:id/delete/route.tsx",
+    "api/facility/accounts/:id/delete",
+    "./routes/api/facility/accounts/:id/delete/route.tsx",
   ),
 ] satisfies RouteConfig;
