@@ -51,4 +51,25 @@ export default [
     "api/facility/accounts/:id/delete",
     "./routes/api/facility/accounts/:id/delete/route.tsx",
   ),
+  route(
+    "api/facility/collection-jobs/create",
+    "./routes/api/facility/collection-jobs/create/route.tsx",
+  ),
+  route(
+    "api/facility/collection-jobs/:id",
+    "./routes/api/facility/collection-jobs/:id/route.tsx",
+  ),
+  
+  route(
+    "api/facility/reservations/create",
+    "./routes/api/facility/reservations/create/route.tsx",
+  ),
+  route(
+    "api/facility/reservations/:id/update",
+    "./routes/api/facility/reservations/:id/update/route.tsx",
+  ),
+  route(
+    "api/facility/reservations/:id/delete",
+    "./routes/api/facility/reservations/:id/delete/route.tsx",
+  ),
 ] satisfies RouteConfig;
