@@ -9,6 +9,7 @@ SESSION_SECRET=""
 # Supabase
 SUPABASE_URL=http://127.0.0.1:54321
 SUPABASE_ANON_KEY=eyxxxxxxxxxxxxxx
+SUPABASE_SERCRET_KEY=sb_secret_xxxxxxxxxx
 DATABASE_URL=
 
 # Cloudflare
@@ -26,3 +27,7 @@ ALLOWED_HOSTS=xxxxxxxxxx.ngrok-free.app
 # 施設アカウントパスワード暗号化キー (AES-256)
 # 生成: openssl rand -base64 32
 ENCRYPTION_KEY=
+
+# Automation ディレクトリとの連携用
+# 生成: openssl rand -hex 32
+AUTOMATION_API_KEY=

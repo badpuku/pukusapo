@@ -6,3 +6,6 @@ GITHUB_REPO_NAME=your-repo-name
 # Supabase
 SUPABASE_URL=http://127.0.0.1:54321
 SUPABASE_ANON_KEY=eyxxxxxxxxxxxxxx
+
+# frontend との連携用
+AUTOMATION_API_KEY=
