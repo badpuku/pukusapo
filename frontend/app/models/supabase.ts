@@ -35,6 +35,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      collection_jobs: {
+        Row: {
+          collected_at: string
+          created_at: string
+          id: number
+          status: string
+        }
+        Insert: {
+          collected_at?: string
+          created_at?: string
+          id?: number
+          status?: string
+        }
+        Update: {
+          collected_at?: string
+          created_at?: string
+          id?: number
+          status?: string
+        }
+        Relationships: []
+      }
       event_participations: {
         Row: {
           cancellation_reason: string | null
@@ -192,6 +213,7 @@ export type Database = {
       }
       facility_reservations: {
         Row: {
+          collection_job_id: number | null
           created_at: string
           facility_account_id: string
           facility_name: string
@@ -202,6 +224,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          collection_job_id?: number | null
           created_at?: string
           facility_account_id: string
           facility_name: string
@@ -212,6 +235,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          collection_job_id?: number | null
           created_at?: string
           facility_account_id?: string
           facility_name?: string
@@ -222,6 +246,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "facility_reservations_collection_job_id_fkey"
+            columns: ["collection_job_id"]
+            isOneToOne: false
+            referencedRelation: "collection_jobs"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "fk_facility_reservations_facility_account_id"
             columns: ["facility_account_id"]
