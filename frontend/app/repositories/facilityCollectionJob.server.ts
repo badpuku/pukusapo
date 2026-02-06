@@ -2,6 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "~/models/supabase";
 
+/**
+ * READ
+ */
 export async function findFacilityCollectionJobById(
   supabase: SupabaseClient<Database>,
   id: number,
@@ -9,12 +12,18 @@ export async function findFacilityCollectionJobById(
   return supabase.from("collection_jobs").select("*").eq("id", id).single();
 }
 
+/**
+ * READ
+ */
 export async function findAllFacilityCollectionJobs(
   supabase: SupabaseClient<Database>,
 ) {
   return supabase.from("collection_jobs").select("*").order("id", { ascending: false });
 }
 
+/**
+ * CREATE
+ */
 export async function createFacilityCollectionJob(
   supabase: SupabaseClient<Database>,
   data: Database["public"]["Tables"]["collection_jobs"]["Insert"],
@@ -22,6 +31,9 @@ export async function createFacilityCollectionJob(
   return supabase.from("collection_jobs").insert(data).select().single();
 }
 
+/**
+ * UPDATE
+ */
 export async function updateFacilityCollectionJob(
   supabase: SupabaseClient<Database>,
   id: number,
@@ -30,6 +42,9 @@ export async function updateFacilityCollectionJob(
   return supabase.from("collection_jobs").update(data).eq("id", id).select().single();
 }
 
+/**
+ * DELETE
+ */
 export async function deleteFacilityCollectionJob(
   supabase: SupabaseClient<Database>,
   id: number,
