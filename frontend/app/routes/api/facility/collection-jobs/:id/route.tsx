@@ -5,8 +5,11 @@ import {
 } from "~/constants/errors";
 import { createErrorResponse } from "~/lib/apiResponse";
 import { handleUpdateCollectionJob } from "~/routes/api/facility/collection-jobs/:id/handleUpdateCollectionJob";
+import { loader as collectionJobsLoader } from "~/routes/api/facility/collection-jobs/:id/loader.server";
 
 import type { Route } from "./+types/route";
+
+export const loader = collectionJobsLoader;
 
 export const action = async (args: Route.ActionArgs) => {
   const { params, request } = args;
