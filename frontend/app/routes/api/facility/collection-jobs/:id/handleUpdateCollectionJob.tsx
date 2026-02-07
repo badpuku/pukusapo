@@ -11,7 +11,7 @@ import { authenticateWithClerkAndApiKey } from "~/lib/auth/context.server";
 import { FacilityCollectionJobUpdateInputSchema } from "~/services/facilityCollectionJobs/schemas";
 import { updateFacilityCollectionJobService } from "~/services/facilityCollectionJobs/update.server";
 
-export const handleUpdateCollectionJob = async (args: ActionFunctionArgs): Promise<ApiResponse<{ jobId: number }>> => {
+export const handleUpdateCollectionJob = async (args: ActionFunctionArgs): Promise<ApiResponse<{ id: number }>> => {
   const { params, request } = args;
   const jobId = params.id;
   const formData = await request.formData();

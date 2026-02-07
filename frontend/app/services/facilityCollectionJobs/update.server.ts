@@ -20,7 +20,7 @@ export async function updateFacilityCollectionJobService(
   authCtx: AuthContext | ApiKeyAuthContext,
   jobId: number,
   input: FacilityCollectionJobUpdateInput,
-): Promise<ApiResponse<{ jobId: number }>> {
+): Promise<ApiResponse<{ id: number }>> {
   // 権限チェック
   if ("profile" in authCtx) {
     const permissionLevel = authCtx.profile.roles.permission_level;
@@ -47,5 +47,5 @@ export async function updateFacilityCollectionJobService(
       ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
     );
   }
-  return createSuccessResponse({ jobId: collectionJob.id });
+  return createSuccessResponse({ id: collectionJob.id });
 }
