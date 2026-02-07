@@ -8,7 +8,7 @@ import {
 } from "~/constants/errors";
 import { type ApiResponse, createErrorResponse, createSuccessResponse } from "~/lib/apiResponse";
 import { authenticateWithClerkAndApiKey } from "~/lib/auth/context.server";
-import { FacilityCollectionJobUpdateInputSchema } from "~/services/facilityCollectionJobs/schemas";
+import { FacilityCollectionJobUpdateInputSchema } from "~/models/facilityCollectionJob";
 import { updateFacilityCollectionJobService } from "~/services/facilityCollectionJobs/update.server";
 
 export const handleUpdateCollectionJob = async (args: ActionFunctionArgs): Promise<ApiResponse<{ id: number }>> => {
