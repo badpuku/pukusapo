@@ -52,8 +52,8 @@ export default [
     "./routes/api/facility/accounts/:id/delete/route.tsx",
   ),
   route(
-    "api/facility/collection-jobs/create",
-    "./routes/api/facility/collection-jobs/create/route.tsx",
+    "api/facility/collection-jobs",
+    "./routes/api/facility/collection-jobs/route.tsx",
   ),
   route(
     "api/facility/collection-jobs/:id",
