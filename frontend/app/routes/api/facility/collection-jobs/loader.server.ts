@@ -5,14 +5,11 @@ import {
 } from "~/constants/errors";
 import { createErrorResponse, createSuccessResponse } from "~/lib/apiResponse";
 import { authenticateWithClerkAndApiKey } from "~/lib/auth/context.server";
-import { loader as collectionJobsLoader } from "~/routes/api/facility/collection-jobs/loader.server";
-import { createFacilityCollectionJobService } from "~/services/facilityCollectionJobs/create.server";
+import { getFacilityCollectionJobService } from "~/services/facilityCollectionJobs/get.server";
 
 import type { Route } from "./+types/route";
 
-export const loader = collectionJobsLoader;
-
-export const action = async (args: Route.ActionArgs) => {
+export const loader = async (args: Route.LoaderArgs) => {
   const authCtx = await authenticateWithClerkAndApiKey(args);
   if (!authCtx) {
     return createErrorResponse(
@@ -21,8 +18,7 @@ export const action = async (args: Route.ActionArgs) => {
       ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
     );
   }
-
-  const response = await createFacilityCollectionJobService(authCtx);
+  const response = await getFacilityCollectionJobService(authCtx);
   if (!response.success) {
     return createErrorResponse(
       response.error.code,

@@ -1,7 +1,12 @@
 import { z } from "zod";
 
-export const FacilityCollectionJobUpdateInputSchema = z.object({
-  status: z.enum(["running", "completed", "failed"]),
+import { FacilityCollectionJobStatusSchema } from "~/models/facilityCollectionJob";
+
+export const FacilityCollectionJobResponseSchema = z.object({
+  id: z.number(),
+  status: FacilityCollectionJobStatusSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
 });
 
-export type FacilityCollectionJobUpdateInput = z.infer<typeof FacilityCollectionJobUpdateInputSchema>;
+export type FacilityCollectionJobResponse = z.infer<typeof FacilityCollectionJobResponseSchema>;
