@@ -1,5 +1,5 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
-import type { LoaderFunctionArgs } from "react-router";
+import type { ActionFunctionArgs,LoaderFunctionArgs} from "react-router";
 
 import type { ApiKeyAuthContext,AuthContext, BaseAuthContext } from "~/lib/auth/types";
 import { findProfileByUserId } from "~/repositories/profiles.server";
@@ -11,7 +11,7 @@ import { createSecretSupabaseClient,createServerSupabaseClient } from "~/service
  * 軽量な認証チェックが必要な場合に使用
  */
 export async function authenticate(
-  args: LoaderFunctionArgs
+  args: LoaderFunctionArgs | ActionFunctionArgs
 ): Promise<BaseAuthContext | null> {
   const auth = await getAuth(args);
   if (!auth.userId) return null;
@@ -28,7 +28,7 @@ export async function authenticate(
  * 権限チェックが必要なサービスで使用
  */
 export async function authenticateWithProfile(
-  args: LoaderFunctionArgs
+  args: LoaderFunctionArgs | ActionFunctionArgs
 ): Promise<AuthContext | null> {
   const baseCtx = await authenticate(args);
   if (!baseCtx) return null;
@@ -53,7 +53,7 @@ export async function authenticateWithProfile(
  * APIキー認証
  */
 export async function authenticateWithApiKey(
-  args: LoaderFunctionArgs
+  args: LoaderFunctionArgs | ActionFunctionArgs
 ): Promise<ApiKeyAuthContext | null> {
   const apiKey = args.request.headers.get("X-API-Key");
   const expectedKey = args.context.cloudflare.env.AUTOMATION_API_KEY;
@@ -68,7 +68,7 @@ export async function authenticateWithApiKey(
  * Clerk 認証 + APIキー認証
  */
 export async function authenticateWithClerkAndApiKey(
-  args: LoaderFunctionArgs
+  args: LoaderFunctionArgs | ActionFunctionArgs
 ): Promise<AuthContext | ApiKeyAuthContext | null> {
   const authCtx = await authenticateWithProfile(args);
   if (authCtx) return authCtx;

@@ -22,7 +22,7 @@ export const action = async (args: Route.ActionArgs) => {
   }
 
   if (method === "PUT") {
-    return handleUpdateCollectionJob(request);
+    return handleUpdateCollectionJob(args);
   }
 
   return createErrorResponse(
