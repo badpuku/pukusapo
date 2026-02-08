@@ -4,7 +4,8 @@ import {
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
 import { createErrorResponse } from "~/lib/apiResponse";
-import { handleUpdate } from "~/routes/api/facility/accounts/:id/handleUpdate.server";
+import { handleDeleteFacilityAccount } from "~/routes/api/facility/accounts/:id/handleDelete.server";
+import { handleUpdateFacilityAccount } from "~/routes/api/facility/accounts/:id/handleUpdate.server";
 import { loader as accountsLoader } from "~/routes/api/facility/accounts/:id/loader.server";
 
 import type { Route } from "./+types/route";
@@ -16,11 +17,11 @@ export const action = async (args: Route.ActionArgs) => {
   const method = request.method;
 
   if (method === "PUT") {
-    return handleUpdate(args);
+    return handleUpdateFacilityAccount(args);
   }
 
   if (method === "DELETE") {
-    return handleUpdate(args);
+    return handleDeleteFacilityAccount(args);
   }
 
   return createErrorResponse(

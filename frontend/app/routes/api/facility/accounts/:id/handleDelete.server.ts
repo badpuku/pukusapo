@@ -9,7 +9,7 @@ import { deleteFacilityAccountService } from "~/services/facilityAccounts/delete
 
 import type { Route } from "./+types/route";
 
-export const handleDelete = async (args: Route.ActionArgs): Promise<ApiResponse<{ id: string }>> => {
+export const handleDeleteFacilityAccount = async (args: Route.ActionArgs): Promise<ApiResponse<{ id: string }>> => {
   const { params } = args;
   const accountId = params.id;
 

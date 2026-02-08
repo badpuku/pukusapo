@@ -12,7 +12,7 @@ import { updateFacilityAccountService } from "~/services/facilityAccounts/update
 
 import type { Route } from "./+types/route";
 
-export const handleUpdate = async (args: Route.ActionArgs): Promise<ApiResponse<{ id: string }>> => {
+export const handleUpdateFacilityAccount = async (args: Route.ActionArgs): Promise<ApiResponse<{ id: string }>> => {
   const { params, request } = args;
   const accountId = params.id;
   const formData = await request.formData();
