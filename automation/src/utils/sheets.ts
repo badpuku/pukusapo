@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { Account } from "~/types";
+import type { FacilityAccountSeed } from "~/types";
 
 const userIdRegex = /^\d{8}$/;
 const passwordRegex = /^[a-zA-Z0-9]+$/;
@@ -34,7 +34,7 @@ export async function fetchAccountsFromSheet(
   spreadsheetId: string,
   apiKey: string,
   sheetName?: string,
-): Promise<Account[]> {
+): Promise<FacilityAccountSeed[]> {
   const range = sheetName ? `${sheetName}!A2:E` : "A2:E";
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
   const response = await fetch(url);
@@ -55,7 +55,7 @@ export async function fetchAccountsFromSheet(
 
   const rows = data.data.values ?? [];
 
-  const accounts: Account[] = rows.filter(isValidAccountRow).map((row) => ({
+  const accounts: FacilityAccountSeed[] = rows.filter(isValidAccountRow).map((row) => ({
     userId: row[0],
     circleName: row[1],
     representativeName: row[2],

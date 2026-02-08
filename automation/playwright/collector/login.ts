@@ -1,6 +1,6 @@
 import { type Browser, chromium, type Page } from "playwright";
 
-import type { Account } from "~/types";
+import type { FacilityAccount } from "~/types";
 
 export type LoginResult = {
   success: boolean;
@@ -8,7 +8,7 @@ export type LoginResult = {
   browser: Browser;
 };
 
-export async function login(account: Account): Promise<LoginResult> {
+export async function login(account: FacilityAccount): Promise<LoginResult> {
   const browser = await chromium.launch({
     headless: process.env.HEADED !== "1",
     slowMo: 500,

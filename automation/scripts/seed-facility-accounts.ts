@@ -6,7 +6,7 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-import type { Account } from "~/types";
+import type { FacilityAccountSeed } from "~/types";
 import { loadAccountsFromSheet } from "~/utils/config";
 import { encryptPassword } from "~/utils/encryption";
 
@@ -63,12 +63,12 @@ async function main() {
   console.log(`Found admin profile: ${adminProfile.full_name}`);
 
   // Google Sheets からアカウント取得
-  const config = await loadAccountsFromSheet(
+  const accounts = await loadAccountsFromSheet(
     GOOGLE_SHEETS_ID,
     GOOGLE_API_KEY,
     GOOGLE_SHEETS_NAME,
   );
-  console.log(`Loaded ${config.accounts.length} accounts from Google Sheets`);
+  console.log(`Loaded ${accounts.length} accounts from Google Sheets`);
 
   // 既存アカウントを取得（重複スキップ用）
   const { data: existingAccounts } = await supabase
@@ -79,7 +79,7 @@ async function main() {
   const existingUserIds = new Set(
     existingAccounts?.map((a) => a.user_id) ?? [],
   );
-  const newAccounts = config.accounts.filter(
+  const newAccounts = accounts.filter(
     (a) => !existingUserIds.has(a.userId),
   );
 
@@ -95,7 +95,7 @@ async function main() {
   // 一括登録
   console.log(`Inserting ${newAccounts.length} accounts...`);
 
-  const successAccounts: Account[] = [];
+  const successAccounts: FacilityAccountSeed[] = [];
 
   for (const account of newAccounts) {
     try {

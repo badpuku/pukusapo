@@ -1,12 +1,5 @@
 import { z } from "zod";
 
-export type Account = {
-  userId: string;
-  password: string;
-  circleName?: string;
-  representativeName?: string;
-};
-
 export const RESERVATION_STATUS = {
   confirmed: "confirmed", // 本予約
   cancelled: "cancelled", // 取消済み
@@ -35,16 +28,52 @@ export const RESERVATION_STATUS_MAP: Record<string, ReservationStatusType> = {
 export const ReservationSchema = z.object({
   date: z.string(),
   time: z.string(),
-
   facilityName: z.string(),
   status: ReservationStatusSchema,
 });
 
 export type Reservation = z.infer<typeof ReservationSchema>;
 
-export type AccountConfig = {
-  accounts: Account[];
-};
+// Seed用: Google Sheets から読み込む生データ
+export const FacilityAccountSeedSchema = z.object({
+  userId: z.string(),
+  password: z.string(),
+  circleName: z.string().nullable(),
+  representativeName: z.string().nullable(),
+});
+export type FacilityAccountSeed = z.infer<typeof FacilityAccountSeedSchema>;
+
+// APIレスポンス: 実際のAPIが返す形 (snake_case, encrypted_password)
+export const FacilityAccountApiResponseSchema = z.object({
+  id: z.string(),
+  profile_id: z.string(),
+  user_id: z.string(),
+  encrypted_password: z.string(),
+  circle_name: z.string().nullable(),
+  representative_name: z.string().nullable(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+export type FacilityAccountApiResponse = z.infer<typeof FacilityAccountApiResponseSchema>;
+
+// APIレスポンスのラッパー
+export const FacilityAccountApiListResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.array(FacilityAccountApiResponseSchema),
+  error: z.object({ code: z.string(), message: z.string() }).nullable(),
+  status: z.number(),
+});
+export type FacilityAccountApiListResponse = z.infer<typeof FacilityAccountApiListResponseSchema>;
+
+// 作業用: Playwright が使うモデル (復号済み password, camelCase)
+export const FacilityAccountSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  password: z.string(), // decrypted
+  circleName: z.string().nullable(),
+  representativeName: z.string().nullable(),
+});
+export type FacilityAccount = z.infer<typeof FacilityAccountSchema>;
 
 export const ReservationResultSchema = z.object({
   accountId: z.string(),

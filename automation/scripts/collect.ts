@@ -1,40 +1,22 @@
-import type { AccountConfig, ReservationResult } from "~/types";
-import { loadAccountsFromSheet } from "~/utils/config";
+import type { ReservationResult } from "~/types";
+import { fetchAccountsFromApi } from "~/utils/config";
 import { fetchReservations } from "~playwright/collector";
 
 // 環境変数
-const API_ENDPOINT = process.env.API_ENDPOINT || "http://localhost:8787";
-const GOOGLE_SHEETS_ID = process.env.GOOGLE_SHEETS_ID;
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-const GOOGLE_SHEETS_NAME = process.env.GOOGLE_SHEETS_NAME;
+const API_URL = process.env.FRONTEND_API_URL || "http://localhost:3000";
+const API_ENDPOINT = API_URL;
 
 async function main() {
   console.log("Starting reservation collector...");
 
-  // 環境変数チェック
-  if (!GOOGLE_SHEETS_ID || !GOOGLE_API_KEY) {
-    console.error(
-      "Required environment variables: GOOGLE_SHEETS_ID, GOOGLE_API_KEY",
-    );
-    process.exit(1);
-  }
-
-  // アカウント設定読み込み（Google Sheets から）
-  let config: AccountConfig;
-  try {
-    config = await loadAccountsFromSheet(
-      GOOGLE_SHEETS_ID,
-      GOOGLE_API_KEY,
-      GOOGLE_SHEETS_NAME,
-    );
-    console.log(`Loaded accounts from Google Sheets`);
-  } catch (error) {
-    console.error(`Failed to load accounts from Google Sheets: ${error}`);
+  const accounts = await fetchAccountsFromApi();
+  if(accounts.length === 0) {
+    console.error("No accounts found");
     process.exit(1);
   }
 
   // 予約情報を取得（順次実行）
-  const allReservations = await config.accounts.reduce(
+  const allReservations = await accounts.reduce(
     async (accPromise, account) => {
       const acc = await accPromise;
       const reservations = await fetchReservations(account);

@@ -1,5 +1,5 @@
 import {
-  type Account,
+  type FacilityAccount,
   type Reservation,
   RESERVATION_STATUS_MAP,
 } from "~/types";
@@ -17,7 +17,7 @@ const TIMEOUT = {
 } as const;
 
 export async function fetchReservations(
-  account: Account,
+  account: FacilityAccount,
 ): Promise<Reservation[]> {
   const { success, page, browser } = await login(account);
 
