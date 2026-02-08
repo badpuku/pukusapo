@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { data, Link, useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 
 import { PageTitle } from "~/components/ui/admin/pageTitle";
 import { Button } from "~/components/ui/button";
@@ -10,18 +10,10 @@ import {
   ItemDescription,
   ItemTitle,
 } from "~/components/ui/item";
-import { getFacilityAccountsList } from "~/services/facilityAccounts/list.server";
+import { loader as accountsLoader } from "~/routes/api/facility/accounts/loader.server";
 import { formatDateTime } from "~/utils/date";
 
-import type { Route } from "./+types/route";
-
-export const loader = async (args: Route.LoaderArgs) => {
-  const result = await getFacilityAccountsList(args);
-  return data(
-    { success: result.success, data: result.data, error: result.error },
-    { status: result.status },
-  );
-};
+export const loader = accountsLoader;
 
 export default function AdminFacilityAccountsIndexRoute() {
   const { data: accounts } = useLoaderData<typeof loader>();

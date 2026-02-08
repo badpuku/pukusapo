@@ -11,7 +11,8 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~/lib/apiResponse";
-import { findFacilityAccountById } from "~/repositories/facilityAccounts.server";
+import type { ApiKeyAuthContext, AuthContext } from "~/lib/auth/types";
+import { findAllFacilityAccounts, findFacilityAccountById } from "~/repositories/facilityAccounts.server";
 import {
   type FacilityAccountResponse,
   FacilityAccountResponseSchema,
@@ -19,6 +20,67 @@ import {
 import { getProfileByUserId } from "~/services/profiles/get.server";
 import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { hasModeratorPermission } from "~/utils/permissions";
+
+export async function getFacilityAccountsService(
+  authCtx: AuthContext | ApiKeyAuthContext,
+  id?: string,
+  options: { offset?: number; limit?: number } = {},
+): Promise<ApiResponse<FacilityAccountResponse[]>> {
+  const { offset = 0, limit = 100 } = options;
+
+  // 権限チェック
+  if ("profile" in authCtx) {
+    const permissionLevel = authCtx.profile.roles.permission_level;
+    if (!hasModeratorPermission(permissionLevel)) {
+      return createErrorResponse(
+        ERROR_CODES.FORBIDDEN,
+        ERROR_MESSAGES_MAP[ERROR_CODES.FORBIDDEN],
+        ERROR_STATUS_MAP[ERROR_CODES.FORBIDDEN],
+      );
+    }
+  }
+
+  const supabase = authCtx.supabase;
+  if (id) {
+    const { data: account, error: accountError } = await findFacilityAccountById(supabase, id);
+    if (accountError) {
+      return createErrorResponse(
+        ERROR_CODES.DATABASE_ERROR,
+        `[Supabase Error - findFacilityAccountById] ${accountError.code}: ${accountError.message}`,
+        ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
+      );
+    }
+
+    const accountData = FacilityAccountResponseSchema.safeParse(account);
+    if (!accountData.success) {
+      return createErrorResponse(
+        ERROR_CODES.VALIDATION_ERROR,
+        ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
+        ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR],
+      );
+    }
+    return createSuccessResponse([accountData.data]);
+  }
+
+  const { data: accounts, error: accountsError } = await findAllFacilityAccounts(supabase, { offset, limit });
+  if (accountsError) {
+    return createErrorResponse(
+      ERROR_CODES.DATABASE_ERROR,
+      `[Supabase Error - findAllFacilityAccounts] ${accountsError.code}: ${accountsError.message}`,
+      ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
+    );
+  }
+  const result = FacilityAccountResponseSchema.array().safeParse(accounts);
+  if (!result.success) {
+    return createErrorResponse(
+      ERROR_CODES.VALIDATION_ERROR,
+      ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
+      ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR],
+    );
+  }
+
+  return createSuccessResponse(result.data);
+}
 
 /**
  * IDを指定して施設アカウントを取得する

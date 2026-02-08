@@ -53,9 +53,10 @@ export default [
   route("api/forms/:id/update", "./routes/api/forms/:id/update/route.tsx"),
   route("api/forms/:id/delete", "./routes/api/forms/:id/delete/route.tsx"),
 
+  // API - 施設アカウント管理
   route(
-    "api/facility/accounts/create",
-    "./routes/api/facility/accounts/create/route.tsx",
+    "api/facility/accounts",
+    "./routes/api/facility/accounts/route.tsx",
   ),
   route(
     "api/facility/accounts/:id/update",
@@ -65,6 +66,8 @@ export default [
     "api/facility/accounts/:id/delete",
     "./routes/api/facility/accounts/:id/delete/route.tsx",
   ),
+
+  // API - 予約結果収集ジョブ
   route(
     "api/facility/collection-jobs",
     "./routes/api/facility/collection-jobs/route.tsx",

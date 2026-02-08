@@ -1,6 +1,3 @@
-import { getAuth } from "@clerk/react-router/ssr.server";
-import type { LoaderFunctionArgs } from "react-router";
-
 import {
   ERROR_CODES,
   ERROR_MESSAGES_MAP,
@@ -11,55 +8,52 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~/lib/apiResponse";
+import type { ApiKeyAuthContext, AuthContext } from "~/lib/auth/types";
 import type { FacilityAccountInput } from "~/models/facilityAccounts";
 import { createFacilityAccount } from "~/repositories/facilityAccounts.server";
+import { findAdminProfileForSecretKey } from "~/repositories/profiles.server";
 import { encryptPassword } from "~/services/facilityAccounts/encryption.server";
-import { getProfileByUserId } from "~/services/profiles/get.server";
-import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { hasModeratorPermission } from "~/utils/permissions";
+
+
+/**
+ * Supabase Secret Key の場合の仮のプロフィール id を取得する
+ */
+export async function getProfileIdForSecretKey(
+  authCtx: ApiKeyAuthContext,
+): Promise<string | null> {
+  const supabase = authCtx.supabase;
+  const { data: profile, error: profileError } = await findAdminProfileForSecretKey(
+    supabase,
+  );
+  if (profileError) {
+    return null;
+  }
+  return profile.id;
+}
 
 /**
  * 施設アカウントを作成する
  */
 export async function createFacilityAccountService(
-  args: LoaderFunctionArgs,
+  authCtx: AuthContext | ApiKeyAuthContext,
   input: FacilityAccountInput,
 ): Promise<ApiResponse<{ id: string }>> {
-  const auth = await getAuth(args);
-  const userId = auth.userId;
-
-  // 認証チェック
-  if (!userId) {
-    return createErrorResponse(
-      ERROR_CODES.UNAUTHORIZED,
-      ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
-      ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
-    );
-  }
-
+  const isClerkAuth = "profile" in authCtx;
   // 権限チェック
-  const profileResponse = await getProfileByUserId(args, userId);
-  if (!profileResponse.success) {
-    return createErrorResponse(
-      ERROR_CODES.PROFILE_NOT_FOUND,
-      profileResponse.error.message,
-      ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
-    );
-  }
-
-  const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles.permission_level;
-
-  if (!hasModeratorPermission(permissionLevel)) {
-    return createErrorResponse(
-      ERROR_CODES.FORBIDDEN,
-      ERROR_MESSAGES_MAP[ERROR_CODES.FORBIDDEN],
-      ERROR_STATUS_MAP[ERROR_CODES.FORBIDDEN],
-    );
+  if (isClerkAuth) {
+    const permissionLevel = authCtx.profile.roles.permission_level;
+    if (!hasModeratorPermission(permissionLevel)) {
+      return createErrorResponse(
+        ERROR_CODES.FORBIDDEN,
+        ERROR_MESSAGES_MAP[ERROR_CODES.FORBIDDEN],
+        ERROR_STATUS_MAP[ERROR_CODES.FORBIDDEN],
+      );
+    }
   }
 
   // パスワード暗号化
-  const encryptionKey = args.context.cloudflare.env.ENCRYPTION_KEY;
+  const encryptionKey = authCtx.env.ENCRYPTION_KEY;
   if (!encryptionKey) {
     return createErrorResponse(
       ERROR_CODES.DATABASE_ERROR,
@@ -70,12 +64,26 @@ export async function createFacilityAccountService(
 
   const encryptedPassword = await encryptPassword(input.password, encryptionKey);
 
+  const supabase = authCtx.supabase;
+
+  /**
+   * 管理画面からの操作の場合は、自分のプロフィール id を取得する
+   * API Key 経由の操作の場合は、SUPABASE_管理者 のプロフィール id を取得する
+   */
+  const profileId = isClerkAuth ? authCtx.profile.id : await getProfileIdForSecretKey(authCtx);
+  if (!profileId) {
+    return createErrorResponse(
+      ERROR_CODES.DATABASE_ERROR,
+      "プロフィールが見つかりません",
+      ERROR_STATUS_MAP[ERROR_CODES.DATABASE_ERROR],
+    );
+  }
+
   // 施設アカウント作成
-  const supabase = createServerSupabaseClient(args);
   const { data: newAccount, error: insertError } = await createFacilityAccount(
     supabase,
     {
-      profile_id: userProfile.id,
+      profile_id: profileId,
       user_id: input.userId,
       encrypted_password: encryptedPassword,
       circle_name: input.circleName || null,
