@@ -7,6 +7,7 @@ export const FacilityAccountResponseSchema = z.object({
   id: z.string(),
   profile_id: z.string(),
   user_id: z.string(),
+  encrypted_password: z.string(),
   circle_name: z.string().nullable(),
   representative_name: z.string().nullable(),
   created_at: z.string(),
