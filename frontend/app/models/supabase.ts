@@ -37,22 +37,22 @@ export type Database = {
     Tables: {
       collection_jobs: {
         Row: {
-          collected_at: string
           created_at: string
           id: number
           status: string
+          updated_at: string
         }
         Insert: {
-          collected_at?: string
           created_at?: string
           id?: number
           status?: string
+          updated_at?: string
         }
         Update: {
-          collected_at?: string
           created_at?: string
           id?: number
           status?: string
+          updated_at?: string
         }
         Relationships: []
       }
