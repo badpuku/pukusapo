@@ -19,6 +19,6 @@ export const createServerSupabaseClient = (args: LoaderFunctionArgs) => {
 export const createSecretSupabaseClient = (args: LoaderFunctionArgs) => {
   return createClient<Database>(
     args.context.cloudflare.env.SUPABASE_URL!,
-    args.context.cloudflare.env.SUPABASE_SERVICE_ROLE_KEY!,
+    args.context.cloudflare.env.SUPABASE_SECRET_KEY!,
   );
 };
