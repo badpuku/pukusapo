@@ -1,6 +1,3 @@
-import { getAuth } from "@clerk/react-router/ssr.server";
-import type { LoaderFunctionArgs } from "react-router";
-
 import {
   ERROR_CODES,
   ERROR_MESSAGES_MAP,
@@ -11,46 +8,22 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~/lib/apiResponse";
+import type { AuthContext } from "~/lib/auth/types";
 import type { FacilityAccountUpdateInput } from "~/models/facilityAccounts";
 import { updateFacilityAccount } from "~/repositories/facilityAccounts.server";
 import { encryptPassword } from "~/services/facilityAccounts/encryption.server";
-import { getProfileByUserId } from "~/services/profiles/get.server";
-import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { hasModeratorPermission } from "~/utils/permissions";
 
 /**
  * 施設アカウントを更新する
  */
 export async function updateFacilityAccountService(
-  args: LoaderFunctionArgs,
+  authCtx: AuthContext,
   accountId: string,
   input: FacilityAccountUpdateInput,
 ): Promise<ApiResponse<{ id: string }>> {
-  const auth = await getAuth(args);
-  const userId = auth.userId;
-
-  // 認証チェック
-  if (!userId) {
-    return createErrorResponse(
-      ERROR_CODES.UNAUTHORIZED,
-      ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
-      ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
-    );
-  }
-
   // 権限チェック
-  const profileResponse = await getProfileByUserId(args, userId);
-  if (!profileResponse.success) {
-    return createErrorResponse(
-      ERROR_CODES.PROFILE_NOT_FOUND,
-      profileResponse.error.message,
-      ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
-    );
-  }
-
-  const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles.permission_level;
-
+  const permissionLevel = authCtx.profile.roles.permission_level;
   if (!hasModeratorPermission(permissionLevel)) {
     return createErrorResponse(
       ERROR_CODES.FORBIDDEN,
@@ -75,7 +48,7 @@ export async function updateFacilityAccountService(
 
   // パスワードが入力された場合のみ暗号化して更新
   if (input.password && input.password.length > 0) {
-    const encryptionKey = args.context.cloudflare.env.ENCRYPTION_KEY;
+    const encryptionKey = authCtx.env.ENCRYPTION_KEY;
     if (!encryptionKey) {
       return createErrorResponse(
         ERROR_CODES.DATABASE_ERROR,
@@ -90,7 +63,7 @@ export async function updateFacilityAccountService(
   }
 
   // 施設アカウント更新
-  const supabase = createServerSupabaseClient(args);
+  const supabase = authCtx.supabase;
   const { data: updatedAccount, error: updateError } =
     await updateFacilityAccount(supabase, accountId, updateData);
 

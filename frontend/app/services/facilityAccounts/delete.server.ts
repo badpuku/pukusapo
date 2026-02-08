@@ -1,49 +1,22 @@
-import { getAuth } from "@clerk/react-router/ssr.server";
-import type { LoaderFunctionArgs } from "react-router";
-
 import {
   ERROR_CODES,
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
-import { createErrorResponse, createSuccessResponse } from "~/lib/apiResponse";
+import { type ApiResponse, createErrorResponse, createSuccessResponse } from "~/lib/apiResponse";
+import type { AuthContext } from "~/lib/auth/types";
 import { deleteFacilityAccount as deleteFacilityAccountRepository } from "~/repositories/facilityAccounts.server";
-import { getProfileByUserId } from "~/services/profiles/get.server";
-import { createServerSupabaseClient } from "~/services/supabase/client.server";
 import { hasModeratorPermission } from "~/utils/permissions";
 
 /**
  * 施設アカウントを削除する
  */
-export async function deleteFacilityAccount(
-  args: LoaderFunctionArgs,
+export async function deleteFacilityAccountService(
+  authCtx: AuthContext,
   accountId: string,
-) {
-  const auth = await getAuth(args);
-  const userId = auth.userId;
-
-  // 認証チェック
-  if (!userId) {
-    return createErrorResponse(
-      ERROR_CODES.UNAUTHORIZED,
-      ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
-      ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
-    );
-  }
-
+): Promise<ApiResponse<{ id: string }>> {
   // 権限チェック
-  const profileResponse = await getProfileByUserId(args, userId);
-  if (!profileResponse.success) {
-    return createErrorResponse(
-      ERROR_CODES.PROFILE_NOT_FOUND,
-      profileResponse.error.message,
-      ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
-    );
-  }
-
-  const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles.permission_level;
-
+  const permissionLevel = authCtx.profile.roles.permission_level;
   if (!hasModeratorPermission(permissionLevel)) {
     return createErrorResponse(
       ERROR_CODES.FORBIDDEN,
@@ -53,7 +26,7 @@ export async function deleteFacilityAccount(
   }
 
   // 施設アカウント削除
-  const supabase = createServerSupabaseClient(args);
+  const supabase = authCtx.supabase;
   const { error: deleteError } = await deleteFacilityAccountRepository(
     supabase,
     accountId,
@@ -67,5 +40,5 @@ export async function deleteFacilityAccount(
     );
   }
 
-  return createSuccessResponse(null);
+  return createSuccessResponse({ id: accountId }, 200);
 }

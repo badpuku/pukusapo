@@ -5,16 +5,14 @@ import {
 } from "~/constants/errors";
 import { createErrorResponse, createSuccessResponse } from "~/lib/apiResponse";
 import { authenticateWithClerkAndApiKey } from "~/lib/auth/context.server";
-import { getFacilityAccountsService } from "~/services/facilityAccounts/get.server";
+import { getFacilityAccountByIdService } from "~/services/facilityAccounts/get.server";
 
 import type { Route } from "./+types/route";
 
 export const loader = async (args: Route.LoaderArgs) => {
-  const query = new URL(args.request.url).searchParams;
-  const offset = query.get("offset") ? parseInt(query.get("offset")!) : 0;
-  const limit = query.get("limit") ? parseInt(query.get("limit")!) : 100;
-  const options = { offset, limit };
-
+  const { params } = args;
+  const accountId = params.id;
+  
   const authCtx = await authenticateWithClerkAndApiKey(args);
   if (!authCtx) {
     return createErrorResponse(
@@ -23,7 +21,7 @@ export const loader = async (args: Route.LoaderArgs) => {
       ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
     );
   }
-  const response = await getFacilityAccountsService(authCtx, options);
+  const response = await getFacilityAccountByIdService(authCtx, accountId);
   if (!response.success) {
     return createErrorResponse(
       response.error.code,

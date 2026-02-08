@@ -1,20 +1,18 @@
 import { getFormProps } from "@conform-to/react";
 import { Save, Trash2 } from "lucide-react";
 import { useEffect } from "react";
-import { data, Link, useFetcher, useLoaderData, useNavigate } from "react-router";
+import { Link, useFetcher, useLoaderData, useNavigate } from "react-router";
 
 import { Button } from "~/components/ui/button";
 import { Container } from "~/components/ui/container";
 import { FieldSet } from "~/components/ui/field";
 import { FieldCard, FieldCardContent } from "~/components/ui/fieldCard";
 import { Title } from "~/components/ui/title";
-import { ERROR_CODES, ERROR_STATUS_MAP } from "~/constants/errors";
 import type { RouteHandle } from "~/route-handle";
 import { AccountFormFields } from "~/routes/admin/facility/accounts/features/accountForm";
 import { useFacilityAccountUpdateForm } from "~/routes/admin/facility/accounts/useFacilityAccountForm";
-import { getFacilityAccountById } from "~/services/facilityAccounts/get.server";
+import { loader as accountsLoader } from "~/routes/api/facility/accounts/:id/loader.server";
 
-import type { Route } from "./+types/route";
 
 export const handle: RouteHandle = {
   breadcrumb: (match) => ({
@@ -23,39 +21,18 @@ export const handle: RouteHandle = {
   }),
 };
 
-export const loader = async (args: Route.LoaderArgs) => {
-  const { params } = args;
-  const accountId = params.id;
-
-  const response = await getFacilityAccountById(args, accountId);
-
-  if (!response.success) {
-    throw data(response.error.message, { status: response.status });
-  }
-
-  if (!response.data) {
-    throw data("アカウントが見つかりません。", {
-      status: ERROR_STATUS_MAP[ERROR_CODES.RESOURCE_NOT_FOUND],
-    });
-  }
-
-  return data(
-    { success: true, data: response.data, error: null },
-    { status: response.status },
-  );
-};
+export const loader = accountsLoader;
 
 export default function AdminFacilityAccountsIdRoute() {
   const { data: accountData } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const fetcher = useFetcher();
-
   const [form, fields] = useFacilityAccountUpdateForm({
     defaultValue: {
-      userId: accountData.user_id,
+      userId: accountData?.user_id || "",
       password: "",
-      circleName: accountData.circle_name || "",
-      representativeName: accountData.representative_name || "",
+      circleName: accountData?.circle_name || "",
+      representativeName: accountData?.representative_name || "",
     },
   });
 
@@ -71,8 +48,8 @@ export default function AdminFacilityAccountsIdRoute() {
       fetcher.submit(
         {},
         {
-          method: "POST",
-          action: `/api/facility/accounts/${accountData.id}/delete`,
+          method: "DELETE",
+          action: `/api/facility/accounts/${accountData?.id}`,
         },
       );
     }
@@ -84,9 +61,9 @@ export default function AdminFacilityAccountsIdRoute() {
         <Container className="grow bg-zinc-50">
           <fetcher.Form
             className="max-w-2xl space-y-6"
-            method="post"
+            method="put"
             {...getFormProps(form)}
-            action={`/api/facility/accounts/${accountData.id}/update`}
+            action={`/api/facility/accounts/${accountData?.id}`}
           >
             <Title as="h3" className="mb-2">
               アカウント情報
