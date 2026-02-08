@@ -14,7 +14,7 @@ import { formatDateTime } from "~/utils/date";
 export const loader = collectionJobsLoader;
 
 export default function AdminFacilityCollectionJobsIndexRoute() {
-  const { data } = useLoaderData<typeof loader>();
+  const { data: collectionJobs } = useLoaderData<typeof loader>();
 
   return (
     <Container className="flex-1 bg-zinc-50">
@@ -22,9 +22,9 @@ export default function AdminFacilityCollectionJobsIndexRoute() {
         <div className="flex items-center justify-between">
           <PageTitle title="予約結果収集ジョブ一覧" />
         </div>
-        {data && data.collectionJobs.length > 0 ? (
+        {collectionJobs && collectionJobs.length > 0 ? (
           <div className="flex flex-col gap-4">
-            {data.collectionJobs.map((collectionJob) => {
+            {collectionJobs.map((collectionJob) => {
               const id = collectionJob.id;
               const statusLabel = collectionJob.status === "running" ? "実行中" : collectionJob.status === "completed" ? "完了" : "失敗";
               const createdAt = collectionJob.created_at;

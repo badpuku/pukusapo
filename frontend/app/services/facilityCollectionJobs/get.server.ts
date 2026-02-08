@@ -19,7 +19,7 @@ import { hasAdminPermission } from "~/utils/permissions";
 export async function getFacilityCollectionJobService(
   authCtx: AuthContext | ApiKeyAuthContext,
   id?: number,
-): Promise<ApiResponse<{ collectionJobs: FacilityCollectionJobResponse[] }>> {
+): Promise<ApiResponse<FacilityCollectionJobResponse[]>> {
   // 権限チェック
   if ("profile" in authCtx) {
     const permissionLevel = authCtx.profile.roles.permission_level;
@@ -43,8 +43,15 @@ export async function getFacilityCollectionJobService(
       );
     }
 
-    const collectionJobResponse = FacilityCollectionJobResponseSchema.parse(collectionJob);
-    return createSuccessResponse({ collectionJobs: [collectionJobResponse] });
+    const collectionJobData = FacilityCollectionJobResponseSchema.safeParse(collectionJob);
+    if (!collectionJobData.success) {
+      return createErrorResponse(
+        ERROR_CODES.VALIDATION_ERROR,
+        ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
+        ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR],
+      );
+    }
+    return createSuccessResponse([collectionJobData.data]);
   }
 
   const { data: collectionJobs, error: collectionJobsError } = await findAllFacilityCollectionJobs(
@@ -59,6 +66,14 @@ export async function getFacilityCollectionJobService(
     );
   }
 
-  const collectionJobsResponse = collectionJobs.map(collectionJob => FacilityCollectionJobResponseSchema.parse(collectionJob));
-  return createSuccessResponse({ collectionJobs: collectionJobsResponse });
+  const result = FacilityCollectionJobResponseSchema.array().safeParse(collectionJobs);
+  if (!result.success) {
+    return createErrorResponse(
+      ERROR_CODES.VALIDATION_ERROR,
+      ERROR_MESSAGES_MAP[ERROR_CODES.VALIDATION_ERROR],
+      ERROR_STATUS_MAP[ERROR_CODES.VALIDATION_ERROR],
+    );
+  }
+
+  return createSuccessResponse(result.data);
 }
