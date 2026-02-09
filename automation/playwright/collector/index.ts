@@ -11,10 +11,18 @@ const normalize = (str: string | null) =>
 
 // タイムアウト設定（ミリ秒）
 const TIMEOUT = {
-  PAGE_LOAD: 15000,
-  ELEMENT_ACTION: 5000,
-  ELEMENT_VISIBLE: 3000,
+  PAGE_LOAD: 30000,
+  ELEMENT_ACTION: 10000,
+  ELEMENT_VISIBLE: 15000,
 } as const;
+
+// 操作間の待機時間（ミリ秒）
+const DELAY = {
+  AFTER_CLICK: 1500,
+  BETWEEN_ITEMS: 300,
+} as const;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function fetchReservations(
   account: FacilityAccount,
@@ -58,12 +66,16 @@ export async function fetchReservations(
     }
 
     await page
+      .waitForLoadState("domcontentloaded", { timeout: TIMEOUT.PAGE_LOAD })
+      .catch(() => {});
+    await page
       .waitForLoadState("networkidle", { timeout: TIMEOUT.PAGE_LOAD })
       .catch(() => {
         console.log(
           `アカウント ${account.userId}: ページ読み込みタイムアウト、処理を継続します。`,
         );
       });
+    await wait(DELAY.AFTER_CLICK);
 
     // フィルターを選択
     const filterButtonClicked = await page
@@ -78,6 +90,8 @@ export async function fetchReservations(
       return [];
     }
 
+    await wait(DELAY.AFTER_CLICK);
+
     // 当選フィルターを選択
     const filterSelected = await page
       .getByRole("button", { name: filterText, exact: true })
@@ -91,14 +105,18 @@ export async function fetchReservations(
       return [];
     }
 
+    // フィルター適用後、リストが更新されるのを待つ
+    await page
+      .waitForLoadState("networkidle", { timeout: TIMEOUT.PAGE_LOAD })
+      .catch(() => {});
+    await wait(DELAY.AFTER_CLICK);
+
     // 当選件数を確認
     const paginationText = await page
       .getByText(/\d+\s*件目/)
       .textContent({ timeout: TIMEOUT.ELEMENT_ACTION })
       .catch(() => null);
     const match = paginationText?.match(/(\d+)\s*件目/);
-
-    console.log(match);
 
     if (!match || parseInt(match[1], 10) === 0) {
       console.log("当選件数は0件です。");
