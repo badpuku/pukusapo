@@ -1,8 +1,11 @@
+import type { Response } from "playwright";
+
 import {
   type FacilityAccount,
   type Reservation,
   RESERVATION_STATUS_MAP,
 } from "~/types";
+import { ServerError } from "~playwright/collector/errors";
 import { login } from "~playwright/collector/login";
 
 // 改行・連続空白を整形するヘルパー
@@ -27,12 +30,26 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function fetchReservations(
   account: FacilityAccount,
 ): Promise<Reservation[]> {
+  // login 内で ServerError が throw される可能性がある（呼び出し元でキャッチ）
   const { success, page, browser } = await login(account);
 
   if (!success) {
     await browser.close();
     return [];
   }
+
+  // ページ内の全レスポンスを監視し、5xx サーバーエラーを検知する
+  let serverErrorDetected: ServerError | null = null;
+  const responseHandler = (res: Response) => {
+    if (res.status() >= 500) {
+      serverErrorDetected = new ServerError(res.status());
+    }
+  };
+  page.on("response", responseHandler);
+
+  const checkServerError = () => {
+    if (serverErrorDetected) throw serverErrorDetected;
+  };
 
   try {
     const reservations: Reservation[] = [];
@@ -75,6 +92,7 @@ export async function fetchReservations(
           `アカウント ${account.userId}: ページ読み込みタイムアウト、処理を継続します。`,
         );
       });
+    checkServerError();
     await wait(DELAY.AFTER_CLICK);
 
     // フィルターを選択
@@ -109,6 +127,7 @@ export async function fetchReservations(
     await page
       .waitForLoadState("networkidle", { timeout: TIMEOUT.PAGE_LOAD })
       .catch(() => {});
+    checkServerError();
     await wait(DELAY.AFTER_CLICK);
 
     // 当選件数を確認
@@ -163,9 +182,14 @@ export async function fetchReservations(
 
     return reservations;
   } catch (error) {
+    // ServerError はリトライ判定のため呼び出し元へ伝播させる
+    if (error instanceof ServerError) {
+      throw error;
+    }
     console.error("予約情報の取得に失敗しました:", error);
     return [];
   } finally {
+    page.off("response", responseHandler);
     await browser.close();
   }
 }

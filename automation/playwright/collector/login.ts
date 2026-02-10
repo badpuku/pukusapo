@@ -1,6 +1,7 @@
 import { type Browser, chromium, type Page } from "playwright";
 
 import type { FacilityAccount } from "~/types";
+import { ServerError } from "~playwright/collector/errors";
 
 export type LoginResult = {
   success: boolean;
@@ -18,10 +19,16 @@ export async function login(account: FacilityAccount): Promise<LoginResult> {
     const page = await browser.newPage();
 
     // ログインページへ遷移
-    await page.goto("https://yoyaku.harp.lg.jp/sapporo/Login", {
+    const response = await page.goto("https://yoyaku.harp.lg.jp/sapporo/Login", {
       waitUntil: "domcontentloaded",
       timeout: 30000,
     });
+
+    // 503 等のサーバーエラーを検知
+    if (response && response.status() >= 500) {
+      throw new ServerError(response.status());
+    }
+
     await page.getByRole("heading", { name: /ログイン/, level: 1 }).waitFor({ timeout: 30000, state: "visible" })
 
     // ログインフォームに入力
@@ -41,6 +48,12 @@ export async function login(account: FacilityAccount): Promise<LoginResult> {
       browser,
     };
   } catch (error) {
+    // ServerError はリトライ判定のため呼び出し元へ伝播させる
+    if (error instanceof ServerError) {
+      await browser.close();
+      throw error;
+    }
+
     console.error(
       `アカウント ${account.userId}: ログインに失敗しました:`,
       error,
