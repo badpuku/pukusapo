@@ -6,6 +6,7 @@ import {
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
 import { createErrorResponse } from "~/lib/apiResponse";
+import { authenticateWithProfile } from "~/lib/auth/context.server";
 import { FacilityAccountUpdateInputSchema } from "~/models/facilityAccounts";
 import { updateFacilityAccountService } from "~/services/facilityAccounts/update.server";
 
@@ -36,5 +37,13 @@ export const action = async (args: Route.ActionArgs) => {
     );
   }
 
-  return updateFacilityAccountService(args, accountId, submission.value);
+  const authCtx = await authenticateWithProfile(args);
+  if (!authCtx) {
+    return createErrorResponse(
+      ERROR_CODES.UNAUTHORIZED,
+      ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
+      ERROR_STATUS_MAP[ERROR_CODES.UNAUTHORIZED],
+    );
+  }
+  return updateFacilityAccountService(authCtx, accountId, submission.value);
 };
