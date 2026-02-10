@@ -1,7 +1,7 @@
 /**
- * This is intended to be a basic starting point for linting in your app.
- * It relies on recommended configs out of the box for simplicity, but you can
- * and should modify this configuration to best suit your team's needs.
+ * ESLint共通設定（モノレポルート）
+ * TypeScript + import-sort の基本設定を提供
+ * 各ワークスペースは固有設定のみ上書き
  */
 
 /** @type {import('eslint').Linter.Config} */
@@ -10,48 +10,16 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-    ecmaFeatures: {
-      jsx: true,
-    },
   },
   env: {
-    browser: true,
-    commonjs: true,
     es6: true,
   },
-  ignorePatterns: ["!**/.server", "!**/.client"],
 
-  // Base config
-  // NOTE: prettier は他の設定の上書きを行うために、必ず最後に配置する。
-  extends: ["eslint:recommended", "plugin:storybook/recommended", "prettier"],
+  // NOTE: prettier は他の設定の上書きを行うために、必ず最後に配置する
+  extends: ["eslint:recommended", "prettier"],
 
   overrides: [
-    // React
-    {
-      files: ["**/*.{js,jsx,ts,tsx}"],
-      plugins: ["react", "jsx-a11y"],
-      extends: [
-        "plugin:react/recommended",
-        "plugin:react/jsx-runtime",
-        "plugin:react-hooks/recommended",
-        "plugin:jsx-a11y/recommended",
-      ],
-      settings: {
-        react: {
-          version: "detect",
-        },
-        formComponents: ["Form"],
-        linkComponents: [
-          { name: "Link", linkAttribute: "to" },
-          { name: "NavLink", linkAttribute: "to" },
-        ],
-        "import/resolver": {
-          typescript: {},
-        },
-      },
-    },
-
-    // Typescript
+    // TypeScript
     {
       files: ["**/*.{ts,tsx}"],
       plugins: ["@typescript-eslint", "import", "simple-import-sort"],
@@ -64,7 +32,6 @@ module.exports = {
           },
           typescript: {
             alwaysTryTypes: true,
-            project: "./tsconfig.cloudflare.json"
           },
         },
       },
@@ -72,6 +39,7 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:import/recommended",
         "plugin:import/typescript",
+        "prettier",
       ],
       rules: {
         "simple-import-sort/imports": "error",
@@ -82,9 +50,9 @@ module.exports = {
       },
     },
 
-    // Node
+    // Node (設定ファイル等)
     {
-      files: [".eslintrc.cjs"],
+      files: [".eslintrc.cjs", "**/*.config.{js,cjs,mjs}"],
       env: {
         node: true,
       },

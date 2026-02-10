@@ -1,0 +1,31 @@
+{
+  "name": "@pukusapo/automation",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "lint": "eslint --cache .",
+    "collect": "vite-node scripts/collect.ts",
+    "collect:headed": "HEADED=1 vite-node scripts/collect.ts",
+    "seed:accounts": "vite-node scripts/seed-facility-accounts.ts",
+    "format": "npm-run-all2 -s format:*",
+    "format:lint": "eslint --ignore-path .gitignore . --fix",
+    "format:code": "prettier --write ."
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.93.3",
+    "hono": "^4.11.5",
+    "octokit": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "npm-run-all2": "^7.0.2",
+    "vite-node": "^5.3.0",
+    "vite-tsconfig-paths": "^6.0.5",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.4.0"
+  }
+}
