@@ -3,7 +3,7 @@ name: Deploy production
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+*'
+      - "v[0-9]+.[0-9]+.[0-9]+*"
 
 jobs:
   deploy:
@@ -18,10 +18,8 @@ jobs:
           cache: "npm"
           cache-dependency-path: "package-lock.json"
       - name: Install
-        working-directory: frontend
         run: npm ci
       - name: Build
-        working-directory: frontend
         run: npm run build
       - name: Deploy
         uses: cloudflare/wrangler-action@v3

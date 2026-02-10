@@ -18,10 +18,8 @@ jobs:
           cache: "npm"
           cache-dependency-path: "package-lock.json"
       - name: Install
-        working-directory: frontend
         run: npm ci
       - name: Build
-        working-directory: frontend
         run: npm run build
         env:
           CLOUDFLARE_ENV: development
