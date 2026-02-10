@@ -1,3 +1,4 @@
+
 export type Json =
   | string
   | number
@@ -34,6 +35,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      collection_jobs: {
+        Row: {
+          created_at: string
+          id: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       event_participations: {
         Row: {
           cancellation_reason: string | null
@@ -144,6 +166,98 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      facility_accounts: {
+        Row: {
+          circle_name: string | null
+          created_at: string
+          encrypted_password: string | null
+          id: string
+          profile_id: string
+          representative_name: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          circle_name?: string | null
+          created_at?: string
+          encrypted_password?: string | null
+          id?: string
+          profile_id: string
+          representative_name?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          circle_name?: string | null
+          created_at?: string
+          encrypted_password?: string | null
+          id?: string
+          profile_id?: string
+          representative_name?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_facility_accounts_profile_id"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      facility_reservations: {
+        Row: {
+          collection_job_id: number | null
+          created_at: string
+          facility_account_id: string
+          facility_name: string
+          id: string
+          reservation_date: string
+          reservation_time: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          collection_job_id?: number | null
+          created_at?: string
+          facility_account_id: string
+          facility_name: string
+          id?: string
+          reservation_date: string
+          reservation_time: string
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          collection_job_id?: number | null
+          created_at?: string
+          facility_account_id?: string
+          facility_name?: string
+          id?: string
+          reservation_date?: string
+          reservation_time?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facility_reservations_collection_job_id_fkey"
+            columns: ["collection_job_id"]
+            isOneToOne: false
+            referencedRelation: "collection_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_facility_reservations_facility_account_id"
+            columns: ["facility_account_id"]
+            isOneToOne: false
+            referencedRelation: "facility_accounts"
             referencedColumns: ["id"]
           },
         ]
@@ -592,18 +706,9 @@ export type Database = {
       }
     }
     Functions: {
-      get_current_user_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_user_permission_level: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      get_current_user_id: { Args: never; Returns: string }
+      get_user_permission_level: { Args: never; Returns: number }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

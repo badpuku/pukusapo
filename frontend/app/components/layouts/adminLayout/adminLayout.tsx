@@ -1,5 +1,6 @@
 
 import {
+  Building2,
   CalendarCheck2,
   ClipboardSignature,
   Home,
@@ -66,6 +67,11 @@ const sidebarMenuItems: SidebarMenuItem[] = [
     to: "/admin/forms",
     icon: <ClipboardSignature size={20} />,
     label: "フォーム",
+  },
+  {
+    to: "/admin/facility",
+    icon: <Building2 size={20} />,
+    label: "施設",
   },
   {
     to: "/admin/users",
