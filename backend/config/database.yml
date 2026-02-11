@@ -22,7 +22,8 @@ default: &default
 
 development:
   <<: *default
-  database: backend_development
+  database: postgres
+  username: postgres
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
