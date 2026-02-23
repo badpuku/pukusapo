@@ -31,6 +31,6 @@ module Backend
 
     # Supabase が管理するスキーマ（extensions, graphql, vault 等）を
     # schema.rb のダンプ対象から除外する
-    config.active_record.dump_schemas = [:public]
+    config.active_record.dump_schemas = "public"
   end
 end
