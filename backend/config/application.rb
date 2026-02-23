@@ -28,5 +28,9 @@ module Backend
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Supabase が管理するスキーマ（extensions, graphql, vault 等）を
+    # schema.rb のダンプ対象から除外する
+    config.active_record.dump_schemas = [:public]
   end
 end
