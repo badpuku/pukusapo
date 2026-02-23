@@ -9,9 +9,11 @@
     "migrate:down": "supabase migration down",
     "gen-types": "supabase gen types typescript --local",
     "secrets:prod": "supabase secrets set --env-file .env",
-    "secrets:dev": "supabase secrets set --env-file .env.dev"
+    "secrets:dev": "supabase secrets set --env-file .env.dev",
+    "link": "supabase link",
+    "unlink": "supabase unlink"
   },
   "devDependencies": {
-    "supabase": "^2.24.3"
+    "supabase": "^2.76.7"
   }
 }
