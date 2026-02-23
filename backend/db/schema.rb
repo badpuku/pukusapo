@@ -10,9 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
-  create_schema "extensions"
-
+ActiveRecord::Schema[8.1].define(version: 2026_01_21_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "extensions.pg_stat_statements"
   enable_extension "extensions.pgcrypto"
@@ -21,14 +19,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vault.supabase_vault"
 
-  create_table "public.collection_jobs", id: { type: :serial, comment: "収集ジョブID（連番）" }, comment: "予約情報収集ジョブを管理するテーブル", force: :cascade do |t|
+  create_table "collection_jobs", id: { type: :serial, comment: "収集ジョブID（連番）" }, comment: "予約情報収集ジョブを管理するテーブル", force: :cascade do |t|
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.string "status", limit: 20, default: "running", null: false, comment: "ジョブ状態（running: 実行中, completed: 完了, failed: 失敗）"
     t.timestamptz "updated_at", default: -> { "now()" }, null: false, comment: "最終更新日時"
     t.check_constraint "status::text = ANY (ARRAY['running'::character varying, 'completed'::character varying, 'failed'::character varying]::text[])", name: "ck_collection_jobs_status"
   end
 
-  create_table "public.event_participations", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "イベントへの参加状況を管理するテーブル", force: :cascade do |t|
+  create_table "event_participations", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "イベントへの参加状況を管理するテーブル", force: :cascade do |t|
     t.text "cancellation_reason", comment: "キャンセル理由"
     t.timestamptz "cancelled_at"
     t.timestamptz "created_at", default: -> { "now()" }, null: false
@@ -45,7 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.unique_constraint ["event_id", "profile_id"], name: "uq_event_participations_event_profile"
   end
 
-  create_table "public.events", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "イベントの基本情報を管理するテーブル", force: :cascade do |t|
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "イベントの基本情報を管理するテーブル", force: :cascade do |t|
     t.integer "capacity", null: false, comment: "イベントの定員（正の整数）"
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.uuid "created_by", null: false, comment: "イベント作成者（profiles.id）"
@@ -67,7 +65,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.check_constraint "waitlist_capacity >= 0", name: "ck_events_waitlist_capacity"
   end
 
-  create_table "public.facility_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "施設予約サイトのアカウント情報を管理するテーブル", force: :cascade do |t|
+  create_table "facility_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "施設予約サイトのアカウント情報を管理するテーブル", force: :cascade do |t|
     t.string "circle_name", limit: 100, comment: "サークル名"
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.text "encrypted_password", comment: "AES暗号化されたパスワード（暗号化キーはVaultで管理）"
@@ -80,7 +78,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.unique_constraint ["profile_id", "user_id"], name: "uq_facility_accounts_profile_user"
   end
 
-  create_table "public.facility_reservations", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "施設予約の抽選結果を管理するテーブル", force: :cascade do |t|
+  create_table "facility_reservations", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "施設予約の抽選結果を管理するテーブル", force: :cascade do |t|
     t.integer "collection_job_id", comment: "収集ジョブID（collection_jobs.id）"
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.uuid "facility_account_id", null: false, comment: "予約に使用したアカウント（facility_accounts.id）"
@@ -100,7 +98,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.unique_constraint ["collection_job_id", "facility_account_id", "facility_name", "reservation_date", "reservation_time"], name: "uq_facility_reservations_job_account_facility_datetime"
   end
 
-  create_table "public.form_events", primary_key: ["form_id", "event_id"], comment: "フォームとイベントの多対多関連を管理するテーブル", force: :cascade do |t|
+  create_table "form_events", primary_key: ["form_id", "event_id"], comment: "フォームとイベントの多対多関連を管理するテーブル", force: :cascade do |t|
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.uuid "event_id", null: false
     t.uuid "form_id", null: false
@@ -109,7 +107,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.check_constraint "priority >= 0", name: "ck_form_events_priority"
   end
 
-  create_table "public.form_fields", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "フォームの入力項目を管理するテーブル", force: :cascade do |t|
+  create_table "form_fields", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "フォームの入力項目を管理するテーブル", force: :cascade do |t|
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.text "description"
     t.integer "display_order", default: 0, null: false
@@ -127,7 +125,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.check_constraint "length(TRIM(BOTH FROM label)) > 0", name: "ck_form_fields_label_not_empty"
   end
 
-  create_table "public.form_submission_answers", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "各フォーム項目への回答を管理するテーブル", force: :cascade do |t|
+  create_table "form_submission_answers", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "各フォーム項目への回答を管理するテーブル", force: :cascade do |t|
     t.jsonb "answer_data", comment: "構造化された回答データ（JSON形式）"
     t.text "answer_text", comment: "テキスト形式の回答"
     t.timestamptz "created_at", default: -> { "now()" }, null: false
@@ -139,7 +137,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.unique_constraint ["submission_id", "field_id"], name: "uq_form_submission_answers_submission_field"
   end
 
-  create_table "public.form_submissions", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "フォームの提出記録を管理するテーブル", force: :cascade do |t|
+  create_table "form_submissions", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "フォームの提出記録を管理するテーブル", force: :cascade do |t|
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.uuid "form_id", null: false
     t.string "status", limit: 20, default: "draft", null: false, comment: "提出の状態（draft: 下書き, submitted: 提出済み, approved: 承認, rejected: 却下）"
@@ -152,7 +150,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.check_constraint "status::text = ANY (ARRAY['draft'::character varying, 'submitted'::character varying, 'approved'::character varying, 'rejected'::character varying]::text[])", name: "ck_form_submissions_status"
   end
 
-  create_table "public.forms", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "フォームの基本情報を管理するテーブル", force: :cascade do |t|
+  create_table "forms", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "フォームの基本情報を管理するテーブル", force: :cascade do |t|
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.uuid "created_by", null: false, comment: "フォーム作成者（profiles.id）"
     t.text "description"
@@ -169,7 +167,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.check_constraint "status::text = ANY (ARRAY['draft'::character varying, 'published'::character varying, 'closed'::character varying]::text[])", name: "ck_forms_status"
   end
 
-  create_table "public.permissions", comment: "システム内で利用可能な権限を定義するマスタテーブル", force: :cascade do |t|
+  create_table "permissions", comment: "システム内で利用可能な権限を定義するマスタテーブル", force: :cascade do |t|
     t.string "action", limit: 50, null: false, comment: "リソースに対するアクション名"
     t.string "code", limit: 100, null: false, comment: "権限を識別する一意なコード（resource.action形式）"
     t.timestamptz "created_at", default: -> { "now()" }, null: false
@@ -188,7 +186,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.unique_constraint ["resource", "action"], name: "uq_permissions_resource_action"
   end
 
-  create_table "public.profiles", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "ユーザーのプロファイル情報とロール割り当てを管理するテーブル", force: :cascade do |t|
+  create_table "profiles", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "ユーザーのプロファイル情報とロール割り当てを管理するテーブル", force: :cascade do |t|
     t.text "avatar_url"
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.text "full_name"
@@ -206,14 +204,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.unique_constraint ["username"], name: "uq_profiles_username"
   end
 
-  create_table "public.role_permissions", primary_key: ["role_id", "permission_id"], comment: "ロールと権限の関連を管理するテーブル", force: :cascade do |t|
+  create_table "role_permissions", primary_key: ["role_id", "permission_id"], comment: "ロールと権限の関連を管理するテーブル", force: :cascade do |t|
     t.timestamptz "granted_at", default: -> { "now()" }, null: false
     t.text "granted_by", comment: "権限を付与したユーザーのID"
     t.bigint "permission_id", null: false
     t.bigint "role_id", null: false
   end
 
-  create_table "public.roles", comment: "システム内で利用可能なユーザーロールを定義するマスタテーブル", force: :cascade do |t|
+  create_table "roles", comment: "システム内で利用可能なユーザーロールを定義するマスタテーブル", force: :cascade do |t|
     t.string "code", limit: 50, null: false, comment: "ロールを識別する一意なコード（小文字英数字とアンダースコアのみ）"
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.text "description"
@@ -229,7 +227,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.unique_constraint ["code"], name: "uq_roles_code"
   end
 
-  create_table "public.solid_cable_messages", force: :cascade do |t|
+  create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
     t.bigint "channel_hash", null: false
     t.datetime "created_at", null: false
@@ -239,7 +237,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
-  create_table "public.solid_cache_entries", force: :cascade do |t|
+  create_table "solid_cache_entries", force: :cascade do |t|
     t.integer "byte_size", null: false
     t.datetime "created_at", null: false
     t.binary "key", null: false
@@ -250,7 +248,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
   end
 
-  create_table "public.solid_queue_blocked_executions", force: :cascade do |t|
+  create_table "solid_queue_blocked_executions", force: :cascade do |t|
     t.string "concurrency_key", null: false
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
@@ -262,7 +260,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["job_id"], name: "index_solid_queue_blocked_executions_on_job_id", unique: true
   end
 
-  create_table "public.solid_queue_claimed_executions", force: :cascade do |t|
+  create_table "solid_queue_claimed_executions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "job_id", null: false
     t.bigint "process_id"
@@ -270,14 +268,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["process_id", "job_id"], name: "index_solid_queue_claimed_executions_on_process_id_and_job_id"
   end
 
-  create_table "public.solid_queue_failed_executions", force: :cascade do |t|
+  create_table "solid_queue_failed_executions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "error"
     t.bigint "job_id", null: false
     t.index ["job_id"], name: "index_solid_queue_failed_executions_on_job_id", unique: true
   end
 
-  create_table "public.solid_queue_jobs", force: :cascade do |t|
+  create_table "solid_queue_jobs", force: :cascade do |t|
     t.string "active_job_id"
     t.text "arguments"
     t.string "class_name", null: false
@@ -295,13 +293,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["scheduled_at", "finished_at"], name: "index_solid_queue_jobs_for_alerting"
   end
 
-  create_table "public.solid_queue_pauses", force: :cascade do |t|
+  create_table "solid_queue_pauses", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "queue_name", null: false
     t.index ["queue_name"], name: "index_solid_queue_pauses_on_queue_name", unique: true
   end
 
-  create_table "public.solid_queue_processes", force: :cascade do |t|
+  create_table "solid_queue_processes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "hostname"
     t.string "kind", null: false
@@ -315,7 +313,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["supervisor_id"], name: "index_solid_queue_processes_on_supervisor_id"
   end
 
-  create_table "public.solid_queue_ready_executions", force: :cascade do |t|
+  create_table "solid_queue_ready_executions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "job_id", null: false
     t.integer "priority", default: 0, null: false
@@ -325,7 +323,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["queue_name", "priority", "job_id"], name: "index_solid_queue_poll_by_queue"
   end
 
-  create_table "public.solid_queue_recurring_executions", force: :cascade do |t|
+  create_table "solid_queue_recurring_executions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "job_id", null: false
     t.datetime "run_at", null: false
@@ -334,7 +332,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["task_key", "run_at"], name: "index_solid_queue_recurring_executions_on_task_key_and_run_at", unique: true
   end
 
-  create_table "public.solid_queue_recurring_tasks", force: :cascade do |t|
+  create_table "solid_queue_recurring_tasks", force: :cascade do |t|
     t.text "arguments"
     t.string "class_name"
     t.string "command", limit: 2048
@@ -350,7 +348,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["static"], name: "index_solid_queue_recurring_tasks_on_static"
   end
 
-  create_table "public.solid_queue_scheduled_executions", force: :cascade do |t|
+  create_table "solid_queue_scheduled_executions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "job_id", null: false
     t.integer "priority", default: 0, null: false
@@ -360,7 +358,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["scheduled_at", "priority", "job_id"], name: "index_solid_queue_dispatch_all"
   end
 
-  create_table "public.solid_queue_semaphores", force: :cascade do |t|
+  create_table "solid_queue_semaphores", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
     t.string "key", null: false
@@ -371,7 +369,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
-  create_table "public.waitlists", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "イベントのキャンセル待ちリストを管理するテーブル", force: :cascade do |t|
+  create_table "waitlists", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "イベントのキャンセル待ちリストを管理するテーブル", force: :cascade do |t|
     t.timestamptz "accepted_at", comment: "受諾日時"
     t.timestamptz "created_at", default: -> { "now()" }, null: false
     t.uuid "event_id", null: false
@@ -390,31 +388,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_22_000000) do
     t.unique_constraint ["event_id", "profile_id"], name: "uq_waitlists_event_profile"
   end
 
-  add_foreign_key "public.event_participations", "public.events", name: "fk_event_participations_event_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.event_participations", "public.form_submissions", column: "submission_id", name: "fk_event_participations_submission_id", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "public.event_participations", "public.profiles", name: "fk_event_participations_profile_id", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "public.events", "public.profiles", column: "created_by", name: "fk_events_created_by", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "public.facility_accounts", "public.profiles", name: "fk_facility_accounts_profile_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.facility_reservations", "public.collection_jobs", name: "facility_reservations_collection_job_id_fkey", on_delete: :cascade
-  add_foreign_key "public.facility_reservations", "public.facility_accounts", name: "fk_facility_reservations_facility_account_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.form_events", "public.events", name: "fk_form_events_event_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.form_events", "public.forms", name: "fk_form_events_form_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.form_fields", "public.forms", name: "fk_form_fields_form_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.form_submission_answers", "public.form_fields", column: "field_id", name: "fk_form_submission_answers_field_id", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "public.form_submission_answers", "public.form_submissions", column: "submission_id", name: "fk_form_submission_answers_submission_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.form_submissions", "public.forms", name: "fk_form_submissions_form_id", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "public.form_submissions", "public.profiles", column: "submitted_by", name: "fk_form_submissions_submitted_by", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "public.forms", "public.profiles", column: "created_by", name: "fk_forms_created_by", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "public.profiles", "public.roles", name: "fk_profiles_role_id", on_update: :cascade, on_delete: :restrict
-  add_foreign_key "public.role_permissions", "public.permissions", name: "fk_role_permissions_permission_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.role_permissions", "public.roles", name: "fk_role_permissions_role_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.solid_queue_blocked_executions", "public.solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "public.solid_queue_claimed_executions", "public.solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "public.solid_queue_failed_executions", "public.solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "public.solid_queue_ready_executions", "public.solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "public.solid_queue_recurring_executions", "public.solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "public.solid_queue_scheduled_executions", "public.solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "public.waitlists", "public.events", name: "fk_waitlists_event_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "public.waitlists", "public.profiles", name: "fk_waitlists_profile_id", on_update: :cascade, on_delete: :restrict
-
+  add_foreign_key "event_participations", "events", name: "fk_event_participations_event_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "event_participations", "form_submissions", column: "submission_id", name: "fk_event_participations_submission_id", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "event_participations", "profiles", name: "fk_event_participations_profile_id", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "events", "profiles", column: "created_by", name: "fk_events_created_by", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "facility_accounts", "profiles", name: "fk_facility_accounts_profile_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "facility_reservations", "collection_jobs", name: "facility_reservations_collection_job_id_fkey", on_delete: :cascade
+  add_foreign_key "facility_reservations", "facility_accounts", name: "fk_facility_reservations_facility_account_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "form_events", "events", name: "fk_form_events_event_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "form_events", "forms", name: "fk_form_events_form_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "form_fields", "forms", name: "fk_form_fields_form_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "form_submission_answers", "form_fields", column: "field_id", name: "fk_form_submission_answers_field_id", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "form_submission_answers", "form_submissions", column: "submission_id", name: "fk_form_submission_answers_submission_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "form_submissions", "forms", name: "fk_form_submissions_form_id", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "form_submissions", "profiles", column: "submitted_by", name: "fk_form_submissions_submitted_by", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "forms", "profiles", column: "created_by", name: "fk_forms_created_by", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "profiles", "roles", name: "fk_profiles_role_id", on_update: :cascade, on_delete: :restrict
+  add_foreign_key "role_permissions", "permissions", name: "fk_role_permissions_permission_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "role_permissions", "roles", name: "fk_role_permissions_role_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "waitlists", "events", name: "fk_waitlists_event_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "waitlists", "profiles", name: "fk_waitlists_profile_id", on_update: :cascade, on_delete: :restrict
 end
