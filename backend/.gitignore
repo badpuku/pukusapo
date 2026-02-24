@@ -11,6 +11,7 @@
 /.env*
 !.env.kamal.staging.example
 !.env.kamal.production.example
+!.env.local.example
 
 # Ignore all logfiles and tempfiles.
 /log/*
