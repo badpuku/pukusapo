@@ -90,3 +90,4 @@ production:
   url: <%= ENV["DATABASE_URL"] %>
   prepared_statements: false
   schema_search_path: public
+  advisory_locks: false
