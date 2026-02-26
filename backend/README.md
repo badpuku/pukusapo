@@ -1,24 +1,23 @@
-# README
+# Backend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Rails 8.1 API（Ruby 3.4.8）
 
-Things you may want to cover:
+## セットアップ
 
-* Ruby version
+```bash
+cd backend
+cp .env.local.example .env.local  # 環境変数を設定
+bundle install
+bin/rails db:setup
+bin/rails server  # http://localhost:3001
+```
 
-* System dependencies
+## 環境変数
 
-* Configuration
+`.env.local.example` を参照。
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+| 変数名 | 説明 |
+|---|---|
+| `DATABASE_URL` | PostgreSQL 接続 URL（ローカルは Supabase CLI） |
+| `CLERK_SECRET_KEY` | Clerk の Secret Key |
+| `CLERK_PUBLISHABLE_KEY` | Clerk の Publishable Key |
