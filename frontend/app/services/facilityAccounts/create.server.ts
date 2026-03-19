@@ -42,7 +42,7 @@ export async function createFacilityAccountService(
   const isClerkAuth = "profile" in authCtx;
   // 権限チェック
   if (isClerkAuth) {
-    const permissionLevel = authCtx.profile.roles.permission_level;
+    const permissionLevel = authCtx.profile.role.permission_level;
     if (!hasModeratorPermission(permissionLevel)) {
       return createErrorResponse(
         ERROR_CODES.FORBIDDEN,

@@ -23,7 +23,7 @@ export async function updateFacilityAccountService(
   input: FacilityAccountUpdateInput,
 ): Promise<ApiResponse<{ id: string }>> {
   // 権限チェック
-  const permissionLevel = authCtx.profile.roles.permission_level;
+  const permissionLevel = authCtx.profile.role.permission_level;
   if (!hasModeratorPermission(permissionLevel)) {
     return createErrorResponse(
       ERROR_CODES.FORBIDDEN,

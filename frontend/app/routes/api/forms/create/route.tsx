@@ -57,7 +57,7 @@ export const action = async (args: Route.ActionArgs) => {
   }
 
   const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles.permission_level;
+  const permissionLevel = userProfile.role.permission_level;
   if (!hasModeratorPermission(permissionLevel)) {
     return createErrorResponse(
       ERROR_CODES.FORBIDDEN,

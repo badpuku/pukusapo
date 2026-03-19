@@ -53,7 +53,7 @@ export async function updateFormWithFields(
   }
 
   const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles.permission_level;
+  const permissionLevel = userProfile.role.permission_level;
 
   if (!hasModeratorPermission(permissionLevel)) {
     return createErrorResponse(

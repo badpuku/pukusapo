@@ -71,8 +71,8 @@ export default function Index() {
                     <p>名前: {userProfile.full_name || "未設定"}</p>
                     <p>ユーザー名: {userProfile.username || "未設定"}</p>
                     <p>
-                      ロール: {userProfile.roles?.name} (
-                      {userProfile.roles?.code})
+                      ロール: {userProfile.role.name} (
+                      {userProfile.role.code})
                     </p>
                   </div>
                 )}
