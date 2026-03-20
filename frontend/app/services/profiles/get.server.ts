@@ -1,16 +1,19 @@
 import { getAuth } from "@clerk/react-router/ssr.server";
 import type { LoaderFunctionArgs } from "react-router";
 
+import { fetchMyProfile } from "~/api/profiles.server";
 import {
   ERROR_CODES,
   ERROR_MESSAGES_MAP,
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
+import { createApiClient } from "~/lib/apiClient.server";
 import {
   type ApiResponse,
   createErrorResponse,
   createSuccessResponse,
 } from "~/lib/apiResponse";
+import type { BaseAuthContext } from "~/lib/auth/types";
 import { findProfileByUserId } from "~/repositories/profiles.server";
 import {
   type ProfileResponse,
@@ -74,3 +77,17 @@ export async function getProfileByUserId(
 
   return createSuccessResponse(profileData.data);
 }
+
+export const getMyProfileService = async (
+  authCtx: BaseAuthContext,
+): Promise<ApiResponse<ProfileResponse>> => {
+  const api = createApiClient(authCtx);
+  const result = await fetchMyProfile(api);
+
+  if (result.isErr()) {
+    const { status, error } = result.error;
+    return createErrorResponse(error, error, status);
+  }
+
+  return createSuccessResponse(result.value);
+};
