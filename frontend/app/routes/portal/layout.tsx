@@ -1,19 +1,19 @@
-import { getAuth } from "@clerk/react-router/ssr.server";
 import { Outlet, redirect } from "react-router";
 
 import { PortalLayout } from "~/components/layouts/portalLayout/portalLayout";
-import { getProfileByUserId } from "~/services/profiles/get.server";
+import { authenticate } from "~/lib/auth/context.server";
+import { getMyProfileService } from "~/services/profiles/get.server";
 
 import type { Route } from "./+types/layout";
 
 export const loader = async (args: Route.LoaderArgs) => {
-  const auth = await getAuth(args);
+  const authCtx = await authenticate(args);
 
-  if (!auth.isAuthenticated) {
+  if (!authCtx) {
     throw redirect("/");
   }
 
-  const profileResponse = await getProfileByUserId(args, auth.userId);
+  const profileResponse = await getMyProfileService(authCtx);
 
   if (!profileResponse.success) {
     throw redirect("/");

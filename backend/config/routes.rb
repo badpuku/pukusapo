@@ -8,4 +8,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
   resource :session, only: [:show]
+
+  namespace :v1 do
+    get "/profiles/me", to: "profiles#me"
+  end
 end

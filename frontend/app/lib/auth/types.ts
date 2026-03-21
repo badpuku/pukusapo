@@ -12,6 +12,7 @@ export interface BaseAuthContext {
   userId: string;
   supabase: SupabaseClient<Database>;
   env: Cloudflare.Env;
+  token: string;
 }
 
 /**

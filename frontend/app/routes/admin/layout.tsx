@@ -1,30 +1,30 @@
 import { SignOutButton } from "@clerk/react-router";
-import { getAuth } from "@clerk/react-router/ssr.server";
 import { LogOut } from "lucide-react";
 import { Outlet, redirect } from "react-router";
 
 import { AdminLayout } from "~/components/layouts/adminLayout/adminLayout";
 import { SidebarSignOutButton } from "~/components/ui/sidebar";
-import { getProfileByUserId } from "~/services/profiles/get.server";
+import { authenticate } from "~/lib/auth/context.server";
+import { getMyProfileService } from "~/services/profiles/get.server";
 import { hasModeratorPermission } from "~/utils/permissions";
 
 import type { Route } from "./+types/layout";
 
 export const loader = async (args: Route.LoaderArgs) => {
-  const auth = await getAuth(args);
+  const authCtx = await authenticate(args);
 
-  if (!auth.isAuthenticated) {
+  if (!authCtx) {
     throw redirect("/");
   }
 
-  const profileResponse = await getProfileByUserId(args, auth.userId);
+  const profileResponse = await getMyProfileService(authCtx);
 
   if (!profileResponse.success) {
     throw redirect("/");
   }
 
   const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles.permission_level;
+  const permissionLevel = userProfile.role.permission_level;
 
   if (!hasModeratorPermission(permissionLevel)) {
     throw redirect("/unauthorized");

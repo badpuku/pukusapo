@@ -16,10 +16,14 @@ export async function authenticate(
   const auth = await getAuth(args);
   if (!auth.userId) return null;
 
+  const token = await auth.getToken();
+  if (!token) return null;
+
   return {
     userId: auth.userId,
     supabase: createServerSupabaseClient(args),
     env: args.context.cloudflare.env,
+    token: token,
   };
 }
 

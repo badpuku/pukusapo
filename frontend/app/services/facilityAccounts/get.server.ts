@@ -21,7 +21,7 @@ function checkModeratorPermission(
   authCtx: AuthContext | ApiKeyAuthContext,
 ): ApiErrorResponse | null {
   if ("profile" in authCtx) {
-    const permissionLevel = authCtx.profile.roles.permission_level;
+    const permissionLevel = authCtx.profile.role.permission_level;
     if (!hasModeratorPermission(permissionLevel)) {
       return createErrorResponse(
         ERROR_CODES.FORBIDDEN,
