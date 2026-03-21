@@ -1,4 +1,3 @@
-import { getAuth } from "@clerk/react-router/ssr.server";
 import type { LoaderFunctionArgs } from "react-router";
 
 import {
@@ -11,11 +10,11 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~/lib/apiResponse";
+import { authenticate } from "~/lib/auth/context.server";
 import type { FormWithFieldsInput } from "~/models/forms";
 import { updateForm } from "~/repositories/forms.server";
 import { syncFormFields } from "~/services/formFields/sync.server";
-import { getProfileByUserId } from "~/services/profiles/get.server";
-import { createServerSupabaseClient } from "~/services/supabase/client.server";
+import { getMyProfileService } from "~/services/profiles/get.server";
 import { hasModeratorPermission } from "~/utils/permissions";
 
 /**
@@ -31,10 +30,9 @@ export async function updateFormWithFields(
   formId: string,
   input: FormWithFieldsInput,
 ): Promise<ApiResponse<{ form: unknown; fields: unknown[] }>> {
-  const auth = await getAuth(args);
-  const userId = auth.userId;
+  const authCtx = await authenticate(args);
 
-  if (!userId) {
+  if (!authCtx) {
     return createErrorResponse(
       ERROR_CODES.UNAUTHORIZED,
       ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
@@ -42,7 +40,7 @@ export async function updateFormWithFields(
     );
   }
 
-  const profileResponse = await getProfileByUserId(args, userId);
+  const profileResponse = await getMyProfileService(authCtx);
 
   if (!profileResponse.success) {
     return createErrorResponse(
@@ -63,7 +61,7 @@ export async function updateFormWithFields(
     );
   }
 
-  const supabase = createServerSupabaseClient(args);
+  const supabase = authCtx.supabase;
   const { data: updatedForm, error: updateError } = await updateForm(
     supabase,
     formId,

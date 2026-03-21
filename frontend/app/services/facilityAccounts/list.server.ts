@@ -1,4 +1,3 @@
-import { getAuth } from "@clerk/react-router/ssr.server";
 import type { LoaderFunctionArgs } from "react-router";
 
 import {
@@ -11,13 +10,13 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "~/lib/apiResponse";
+import { authenticate } from "~/lib/auth/context.server";
 import { findAllFacilityAccounts } from "~/repositories/facilityAccounts.server";
 import {
   type FacilityAccountResponse,
   FacilityAccountResponseSchema,
 } from "~/services/facilityAccounts/schemas";
-import { getProfileByUserId } from "~/services/profiles/get.server";
-import { createServerSupabaseClient } from "~/services/supabase/client.server";
+import { getMyProfileService } from "~/services/profiles/get.server";
 import { hasModeratorPermission } from "~/utils/permissions";
 
 /**
@@ -30,9 +29,8 @@ export async function getFacilityAccountsList(
   const { offset = 0, limit = 100 } = options;
 
   // 認証チェック
-  const auth = await getAuth(args);
-  const userId = auth.userId;
-  if (!userId) {
+  const authCtx = await authenticate(args);
+  if (!authCtx) {
     return createErrorResponse(
       ERROR_CODES.UNAUTHORIZED,
       ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
@@ -41,7 +39,7 @@ export async function getFacilityAccountsList(
   }
 
   // 権限チェック
-  const profileResponse = await getProfileByUserId(args, userId);
+  const profileResponse = await getMyProfileService(authCtx);
   if (!profileResponse.success) {
     return createErrorResponse(
       ERROR_CODES.PROFILE_NOT_FOUND,
@@ -62,7 +60,7 @@ export async function getFacilityAccountsList(
   }
 
   // 施設アカウントデータ取得
-  const supabase = createServerSupabaseClient(args);
+  const supabase = authCtx.supabase;
   const { data: accounts, error: accountsError } =
     await findAllFacilityAccounts(supabase, { offset, limit });
 
