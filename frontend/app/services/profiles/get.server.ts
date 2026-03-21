@@ -1,4 +1,9 @@
 import { fetchMyProfile } from "~/api/profiles.server";
+import {
+  ERROR_CODES,
+  ERROR_MESSAGES_MAP,
+  ERROR_STATUS_MAP,
+} from "~/constants/errors";
 import { createApiClient } from "~/lib/apiClient.server";
 import {
   type ApiResponse,
@@ -15,8 +20,11 @@ export const getMyProfileService = async (
   const result = await fetchMyProfile(api);
 
   if (result.isErr()) {
-    const { status, error } = result.error;
-    return createErrorResponse(error, error, status);
+    return createErrorResponse(
+      ERROR_CODES.PROFILE_NOT_FOUND,
+      ERROR_MESSAGES_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
+      ERROR_STATUS_MAP[ERROR_CODES.PROFILE_NOT_FOUND],
+    );
   }
 
   return createSuccessResponse(result.value);
