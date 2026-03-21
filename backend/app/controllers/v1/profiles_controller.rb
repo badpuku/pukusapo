@@ -23,7 +23,6 @@ class V1::ProfilesController < ApplicationController
       created_at: profile.created_at,
       updated_at: profile.updated_at,
       role: role_json(profile.role)
-
     }
   end
 
