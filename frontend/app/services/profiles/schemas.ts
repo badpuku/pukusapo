@@ -16,7 +16,7 @@ export const FormResponseSchema = z.object({
 
 export type FormResponse = z.infer<typeof FormResponseSchema>;
 
-const RolesSchema = z.object({
+const RoleSchema = z.object({
   code: z.string(),
   name: z.string(),
   permission_level: z.number(),
@@ -30,7 +30,7 @@ export const ProfileResponseSchema = z.object({
   avatar_url: z.string(),
   created_at: z.string(),
   updated_at: z.string().nullable(),
-  role: RolesSchema,
+  role: RoleSchema,
 });
 
 export type ProfileResponse = z.infer<typeof ProfileResponseSchema>;
