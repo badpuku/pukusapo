@@ -1,5 +1,9 @@
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe Role do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'associations' do
+    it { is_expected.to have_many(:profiles) }
+    it { is_expected.to have_many(:role_permissions).dependent(:destroy) }
+    it { is_expected.to have_many(:permissions).through(:role_permissions) }
+  end
 end
