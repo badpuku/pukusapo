@@ -10,15 +10,15 @@
 SUPABASE_EXTENSION_PREFIXES = %w[extensions. graphql. vault.].freeze
 
 if Rails.env.test?
-  ActiveSupport.on_load(:active_record) do
-    ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.prepend(Module.new do
-      def enable_extension(name)
-        if SUPABASE_EXTENSION_PREFIXES.any? { |prefix| name.start_with?(prefix) }
-          say "Skipping Supabase extension: #{name}"
-          return
-        end
-        super
+  require "active_record/connection_adapters/postgresql_adapter"
+
+  ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.prepend(Module.new do
+    def enable_extension(name)
+      if SUPABASE_EXTENSION_PREFIXES.any? { |prefix| name.start_with?(prefix) }
+        say "Skipping Supabase extension: #{name}"
+        return
       end
-    end)
-  end
+      super
+    end
+  end)
 end
