@@ -8,7 +8,7 @@ RSpec.describe RolePermission do
 
   describe 'composite primary key' do
     it 'uses [role_id, permission_id] as primary key' do
-      expect(described_class.primary_key).to eq(["role_id", "permission_id"])
+      expect(described_class.primary_key).to eq([ "role_id", "permission_id" ])
     end
   end
 end
