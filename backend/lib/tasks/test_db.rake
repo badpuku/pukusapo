@@ -1,19 +1,24 @@
-# Supabase 固有のスキーマをテスト用DBに作成する
-# db/schema.rb に含まれる extensions.*, graphql.*, vault.* の enable_extension が
-# 素の PostgreSQL では失敗するため、事前にスキーマだけ作成しておく
-namespace :db do
-  namespace :test do
-    task create_supabase_schemas: :environment do
-      next unless Rails.env.test?
+# Supabase 固有の extension を素の PostgreSQL でスキップする
+#
+# db/schema.rb には Supabase が管理する extension（extensions.*, graphql.*, vault.*）が含まれる。
+# これらは素の PostgreSQL にはインストールできないため、テスト環境では enable_extension を
+# 安全にスキップする。
+#
+# Rails アプリのランタイムコードはこれらの extension に依存していないため、
+# スキップしてもテストの正確性に影響はない。
 
-      ActiveRecord::Base.connection.execute(<<~SQL)
-        CREATE SCHEMA IF NOT EXISTS extensions;
-        CREATE SCHEMA IF NOT EXISTS graphql;
-        CREATE SCHEMA IF NOT EXISTS vault;
-      SQL
-    end
+SUPABASE_EXTENSION_PREFIXES = %w[extensions. graphql. vault.].freeze
+
+if Rails.env.test?
+  ActiveSupport.on_load(:active_record) do
+    ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.prepend(Module.new do
+      def enable_extension(name)
+        if SUPABASE_EXTENSION_PREFIXES.any? { |prefix| name.start_with?(prefix) }
+          say "Skipping Supabase extension: #{name}"
+          return
+        end
+        super
+      end
+    end)
   end
 end
-
-Rake::Task["db:schema:load"].enhance([ "db:test:create_supabase_schemas" ])
-Rake::Task["db:test:load_schema"].enhance([ "db:test:create_supabase_schemas" ])
