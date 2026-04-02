@@ -15,4 +15,5 @@ namespace :db do
   end
 end
 
-Rake::Task["db:schema:load"].enhance(["db:test:create_supabase_schemas"])
+Rake::Task["db:schema:load"].enhance([ "db:test:create_supabase_schemas" ])
+Rake::Task["db:test:load_schema"].enhance([ "db:test:create_supabase_schemas" ])
