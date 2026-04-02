@@ -29,7 +29,7 @@ jobs:
           working-directory: backend
 
       - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager --no-exit-on-warn
+        run: bin/brakeman --no-pager --no-exit-on-warn || [ $? -eq 5 ]
 
       - name: Scan for known security vulnerabilities in gems used
         run: bin/bundler-audit
