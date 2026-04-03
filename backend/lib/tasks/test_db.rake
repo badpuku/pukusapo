@@ -15,7 +15,6 @@ if Rails.env.test?
   ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.prepend(Module.new do
     def enable_extension(name)
       if SUPABASE_EXTENSION_PREFIXES.any? { |prefix| name.start_with?(prefix) }
-        say "Skipping Supabase extension: #{name}"
         return
       end
       super
