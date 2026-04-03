@@ -66,7 +66,7 @@ export const PortalBottomNav = ({
   userProfile,
   className,
 }: PortalBottomNavProps) => {
-  const permissionLevel = userProfile.roles.permission_level;
+  const permissionLevel = userProfile.role.permission_level;
   const isModerator = hasModeratorPermission(permissionLevel);
 
   return (

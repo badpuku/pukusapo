@@ -4,12 +4,12 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/react-router";
-import { getAuth } from "@clerk/react-router/ssr.server";
 import { data, type MetaFunction, useLoaderData } from "react-router";
 import { Link } from "react-router";
 
 import { Button } from "~/components/ui/button";
-import { getProfileByUserId } from "~/services/profiles/get.server";
+import { authenticate } from "~/lib/auth/context.server";
+import { getMyProfileService } from "~/services/profiles/get.server";
 
 import type { Route } from "./+types/_index";
 
@@ -21,15 +21,15 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async (args: Route.LoaderArgs) => {
-  const auth = await getAuth(args);
+  const authCtx = await authenticate(args);
 
-  if (!auth.isAuthenticated) {
+  if (!authCtx) {
     return {
       userProfile: null,
     };
   }
 
-  const profileResponse = await getProfileByUserId(args, auth.userId);
+  const profileResponse = await getMyProfileService(authCtx);
   if (!profileResponse.success) {
     throw data(profileResponse.error.message, {
       status: profileResponse.status,
@@ -71,8 +71,8 @@ export default function Index() {
                     <p>名前: {userProfile.full_name || "未設定"}</p>
                     <p>ユーザー名: {userProfile.username || "未設定"}</p>
                     <p>
-                      ロール: {userProfile.roles?.name} (
-                      {userProfile.roles?.code})
+                      ロール: {userProfile.role.name} (
+                      {userProfile.role.code})
                     </p>
                   </div>
                 )}

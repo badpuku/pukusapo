@@ -1,4 +1,3 @@
-import { getAuth } from "@clerk/react-router/ssr.server";
 import { parseWithZod } from "@conform-to/zod";
 
 import {
@@ -7,21 +6,20 @@ import {
   ERROR_STATUS_MAP,
 } from "~/constants/errors";
 import { createErrorResponse, createSuccessResponse } from "~/lib/apiResponse";
+import { authenticate } from "~/lib/auth/context.server";
 import { FormWithFieldsInputSchema } from "~/models/forms";
 import { createForm } from "~/repositories/forms.server";
 import { createFields } from "~/services/formFields/create.server";
-import { getProfileByUserId } from "~/services/profiles/get.server";
-import { createServerSupabaseClient } from "~/services/supabase/client.server";
+import { getMyProfileService } from "~/services/profiles/get.server";
 import { hasModeratorPermission } from "~/utils/permissions";
 
 import type { Route } from "./+types/route";
 
 export const action = async (args: Route.ActionArgs) => {
-  const auth = await getAuth(args);
-  const userId = auth.userId;
+  const authCtx = await authenticate(args);
 
   // 認証チェック
-  if (!userId) {
+  if (!authCtx) {
     return createErrorResponse(
       ERROR_CODES.UNAUTHORIZED,
       ERROR_MESSAGES_MAP[ERROR_CODES.UNAUTHORIZED],
@@ -45,8 +43,8 @@ export const action = async (args: Route.ActionArgs) => {
 
   const { title, description, status, fields } = submission.value;
 
-  const supabase = createServerSupabaseClient(args);
-  const profileResponse = await getProfileByUserId(args, userId);
+  const supabase = authCtx.supabase;
+  const profileResponse = await getMyProfileService(authCtx);
 
   if (!profileResponse.success) {
     return createErrorResponse(
@@ -57,7 +55,7 @@ export const action = async (args: Route.ActionArgs) => {
   }
 
   const userProfile = profileResponse.data;
-  const permissionLevel = userProfile.roles.permission_level;
+  const permissionLevel = userProfile.role.permission_level;
   if (!hasModeratorPermission(permissionLevel)) {
     return createErrorResponse(
       ERROR_CODES.FORBIDDEN,

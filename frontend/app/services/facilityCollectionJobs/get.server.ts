@@ -22,7 +22,7 @@ export async function getFacilityCollectionJobService(
 ): Promise<ApiResponse<FacilityCollectionJobResponse[]>> {
   // 権限チェック
   if ("profile" in authCtx) {
-    const permissionLevel = authCtx.profile.roles.permission_level;
+    const permissionLevel = authCtx.profile.role.permission_level;
     if (!hasAdminPermission(permissionLevel)) {
       return createErrorResponse(
         ERROR_CODES.FORBIDDEN,
