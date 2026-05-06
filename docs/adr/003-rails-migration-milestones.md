@@ -98,8 +98,11 @@ pukusapo は Frontend から Supabase への直接アクセスを廃止し、Rai
 ### CD の整備
 
 現状 Kamal でローカルからコマンド実行でデプロイしている。GitHub Actions での CD を整備する。
-- staging: main ブランチへの push 時に自動デプロイ
-- production: リリースタグ作成時にデプロイ（または手動トリガー）
+- staging: `deployment/development` ブランチへの push 時に自動デプロイ
+- production: `v*` タグ作成時にデプロイ
+
+トリガー戦略は既存の frontend ワークフロー（`deploy-dev.yml` / `deploy-prod.yml`）に合わせる。
+GitHub Environments（`staging` / `production`）で secret を環境別に管理し、サーバー IP・Clerk キー・DB URL などを切り替える。
 
 ## 補足
 
