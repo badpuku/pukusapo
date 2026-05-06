@@ -39,26 +39,15 @@ jobs:
           bundler-cache: true
           working-directory: backend
 
-      - name: Set up SSH key
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
         run: |
           install -m 700 -d ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.KAMAL_SERVER_IP_ADDRESS }} >> ~/.ssh/known_hosts
-
-      # TODO: HostKeyMismatch の原因特定後に削除
-      - name: Debug SSH host keys
-        run: |
-          echo "=== known_hosts contents ==="
-          cat ~/.ssh/known_hosts
-          echo
-          echo "=== ssh-keyscan (no -H, all types) re-run for comparison ==="
-          ssh-keyscan -t rsa,ecdsa,ed25519 ${{ secrets.KAMAL_SERVER_IP_ADDRESS }} 2>&1 || true
-          echo
-          echo "=== Each key's fingerprint ==="
-          ssh-keyscan -t rsa,ecdsa,ed25519 ${{ secrets.KAMAL_SERVER_IP_ADDRESS }} 2>/dev/null | ssh-keygen -lf - || true
+          ssh-keyscan -t rsa,ecdsa,ed25519 ${{ secrets.KAMAL_SERVER_IP_ADDRESS }} >> ~/.ssh/known_hosts
 
       - name: Deploy with Kamal
         run: bundle exec kamal deploy -d staging
