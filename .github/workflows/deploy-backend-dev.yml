@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - deployment/development
+      # TODO: PR #143 マージ後に削除（動作確認用の一時トリガー）
+      - 'feature/#142_deploy-backend'
     paths:
       - 'backend/**'
       - '.github/workflows/deploy-backend-dev.yml'
-  workflow_dispatch:
 
 defaults:
   run:
