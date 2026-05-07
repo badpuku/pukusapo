@@ -49,5 +49,14 @@ jobs:
           install -m 700 -d ~/.ssh
           ssh-keyscan -t rsa,ecdsa,ed25519 ${{ secrets.KAMAL_SERVER_IP_ADDRESS }} >> ~/.ssh/known_hosts
 
+      # TODO: 切り分け後に削除
+      - name: Debug RAILS_MASTER_KEY length
+        run: |
+          if [ -z "${RAILS_MASTER_KEY}" ]; then
+            echo "RAILS_MASTER_KEY is EMPTY"
+          else
+            echo "Length: ${#RAILS_MASTER_KEY}"
+          fi
+
       - name: Deploy with Kamal
         run: bundle exec kamal deploy -d staging
